@@ -1,3 +1,10 @@
+const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER'
+  ? {
+      router: {
+        base: '/usaid-c19/'
+      }
+    }
+  : {}
 export default {
   /*
   ** Headers of the page
@@ -79,5 +86,6 @@ export default {
         moment: 'moment'
       }
     }
-  }
+  },
+  ...routerBase
 }

@@ -10,6 +10,9 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item :to="{name: 'index'}" exact-active-class="active" no-prefetch>
+            Overview
+          </b-nav-item>
+          <b-nav-item :to="{name: 'contributions'}" active-class="active" no-prefetch>
             Contributions
           </b-nav-item>
           <b-nav-item :to="{name: 'activities'}" active-class="active" no-prefetch>

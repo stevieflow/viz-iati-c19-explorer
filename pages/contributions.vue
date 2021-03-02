@@ -1,7 +1,18 @@
 <template>
   <div>
-    <h2>Overview</h2>
+    <b-alert
+      show
+      variant="warning">
+      This is a prototype visualisation to track the Covid-19 response. The data on this page comes from OCHA's
+      <a href="https://fts.unocha.org/">FTS</a>. Read more on the
+      <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
+      <nuxt-link :to="{name: 'about'}" no-prefetch>about page</nuxt-link>.
+    </b-alert>
+    <h2>Contributions</h2>
     <hr>
+
+    <!-- FIXME this is temporarily hidden via v-show='false' - consider removing or replacing in future -->
+    <HRPSummaryPane v-show="false" :urls="urls" />
 
     <template v-if="busy">
       <div class="text-center text-secondary mb-4">
@@ -23,6 +34,119 @@
         :summary-label-field="summaryLabelField"
         :contributions="contributions" />
       <hr>
+      <b-row>
+        <b-col sm="7" md="9">
+          <h3>{{ contributions.length }} Contributions</h3>
+        </b-col>
+        <b-col sm="5" md="3" class="text-sm-right">
+          <b-dropdown text="Download" right variant="primary" style="width:100%" class="mb-2">
+            <b-dropdown-item
+              v-for="downloadURL in downloadURLs"
+              :key="downloadURL.format"
+              :href="downloadURL.url"
+              target="_blank">
+              {{ downloadURL.format }}
+            </b-dropdown-item>
+          </b-dropdown>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col sm="5" md="6" class="my-1">
+          <b-form-group
+            label="Contributions per page"
+            label-cols-sm="7"
+            label-cols-md="7"
+            label-cols-lg="5"
+            label-cols-xl="4"
+            label-align-sm="right"
+            label-size="sm"
+            label-for="perPageSelect">
+            <b-form-select
+              id="perPageSelect"
+              v-model="perPage"
+              :options="[50,100,500,1000]"
+              size="sm"
+            />
+          </b-form-group>
+        </b-col>
+        <b-col sm="7" md="6" class="my-1">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="fill"
+            size="sm"
+            class="my-0"
+          />
+        </b-col>
+      </b-row>
+      <b-table
+        :items="contributions"
+        :fields="fields"
+        :sort-desc="true"
+        :current-page="currentPage"
+        :per-page="perPage"
+        sort-by="date"
+        responsive>
+        <template #cell(source)="data">
+          {{ data.item.source }}
+        </template>
+        <template #cell(destination)="data">
+          <template v-if="data.item.destination in organisations">
+            <nuxt-link
+              v-b-tooltip.hover
+              :to="{name:'activities', query: { organisation: organisations[data.item.destination] }}"
+              :title="`View activities reported by ${data.item.destination}`">
+              {{ data.item.destination }}
+            </nuxt-link>
+          </template>
+          <template v-else>
+            {{ data.item.destination }}
+          </template>
+        </template>
+        <template #cell(date)="data">
+          {{ data.item.date.substr(0, 10) }}
+        </template>
+        <template #cell(details)="data">
+          <small>
+            <a
+              :href="`https://fts.unocha.org/flows/${data.item.id}?destination=emergencies/${emergencyID}/flows/2020`"
+              target="_blank">
+              FTS
+            </a>
+          </small>
+        </template>
+      </b-table>
+      <b-row>
+        <b-col sm="5" md="6" class="my-1">
+          <b-form-group
+            label="Contributions per page"
+            label-cols-sm="7"
+            label-cols-md="7"
+            label-cols-lg="5"
+            label-cols-xl="4"
+            label-align-sm="right"
+            label-size="sm"
+            label-for="perPageSelect">
+            <b-form-select
+              id="perPageSelect"
+              v-model="perPage"
+              :options="[50,100,500,1000]"
+              size="sm"
+            />
+          </b-form-group>
+        </b-col>
+        <b-col sm="7" md="6" class="my-1">
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="totalRows"
+            :per-page="perPage"
+            align="fill"
+            size="sm"
+            class="my-0"
+          />
+        </b-col>
+      </b-row>
     </template>
   </div>
 </template>
@@ -32,11 +156,13 @@
 import axios from 'axios'
 import config from '../nuxt.config'
 import ContributionsSummaryPane from '~/components/SummaryPanes/Contributions.vue'
+import HRPSummaryPane from '~/components/SummaryPanes/HRP.vue'
 import ContributionsSummaryPaneControls from '~/components/SummaryPanes/Controls/Contributions.vue'
 export default {
   components: {
     ContributionsSummaryPane,
-    ContributionsSummaryPaneControls
+    ContributionsSummaryPaneControls,
+    HRPSummaryPane
   },
   data () {
     return {
