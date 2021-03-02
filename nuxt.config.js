@@ -1,7 +1,7 @@
 const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER'
   ? {
       router: {
-        base: '/usaid-c19/'
+        base: '/viz-covid19-visualisation/'
       }
     }
   : {}
