@@ -14,6 +14,66 @@
     </template>
     <template
       v-if="!isBusy">
+      <h2>Flows for each organisation</h2>
+      <b-alert show>
+        The below visualisation allows you to see the flows reported by each
+        organisation. Select a reporting organisation from the drop down list below.
+        You will then see all of the organisations that they disburse money to on the
+        right hand side (generally, their implementing organisation). The greater the size
+        of the implementing organisation, the more money is being disbursed to that organisation.
+      </b-alert>
+      <b-row>
+        <b-col md="9">
+          <b-form-group label="Publisher Type">
+            <b-form-select v-model="selectedReportingOrgType" :options="reportingOrgTypes" />
+          </b-form-group>
+          <b-form-group label="Publisher">
+            <b-form-select
+              v-model="selectedOrganisation"
+              :options="reportingOrgs" />
+          </b-form-group>
+        </b-col>
+        <b-col md="3">
+          <b-alert variant="secondary" show>
+            <b-form-checkbox
+              v-model="showIncomingFunds"
+              v-b-tooltip
+              :options="[true,false]"
+              size="sm"
+              switch
+              title="Show or hide incoming funds to this organisation.">
+              Show incoming funds
+            </b-form-checkbox>
+            <b-form-checkbox
+              v-model="showRelatedOrganisations"
+              v-b-tooltip
+              :options="[true,false]"
+              size="sm"
+              switch
+              title="Including data from partner organisations may lead to double-counting.">
+              Include data from partner organisations
+            </b-form-checkbox>
+          </b-alert>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <b-badge variant="dark">
+            Funded by
+          </b-badge>
+        </b-col>
+        <b-col class="text-right">
+          <b-badge variant="dark">
+            Implemented by
+          </b-badge>
+        </b-col>
+      </b-row>
+      <SankeyChart :items="flowsOrganisationsChart" />
+      <p>
+        Note: the chart above is generated from the organisation's own IATI
+        data. However, some data processing was required to standardise the data.
+      </p>
+
       <h2>Flows between organisations</h2>
       <b-row>
         <b-col sm="7" md="9">
@@ -78,65 +138,7 @@
         <!-- eslint-enable vue/no-unused-vars -->
       </b-table>
       <hr>
-      <h3>Flows for each organisation</h3>
-      <b-alert show>
-        The below visualisation allows you to see the flows reported by each
-        organisation. Select a reporting organisation from the drop down list below.
-        You will then see all of the organisations that they disburse money to on the
-        right hand side (generally, their implementing organisation). The greater the size
-        of the implementing organisation, the more money is being disbursed to that organisation.
-      </b-alert>
-      <b-row>
-        <b-col md="9">
-          <b-form-group label="Publisher Type">
-            <b-form-select v-model="selectedReportingOrgType" :options="reportingOrgTypes" />
-          </b-form-group>
-          <b-form-group label="Publisher">
-            <b-form-select
-              v-model="selectedOrganisation"
-              :options="reportingOrgs" />
-          </b-form-group>
-        </b-col>
-        <b-col md="3">
-          <b-alert variant="secondary" show>
-            <b-form-checkbox
-              v-model="showIncomingFunds"
-              v-b-tooltip
-              :options="[true,false]"
-              size="sm"
-              switch
-              title="Show or hide incoming funds to this organisation.">
-              Show incoming funds
-            </b-form-checkbox>
-            <b-form-checkbox
-              v-model="showRelatedOrganisations"
-              v-b-tooltip
-              :options="[true,false]"
-              size="sm"
-              switch
-              title="Including data from partner organisations may lead to double-counting.">
-              Include data from partner organisations
-            </b-form-checkbox>
-          </b-alert>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <b-badge variant="dark">
-            Funded by
-          </b-badge>
-        </b-col>
-        <b-col class="text-right">
-          <b-badge variant="dark">
-            Implemented by
-          </b-badge>
-        </b-col>
-      </b-row>
-      <SankeyChart :items="flowsOrganisationsChart" />
-      <p>
-        Note: the chart above is generated from the organisation's own IATI
-        data. However, some data processing was required to standardise the data.
-      </p>
+
       <h4>Disbursements and Direct Expenditure</h4>
       <b-table
         :fields="fieldsOrganisations"

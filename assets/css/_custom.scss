@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'Gotham Bold';
+  src: url('../fonts/Gotham-Bold.otf');
+}
+@font-face {
+  font-family: 'Gotham Book';
+  src: url('../fonts/Gotham-Book.otf');
+}
+@font-face {
+  font-family: 'Gotham Light';
+  src: url('../fonts/Gotham-Light.otf');
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+hr {
+  border-top: 1px solid #CCC;
+}
+
+h2 {
+  font-family: 'Gotham Book', sans-serif;
+  font-size: 22px;
+  line-height: 26px;
+  &.header {
+    background-color: #EDF6FD;
+    border-bottom: 1px solid #CCC;
+    font-family: 'Gotham Bold', sans-serif;
+    font-size: 15px;
+    height: 52px;
+    line-height: 52px;
+    margin-bottom: 32px;
+    padding: 0 20px;
+  }
+}
+
+h3 {
+  color: #000;
+  font-family: 'Gotham Bold', sans-serif;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.iati-viz {
+  p.small {
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .horizontal-list {
+    list-style-type: none;
+    padding: 0;
+    li {
+      display: inline;
+    }
+  }
+  .badge.info-icon {
+    &.badge-dark {
+      background-color: #000;
+    }
+    &.badge-pill {
+      height: 14px;
+      line-height: 14px;
+      text-align: center;
+      width: 14px;
+    }
+  }
+  .form-select {
+    border: none;
+    color: #000;
+    font-family: 'Gotham Bold', sans-serif;
+  }
+}

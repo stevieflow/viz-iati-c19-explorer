@@ -1,63 +1,65 @@
 <template>
-  <div>
-    <b-navbar toggleable="lg" type="dark" variant="primary">
-      <b-navbar-brand :to="'/'">
-        Covid-19 Response
-      </b-navbar-brand>
-
+  <b-container class="iati-viz mt-4">
+    <b-navbar-brand :to="'/'">
+      COVID-19 IATI Data
+    </b-navbar-brand>
+    <b-navbar toggleable="lg" type="light" variant="bg-white" class="navbar-iati">
       <b-navbar-toggle target="nav-collapse" />
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item :to="{name: 'index'}" exact-active-class="active" no-prefetch>
-            Overview
+            Commitments and Spending
           </b-nav-item>
-          <b-nav-item :to="{name: 'contributions'}" active-class="active" no-prefetch>
-            Contributions
-          </b-nav-item>
-          <b-nav-item :to="{name: 'activities'}" active-class="active" no-prefetch>
-            Activities
-          </b-nav-item>
+          <!-- <b-nav-item :to="{name: 'contributions'}" active-class="active" no-prefetch>
+              Contributions
+            </b-nav-item>
+            <b-nav-item :to="{name: 'activities'}" active-class="active" no-prefetch>
+              Activities
+            </b-nav-item> -->
           <b-nav-item :to="{name: 'flows'}" active-class="active" no-prefetch>
             Flows
           </b-nav-item>
-          <b-nav-item :to="{name: 'about'}" active-class="active" no-prefetch>
-            About
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-auto" no-prefetch>
+            About the page
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-container class="mt-4">
-      <nuxt />
-    </b-container>
-  </div>
+    <nuxt />
+  </b-container>
 </template>
 
-<style>
-html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  margin: 0;
-}
-
+<style lang='scss'>
 .nuxt-progress {
-  background-color: #666;
+  background-color: #CCC;
 }
 .settings {
-  width:300px;
+  width: 300px;
+}
+.navbar-brand {
+  color: #000;
+  font-family: 'Gotham-Bold';
+  font-size: 24px;
+}
+.navbar-iati {
+  box-shadow: inset 0px -3px 0px 0px #D8D8D8;
+  margin: 26px 0 32px;
+  padding: 0 27px;
+  .nav-item {
+    color: #888;
+    font-family: 'Gotham-Bold';
+    font-size: 14px;
+    .nav-link {
+      padding: 8px 30px;
+      &.active {
+        border-bottom: 3px solid #F2645A;
+        color: #F2645A;
+      }
+    }
+  }
 }
 .displaySummaryControls label {
   cursor: pointer;

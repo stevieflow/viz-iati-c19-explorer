@@ -23,7 +23,8 @@ export default {
       { name: 'twitter:image:alt', content: 'Contributions to the Covid-19 emergency.' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: 'https://data.humdata.org/images/icons/hdx.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap' }
     ],
     htmlAttrs: {
       lang: 'en'
@@ -37,6 +38,7 @@ export default {
   ** Global CSS
   */
   css: [
+    '@/assets/css/_custom.scss'
   ],
   /*
   ** Plugins to load before mounting the App
