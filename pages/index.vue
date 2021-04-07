@@ -1,211 +1,221 @@
 <template>
-  <b-container>
-    <b-row>
-      <b-col cols="9">
-        <p class="overview-description">
-          Project description - lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <a href="#">Link</a>
-        </p>
-      </b-col>
-      <b-col>
-        <b-button block class="download-button" variant="outline-dark">
-          Download Data
-        </b-button>
-        <b-col />
-      </b-col>
-    </b-row>
-
-    <hr class="my-4">
-
-    <b-row>
-      <b-col cols="7">
-        <b-form-group label="Filter:">
-          <b-form-radio-group
-            id="filterGroup"
-            v-model="filterOptionSelected"
-            :options="filterOptions"
-            name="filterOptionGroup"
-            stacked
-            @change="onFilterOptionSelect"
-          />
-        </b-form-group>
-
-        <!-- <b-form-input list="filter-list" placeholder="All publishing organizations" class="mb-3" />
-        <datalist id="filter-list">
-          <option v-for="org in reportingOrgs" :key="org.text">
-            {{ org.text }}
-          </option>
-        </datalist> -->
-
-        <!-- :state="organisation.length > 0 ? true : null" -->
-        <v-select
-          v-if="filterOptionSelected==='org'"
-          class="filter-select filter-select-org mb-3"
-          :options="reportingOrgs"
-          :get-option-key="option => option.value"
-          :get-option-label="option => option.text"
-          :reduce="option => option.value"
-          placeholder="All publishing organisations"
-        />
-
-        <v-select
-          v-if="filterOptionSelected==='country'"
-          class="filter-select filter-select-country mb-3"
-          :options="countries"
-          :get-option-key="option => option.value"
-          :get-option-label="option => option.text"
-          :reduce="option => option.value"
-          placeholder="All recipient regions/countries"
-        />
-
-        <v-select
-          v-if="filterOptionSelected==='sector'"
-          class="filter-select filter-select-sector mb-3"
-          :options="sectors"
-          :get-option-key="option => option.value"
-          :get-option-label="option => option.text"
-          :reduce="option => option.value"
-          label="text"
-          placeholder="All sectors"
-        />
-
-        <div class="quick-filter-list">
-          Quick filters:
-          <ul class="horizontal-list d-inline">
-            <li v-for="filter in quickFilters" :key="filter.name">
-              <a href="#">{{ filter.name }}</a> |
-            </li>
-          </ul>
-        </div>
-      </b-col>
-      <b-col>
+  <div>
+    <template v-if="isBusy">
+      <div class="text-center text-secondary">
+        <b-spinner class="align-middle" />
+        <strong>Loading...</strong>
+      </div>
+    </template>
+    <template v-if="!isBusy">
+      <b-container>
         <b-row>
-          <b-col>
-            Filter for COVID-19 related transactions
-            <b-badge pill variant="dark" class="info-icon p-0">
-              ?
-            </b-badge>:
+          <b-col cols="9">
+            <p class="overview-description">
+              Project description - lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <a href="#">Link</a>
+            </p>
           </b-col>
           <b-col>
-            Loose / Strict
-            <!-- <b-button-group size="sm">
-              <b-button
-                v-for="(btn, idx) in buttons"
-                :key="idx"
-                :pressed.sync="btn.state"
-                variant="primary"
-              >
-                {{ btn.caption }}
-              </b-button>
-            </b-button-group> -->
+            <b-button block class="download-button" variant="outline-dark">
+              Download Data
+            </b-button>
+            <b-col />
           </b-col>
         </b-row>
-        <hr class="my-3">
+
+        <hr class="my-4">
+
+        <b-row>
+          <b-col cols="7">
+            <b-form-group label="Filter:">
+              <b-form-radio-group
+                id="filterGroup"
+                v-model="filterOptionSelected"
+                :options="filterOptions"
+                name="filterOptionGroup"
+                stacked
+                @change="onFilterOptionSelect"
+              />
+            </b-form-group>
+
+            <!-- <b-form-input list="filter-list" placeholder="All publishing organizations" class="mb-3" />
+            <datalist id="filter-list">
+              <option v-for="org in reportingOrgs" :key="org.text">
+                {{ org.text }}
+              </option>
+            </datalist> -->
+
+            <!-- :state="organisation.length > 0 ? true : null" -->
+            <v-select
+              v-if="filterOptionSelected==='org'"
+              class="filter-select filter-select-org mb-3"
+              :options="reportingOrgs"
+              :get-option-key="option => option.value"
+              :get-option-label="option => option.text"
+              :reduce="option => option.value"
+              placeholder="All publishing organisations"
+            />
+
+            <v-select
+              v-if="filterOptionSelected==='country'"
+              class="filter-select filter-select-country mb-3"
+              :options="countries"
+              :get-option-key="option => option.value"
+              :get-option-label="option => option.text"
+              :reduce="option => option.value"
+              placeholder="All recipient regions/countries"
+            />
+
+            <v-select
+              v-if="filterOptionSelected==='sector'"
+              class="filter-select filter-select-sector mb-3"
+              :options="sectors"
+              :get-option-key="option => option.value"
+              :get-option-label="option => option.text"
+              :reduce="option => option.value"
+              label="text"
+              placeholder="All sectors"
+            />
+
+            <div class="quick-filter-list">
+              Quick filters:
+              <ul class="horizontal-list d-inline">
+                <li v-for="filter in quickFilters" :key="filter.name">
+                  <a href="#">{{ filter.name }}</a> |
+                </li>
+              </ul>
+            </div>
+          </b-col>
+          <b-col>
+            <b-row>
+              <b-col>
+                Filter for COVID-19 related transactions
+                <b-badge pill variant="dark" class="info-icon p-0">
+                  ?
+                </b-badge>:
+              </b-col>
+              <b-col>
+                Loose / Strict
+                <!-- <b-button-group size="sm">
+                  <b-button
+                    v-for="(btn, idx) in buttons"
+                    :key="idx"
+                    :pressed.sync="btn.state"
+                    variant="primary"
+                  >
+                    {{ btn.caption }}
+                  </b-button>
+                </b-button-group> -->
+              </b-col>
+            </b-row>
+            <hr class="my-3">
+            <b-row>
+              <b-col>
+                Only show humanitarian transactions
+                <b-badge pill variant="dark" class="info-icon p-0">
+                  ?
+                </b-badge>:
+              </b-col>
+              <b-col>No / Yes</b-col>
+            </b-row>
+            <hr class="my-3">
+            <p class="small text-muted">
+              xx,xxx transactions excluded. Explanation/definition about the Icon here lorem ipsum dolor sit amet, consectetur adipiscing elit,  lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+            <p class="small text-muted">
+              All reported transactions are as of X date
+            </p>
+          </b-col>
+        </b-row>
+
+        <hr class="my-4">
+
+        <h2 class="my-4">
+          <b>{{ Number(activities.length).toLocaleString() }}</b> transactions by <b>all publishing orgs</b>
+        </h2>
+        <h2 class="header">
+          Key Figures
+        </h2>
+
         <b-row>
           <b-col>
-            Only show humanitarian transactions
-            <b-badge pill variant="dark" class="info-icon p-0">
-              ?
-            </b-badge>:
+            <div class="key-figure-container">
+              <DoughnutChart
+                :doughnut-chart-data="commitmentsSummary"
+                :colors="commitmentColors"
+              />
+              <div class="key-figure-breakdown ml-4">
+                <h3>
+                  Total Commitments (USD)
+                  <b-badge pill variant="dark" class="info-icon p-0">
+                    ?
+                  </b-badge>
+                </h3>
+                <div class="key-figure-num">
+                  x.x B
+                </div>
+                <b-form-select
+                  id="commitmentsSelect"
+                  v-model="commitmentSelected"
+                  class="form-select pl-0 my-3"
+                  size="sm"
+                  :options="keyFigureFilter"
+                />
+
+                <b-table borderless small class="summary-table" :fields="fields" :items="commitmentsTable">
+                  <template #cell(color)="data">
+                    <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
+                  </template>
+                </b-table>
+
+                <p class="small text-muted mb-0">
+                  Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                </p>
+              </div>
+            </div>
           </b-col>
-          <b-col>No / Yes</b-col>
+          <b-col>
+            <div class="key-figure-container">
+              <DoughnutChart
+                :doughnut-chart-data="spendingSummary"
+                :colors="spendingColors"
+              />
+              <div class="key-figure-breakdown ml-4">
+                <h3>
+                  Total Spending (USD) <b-badge pill variant="dark" class="info-icon p-0">
+                    ?
+                  </b-badge>
+                </h3>
+                <div class="key-figure-num">
+                  x.x B
+                </div>
+                <b-form-select
+                  id="spendingSelect"
+                  v-model="spendingSelected"
+                  class="form-select pl-0 my-3"
+                  size="sm"
+                  :options="keyFigureFilter"
+                />
+
+                <b-table borderless small class="summary-table" :fields="fields" :items="spendingTable">
+                  <template #cell(color)="data">
+                    <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
+                  </template>
+                </b-table>
+
+                <p class="small text-muted mb-0">
+                  Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                </p>
+              </div>
+            </div>
+          </b-col>
         </b-row>
-        <hr class="my-3">
-        <p class="small text-muted">
-          xx,xxx transactions excluded. Explanation/definition about the Icon here lorem ipsum dolor sit amet, consectetur adipiscing elit,  lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </p>
-        <p class="small text-muted">
-          All reported transactions are as of X date
-        </p>
-      </b-col>
-    </b-row>
 
-    <hr class="my-4">
-
-    <h2 class="my-4">
-      <b>{{ Number(activities.length).toLocaleString() }}</b> transactions by <b>all publishing orgs</b>
-    </h2>
-    <h2 class="header">
-      Key Figures
-    </h2>
-
-    <b-row>
-      <b-col>
-        <div class="key-figure-container">
-          <DoughnutChart
-            :doughnut-chart-data="commitmentsSummary"
-            :colors="commitmentColors"
-          />
-          <div class="key-figure-breakdown ml-4">
-            <h3>
-              Total Commitments (USD)
-              <b-badge pill variant="dark" class="info-icon p-0">
-                ?
-              </b-badge>
-            </h3>
-            <div class="key-figure-num">
-              x.x B
-            </div>
-            <b-form-select
-              id="commitmentsSelect"
-              v-model="commitmentSelected"
-              class="form-select pl-0 my-3"
-              size="sm"
-              :options="keyFigureFilter"
-            />
-
-            <b-table borderless small class="summary-table" :fields="fields" :items="commitmentsTable">
-              <template #cell(color)="data">
-                <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
-              </template>
-            </b-table>
-
-            <p class="small text-muted mb-0">
-              Mar 05, 2021 | IATI | <a href="#">DATA</a>
-            </p>
-          </div>
-        </div>
-      </b-col>
-      <b-col>
-        <div class="key-figure-container">
-          <DoughnutChart
-            :doughnut-chart-data="spendingSummary"
-            :colors="spendingColors"
-          />
-          <div class="key-figure-breakdown ml-4">
-            <h3>
-              Total Spending (USD) <b-badge pill variant="dark" class="info-icon p-0">
-                ?
-              </b-badge>
-            </h3>
-            <div class="key-figure-num">
-              x.x B
-            </div>
-            <b-form-select
-              id="spendingSelect"
-              v-model="spendingSelected"
-              class="form-select pl-0 my-3"
-              size="sm"
-              :options="keyFigureFilter"
-            />
-
-            <b-table borderless small class="summary-table" :fields="fields" :items="spendingTable">
-              <template #cell(color)="data">
-                <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
-              </template>
-            </b-table>
-
-            <p class="small text-muted mb-0">
-              Mar 05, 2021 | IATI | <a href="#">DATA</a>
-            </p>
-          </div>
-        </div>
-      </b-col>
-    </b-row>
-
-    <h2 class="header">
-      Cumulative Total Commitments and Spending Over Time
-    </h2>
-  </b-container>
+        <h2 class="header">
+          Cumulative Total Commitments and Spending Over Time
+        </h2>
+      </b-container>
+    </template>
+  </div>
 </template>
 
 <style lang='scss'>
@@ -273,6 +283,7 @@
 
 <script>
 import axios from 'axios'
+import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 export default {
   components: {
@@ -280,6 +291,7 @@ export default {
   },
   data () {
     return {
+      title: config.head.title,
       filterOptionSelected: 'org',
       filterOptions: [
         { text: 'By Publishing Organization', value: 'org' },
@@ -331,6 +343,9 @@ export default {
     }
   },
   computed: {
+    isBusy () {
+      return this.$store.state.originalActivityData.length === 0
+    },
     activityUsedCodelists () {
       return this.$store.state.activityUsedCodelists
     },
@@ -428,7 +443,10 @@ export default {
       const activities = _data.data.activities
       this.$store.commit('setOriginalActivityData', activities)
       this.$store.commit('setActivityUsedCodelists', _data.data.codelists)
-      console.log('--', _data.data.codelists)
+      this.$nuxt.$loading.finish()
+    },
+    updateRouter () {
+      // this.$router.push({ name: 'overview', query: this.urlQuery })
     },
     getCountryName (recipientCountry) {
       if (recipientCountry.code === '') { return 'Unspecified' }
