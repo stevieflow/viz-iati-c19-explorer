@@ -143,7 +143,7 @@
                 :doughnut-chart-data="commitmentsSummary"
                 :colors="commitmentColors"
               />
-              <div class="key-figure-breakdown ml-4">
+              <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
                   Total Commitments (USD)
                   <b-badge pill variant="dark" class="info-icon p-0">
@@ -161,15 +161,23 @@
                   :options="keyFigureFilter"
                 />
 
-                <b-table borderless small class="summary-table" :fields="fields" :items="commitmentsTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="fields" :items="commitmentsTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                   </template>
+                  <template #custom-foot>
+                    <tr>
+                      <td colspan="2 pt-3">
+                        <span class="small text-muted">
+                          Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                        </span>
+                      </td>
+                      <td colspan="pt-3">
+                        (USDm)
+                      </td>
+                    </tr>
+                  </template>
                 </b-table>
-
-                <p class="small text-muted mb-0">
-                  Mar 05, 2021 | IATI | <a href="#">DATA</a>
-                </p>
               </div>
             </div>
           </b-col>
@@ -179,7 +187,7 @@
                 :doughnut-chart-data="spendingSummary"
                 :colors="spendingColors"
               />
-              <div class="key-figure-breakdown ml-4">
+              <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
                   Total Spending (USD) <b-badge pill variant="dark" class="info-icon p-0">
                     ?
@@ -196,15 +204,23 @@
                   :options="keyFigureFilter"
                 />
 
-                <b-table borderless small class="summary-table" :fields="fields" :items="spendingTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="fields" :items="spendingTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                   </template>
+                  <template #custom-foot>
+                    <tr>
+                      <td colspan="2 pt-3">
+                        <span class="small text-muted">
+                          Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                        </span>
+                      </td>
+                      <td colspan="pt-3">
+                        (USDm)
+                      </td>
+                    </tr>
+                  </template>
                 </b-table>
-
-                <p class="small text-muted mb-0">
-                  Mar 05, 2021 | IATI | <a href="#">DATA</a>
-                </p>
               </div>
             </div>
           </b-col>
@@ -213,81 +229,24 @@
         <h2 class="header">
           Cumulative Total Commitments and Spending Over Time
         </h2>
+
+        <TimeseriesChart
+          :timeseries-chart-data="commitmentsSummary"
+        />
       </b-container>
     </template>
   </div>
 </template>
 
-<style lang='scss'>
-  .download-button {
-    border-color: #000;
-    color: #000;
-    font-family: 'Gotham Bold', sans-serif;
-    font-size: 14px;
-    padding: 13px 16px;
-    &:hover {
-      background-color: #000;
-      border-color: #000;
-      color: #FFF;
-    }
-  }
-  .key-figure-container {
-    border-bottom: 1px solid #CCC;
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 28px;
-    padding: 20px 0;
-  }
-  .key-figure-num {
-    font-family: 'Gotham Book', sans-serif;
-    font-size: 42px;
-    line-height: 49px;
-  }
-  .summary-table {
-    font-size: 14px;
-    thead {
-      display: none;
-    }
-    td {
-      padding: 0 8px 0 0;
-      vertical-align: middle;
-      &:last-child {
-        text-align: right;
-      }
-    }
-  }
-  .color-key {
-    height: 12px;
-    width: 12px;
-  }
-  .quick-filter-list {
-    font-size: 14px;
-    line-height: 18px;
-  }
-  .filter-select {
-    .vs__dropdown-toggle {
-      padding: 14px;
-    }
-    .vs__open-indicator {
-      cursor: pointer;
-      fill: #000;
-    }
-    .vs__search {
-      font-family: 'Gotham Bold', sans-serif;
-    }
-  }
-  .col-form-label {
-    font-weight: bold;
-  }
-</style>
-
 <script>
 import axios from 'axios'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
+import TimeseriesChart from '~/components/TimeseriesChart'
 export default {
   components: {
-    DoughnutChart
+    DoughnutChart,
+    TimeseriesChart
   },
   data () {
     return {
@@ -463,3 +422,66 @@ export default {
   }
 }
 </script>
+
+<style lang='scss'>
+  .download-button {
+    border-color: #000;
+    color: #000;
+    font-family: 'Gotham Bold', sans-serif;
+    font-size: 14px;
+    padding: 13px 16px;
+    &:hover {
+      background-color: #000;
+      border-color: #000;
+      color: #FFF;
+    }
+  }
+  .key-figure-container {
+    border-bottom: 1px solid #CCC;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 28px;
+    padding: 20px 0;
+  }
+  .key-figure-num {
+    font-family: 'Gotham Book', sans-serif;
+    font-size: 42px;
+    line-height: 49px;
+  }
+  .summary-table {
+    font-size: 14px;
+    thead {
+      display: none;
+    }
+    td {
+      padding: 0 8px 0 0;
+      vertical-align: middle;
+      &:last-child {
+        text-align: right;
+      }
+    }
+  }
+  .color-key {
+    height: 12px;
+    width: 12px;
+  }
+  .quick-filter-list {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .filter-select {
+    .vs__dropdown-toggle {
+      padding: 14px;
+    }
+    .vs__open-indicator {
+      cursor: pointer;
+      fill: #000;
+    }
+    .vs__search {
+      font-family: 'Gotham Bold', sans-serif;
+    }
+  }
+  .col-form-label {
+    font-weight: bold;
+  }
+</style>

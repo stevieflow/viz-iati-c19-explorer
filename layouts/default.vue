@@ -1,5 +1,5 @@
 <template>
-  <b-container class="iati-viz mt-4">
+  <b-container class="iati-viz my-4">
     <b-navbar-brand :to="'/'">
       COVID-19 IATI Data
     </b-navbar-brand>

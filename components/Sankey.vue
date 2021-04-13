@@ -29,7 +29,6 @@
 import SankeyChart from '~/components/Charts/sankey-chart.vue'
 
 export default {
-
   components: {
     SankeyChart
   },
