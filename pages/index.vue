@@ -89,7 +89,12 @@
             <b-row>
               <b-col>
                 Filter for COVID-19 related transactions
-                <b-badge pill variant="dark" class="info-icon p-0">
+                <b-badge
+                  v-b-tooltip.hover
+                  class="info-icon p-0"
+                  variant="dark"
+                  pill
+                  :title="tooltips['placeholder']">
                   ?
                 </b-badge>:
               </b-col>
@@ -111,7 +116,12 @@
             <b-row>
               <b-col>
                 Only show humanitarian transactions
-                <b-badge pill variant="dark" class="info-icon p-0">
+                <b-badge
+                  v-b-tooltip.hover
+                  class="info-icon p-0"
+                  variant="dark"
+                  pill
+                  :title="tooltips['placeholder']">
                   ?
                 </b-badge>:
               </b-col>
@@ -146,7 +156,12 @@
               <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
                   Total Commitments (USD)
-                  <b-badge pill variant="dark" class="info-icon p-0">
+                  <b-badge
+                    v-b-tooltip.hover
+                    class="info-icon p-0"
+                    variant="dark"
+                    pill
+                    :title="tooltips['placeholder']">
                     ?
                   </b-badge>
                 </h3>
@@ -189,7 +204,13 @@
               />
               <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
-                  Total Spending (USD) <b-badge pill variant="dark" class="info-icon p-0">
+                  Total Spending (USD)
+                  <b-badge
+                    v-b-tooltip.hover
+                    class="info-icon p-0"
+                    variant="dark"
+                    pill
+                    :title="tooltips['placeholder']">
                     ?
                   </b-badge>
                 </h3>
@@ -240,6 +261,7 @@
 
 <script>
 import axios from 'axios'
+import csvtojson from 'csvtojson'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
@@ -304,6 +326,9 @@ export default {
   computed: {
     isBusy () {
       return this.$store.state.originalActivityData.length === 0
+    },
+    tooltips () {
+      return this.$store.state.tooltips
     },
     activityUsedCodelists () {
       return this.$store.state.activityUsedCodelists
@@ -402,6 +427,12 @@ export default {
       const activities = _data.data.activities
       this.$store.commit('setOriginalActivityData', activities)
       this.$store.commit('setActivityUsedCodelists', _data.data.codelists)
+      await axios.get('/tooltips.csv')
+        .then((response) => {
+          return csvtojson().fromString(response.data).then((jsonData) => {
+            this.$store.commit('setTooltips', jsonData)
+          })
+        })
       this.$nuxt.$loading.finish()
     },
     updateRouter () {

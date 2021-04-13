@@ -42,8 +42,13 @@ export default {
         legend: false,
         plugins: {
           datalabels: {
-            color: '#FFF',
-            formatter: (value) => {
+            color (context) {
+              const index = context.dataIndex
+              const bgColor = context.dataset.backgroundColor[index]
+              const fontColor = (bgColor === '#EEE') ? '#000' : '#FFF'
+              return fontColor
+            },
+            formatter (value, context) {
               return value + '%'
             }
           }
@@ -58,8 +63,6 @@ export default {
       }
     },
     chartData () {
-      // const commitmentsColours = ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE']
-      // const spendingColours = ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE']
       return {
         datasets: [{
           borderWidth: 0,
