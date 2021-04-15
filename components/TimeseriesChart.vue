@@ -84,6 +84,13 @@ export default {
         },
         legend: {
           display: false
+        },
+        tooltips: {
+          callbacks: {
+            label (item, data) {
+              return data.datasets[item.datasetIndex].label + ': ' + numeral(item.value).format('0,0')
+            }
+          }
         }
       }
     },

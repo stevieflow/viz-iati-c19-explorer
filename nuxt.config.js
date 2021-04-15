@@ -19,7 +19,7 @@ export default {
       { name: 'twitter:site', content: '@devinit' },
       { name: 'twitter:title', content: 'Covid-19 Response Visualisation' },
       { name: 'twitter:description', content: 'A prototype visualisation to track the Covid-19 response' },
-      { name: 'twitter:image', content: 'https://covid19.humportal.org/visualisation.png' },
+      { name: 'twitter:image', content: 'https://baripembo.github.io/viz-covid19-visualisation/visualisation.png' },
       { name: 'twitter:image:alt', content: 'Contributions to the Covid-19 emergency.' }
     ],
     link: [
@@ -89,5 +89,6 @@ export default {
       }
     }
   },
+  dev: process.env.NODE_ENV !== 'production',
   ...routerBase
 }

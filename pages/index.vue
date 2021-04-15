@@ -438,7 +438,8 @@ export default {
       const activities = _data.data.activities
       this.$store.commit('setOriginalActivityData', activities)
       this.$store.commit('setActivityUsedCodelists', _data.data.codelists)
-      await axios.get('/tooltips.csv')
+      const filePath = (config.dev) ? '' : '/viz-covid19-visualisation/'
+      await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
             this.$store.commit('setTooltips', jsonData)
