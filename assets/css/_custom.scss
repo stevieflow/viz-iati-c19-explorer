@@ -93,4 +93,30 @@ h6 {
     color: #000;
     font-family: 'Gotham Bold', sans-serif;
   }
+  .btn-group {
+    border-radius: 9px;
+    border: 1px solid #888;
+    padding: 2px;
+    width: 146px;
+    .btn.btn-secondary {
+      border: 0;
+      border-radius: 9px;
+      background-color: #FFF;
+      color: #1E1E1E;
+      font-family: 'Gotham Bold', sans-serif;
+      font-size: 12px;
+      line-height: 28px;
+      margin: 0;
+      padding: 0;
+      text-transform: uppercase;
+      transition: all 0.5s ease;
+      &.active {
+        background-color: #333;
+        color: #FFF;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
 }

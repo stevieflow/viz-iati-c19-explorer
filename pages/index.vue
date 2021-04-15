@@ -37,13 +37,6 @@
               />
             </b-form-group>
 
-            <!-- <b-form-input list="filter-list" placeholder="All publishing organizations" class="mb-3" />
-            <datalist id="filter-list">
-              <option v-for="org in reportingOrgs" :key="org.text">
-                {{ org.text }}
-              </option>
-            </datalist> -->
-
             <!-- :state="organisation.length > 0 ? true : null" -->
             <v-select
               v-if="filterOptionSelected==='org'"
@@ -99,17 +92,17 @@
                 </b-badge>:
               </b-col>
               <b-col>
-                Loose / Strict
-                <!-- <b-button-group size="sm">
+                <b-button-group id="covidToggle">
                   <b-button
-                    v-for="(btn, idx) in buttons"
-                    :key="idx"
-                    :pressed.sync="btn.state"
-                    variant="primary"
+                    v-for="(btn, id) in covidToggleOptions"
+                    :key="id"
+                    :name="btn.label"
+                    :class="{ 'active': btn.label===covidToggleSelected }"
+                    @click="onToggleClick($event)"
                   >
-                    {{ btn.caption }}
+                    {{ btn.label }}
                   </b-button>
-                </b-button-group> -->
+                </b-button-group>
               </b-col>
             </b-row>
             <hr class="my-3">
@@ -125,7 +118,19 @@
                   ?
                 </b-badge>:
               </b-col>
-              <b-col>No / Yes</b-col>
+              <b-col>
+                <b-button-group id="humanitarianToggle">
+                  <b-button
+                    v-for="(btn, id) in humanitarianToggleOptions"
+                    :key="id"
+                    :name="btn.label"
+                    :class="{ 'active': btn.label===humanitarianToggleSelected }"
+                    @click="onToggleClick($event)"
+                  >
+                    {{ btn.label }}
+                  </b-button>
+                </b-button-group>
+              </b-col>
             </b-row>
             <hr class="my-3">
             <p class="small text-muted">
@@ -285,10 +290,6 @@ export default {
         { value: 'country', text: 'By Recipient Countries' },
         { value: 'org', text: 'By Publishing Orgs' }
       ],
-      buttons: [
-        { caption: 'Loose', state: true },
-        { caption: 'Strict', state: false }
-      ],
       quickFilters: [
         { name: 'Asian Development Bank' },
         { name: 'Inter-American Development Bank' },
@@ -297,6 +298,16 @@ export default {
         { name: 'UNDP' },
         { name: 'USAID' },
         { name: 'WFP' }
+      ],
+      covidToggleSelected: 'Loose',
+      humanitarianToggleSelected: 'No',
+      covidToggleOptions: [
+        { label: 'Loose' },
+        { label: 'Strict' }
+      ],
+      humanitarianToggleOptions: [
+        { label: 'No' },
+        { label: 'Yes' }
       ],
       fields: [
         { key: 'color', label: 'Color' },
@@ -449,6 +460,9 @@ export default {
     },
     onFilterOptionSelect (selected) {
       this.filterOptionSelected = selected
+    },
+    onToggleClick (event) {
+      this[event.target.parentElement.id + 'Selected'] = event.target.name
     }
   }
 }

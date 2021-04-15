@@ -5,9 +5,7 @@
       :options="timeseriesChartOptions"
       class="timeseries-chart"
     />
-    <div class="timeseries-legend text-center">
-      <ul class="horizontal-list" v-html="customLegend" />
-    </div>
+    <div class="timeseries-legend text-center" v-html="customLegend" />
   </div>
 </template>
 
@@ -44,6 +42,7 @@ export default {
                 fontColor: '#333',
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
+                max: 800000,
                 callback (value, index, values) {
                   return numeral(value).format('0a')
                 }
@@ -92,23 +91,11 @@ export default {
       return {
         datasets: [
           {
-            label: 'Commitment',
-            backgroundColor: '#007CE1',
-            data: [450000, 500000, 550000, 650000, 650000, 500000, 550000, 650000, 650000],
-            yAxisID: 'y-axis-left'
-          },
-          {
-            label: 'Spending',
-            backgroundColor: '#F2645A',
-            data: [450000, 525000, 500000, 560000, 560000, 525000, 500000, 560000, 560000],
-            yAxisID: 'y-axis-left'
-          },
-          {
             type: 'line',
             borderColor: '#007CE1',
             borderDash: [4, 2],
             borderWidth: 1,
-            data: [5000000, 5500000, 6000000, 5600000, 7500000, 5500000, 6000000, 5600000, 7500000],
+            data: [4500000, 5000000, 5500000, 6000000, 6000000, 5800000, 5700000, 5900000, 6100000],
             fill: false,
             label: 'Commitment',
             pointBackgroundColor: '#FFF',
@@ -121,13 +108,25 @@ export default {
             borderColor: '#F2645A',
             borderDash: [4, 2],
             borderWidth: 1,
-            data: [4900000, 5250000, 5500000, 6750000, 7100000, 5250000, 5500000, 6750000, 7100000],
+            data: [4500000, 4900000, 5000000, 5500000, 5500000, 5250000, 4750000, 4950000, 5200000],
             fill: false,
             label: 'Spending',
             pointBackgroundColor: '#FFF',
             pointRadius: 4,
             tension: 0,
             yAxisID: 'y-axis-right'
+          },
+          {
+            label: 'Commitment',
+            backgroundColor: '#007CE1',
+            data: [450000, 500000, 550000, 600000, 600000, 580000, 570000, 450000, 480000],
+            yAxisID: 'y-axis-left'
+          },
+          {
+            label: 'Spending',
+            backgroundColor: '#F2645A',
+            data: [450000, 490000, 500000, 550000, 550000, 525000, 475000, 450000, 440000],
+            yAxisID: 'y-axis-left'
           }
         ],
         labels: ['2/1/20', '3/1/20', '4/1/20', '5/1/20', '6/1/20', '7/1/20', '8/1/20', '9/1/20', '10/1/20']
@@ -137,16 +136,15 @@ export default {
       const htmlLegend = []
       for (let i = 0; i < this.chartData.datasets.length; i++) {
         const item = this.chartData.datasets[i]
-        htmlLegend.push('<li class="mr-2">')
-        if (i === 0) { htmlLegend.push('<h6 class="d-inline pr-2">Monthly: </h6>') }
-        if (i === 2) { htmlLegend.push('<h6 class="d-inline pl-4 pr-2">Cumulative: </h6>') }
+        if (i === 0) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
+        if (i === 2) { htmlLegend.push('</div><div class="mr-4"><h6 class="d-inline">Monthly: </h6>') }
         if (item.type === 'line') {
-          htmlLegend.push('<div class="key key-circle mr-1" style="border-color:' + item.borderColor + '">' + '</div>All ' + item.label)
+          htmlLegend.push('<div class="key key-circle mr-1 ml-2" style="border-color:' + item.borderColor + '">' + '</div>All ' + item.label)
         } else {
-          htmlLegend.push('<div class="key key-square mr-1" style="background-color:' + item.backgroundColor + '">' + '</div>All ' + item.label)
+          htmlLegend.push('<div class="key key-square mr-1 ml-2" style="background-color:' + item.backgroundColor + '">' + '</div>All ' + item.label)
         }
-        htmlLegend.push('</li>')
       }
+      htmlLegend.push('</div>')
       return htmlLegend.join('')
     }
   }
@@ -156,8 +154,11 @@ export default {
 <style lang="scss">
 .timeseries-legend {
   color: #333;
+  display: flex;
+  flex-direction: row-reverse;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
   font-size: 12px;
+  justify-content: center;
   margin-top: 5px;
 }
 .key {
