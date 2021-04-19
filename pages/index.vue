@@ -92,7 +92,7 @@
                 </b-badge>:
               </b-col>
               <b-col>
-                <b-button-group id="covidToggle">
+                <b-button-group id="CovidToggle">
                   <b-button
                     v-for="(btn, id) in covidToggleOptions"
                     :key="id"
@@ -119,7 +119,7 @@
                 </b-badge>:
               </b-col>
               <b-col>
-                <b-button-group id="humanitarianToggle">
+                <b-button-group id="HumanitarianToggle">
                   <b-button
                     v-for="(btn, id) in humanitarianToggleOptions"
                     :key="id"
@@ -468,7 +468,7 @@ export default {
       this.selectedFilterOption = selected
     },
     onToggleClick (event) {
-      this[event.target.parentElement.id + 'Selected'] = event.target.name
+      this['selected' + event.target.parentElement.id] = event.target.name
     }
   }
 }
