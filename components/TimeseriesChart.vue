@@ -88,7 +88,8 @@ export default {
         tooltips: {
           callbacks: {
             label (item, data) {
-              return data.datasets[item.datasetIndex].label + ': ' + numeral(item.value).format('0,0')
+              const groupLabel = (item.datasetIndex === 0 || item.datasetIndex === 1) ? 'Cumulative' : 'Monthly'
+              return groupLabel + ' ' + data.datasets[item.datasetIndex].label + ': $' + numeral(item.value).format('0,0')
             }
           }
         }
