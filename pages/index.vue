@@ -29,7 +29,7 @@
             <b-form-group label="Filter:">
               <b-form-radio-group
                 id="filterGroup"
-                v-model="filterOptionSelected"
+                v-model="selectedFilterOption"
                 :options="filterOptions"
                 name="filterOptionGroup"
                 stacked
@@ -39,17 +39,17 @@
 
             <!-- :state="organisation.length > 0 ? true : null" -->
             <v-select
-              v-if="filterOptionSelected==='org'"
+              v-if="selectedFilterOption==='org'"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
               :get-option-key="option => option.value"
               :get-option-label="option => option.text"
               :reduce="option => option.value"
-              placeholder="All publishing organisations"
+              placeholder="All publishing organizations"
             />
 
             <v-select
-              v-if="filterOptionSelected==='country'"
+              v-if="selectedFilterOption==='country'"
               class="filter-select filter-select-country mb-3"
               :options="countries"
               :get-option-key="option => option.value"
@@ -59,7 +59,7 @@
             />
 
             <v-select
-              v-if="filterOptionSelected==='sector'"
+              v-if="selectedFilterOption==='sector'"
               class="filter-select filter-select-sector mb-3"
               :options="sectors"
               :get-option-key="option => option.value"
@@ -97,7 +97,7 @@
                     v-for="(btn, id) in covidToggleOptions"
                     :key="id"
                     :name="btn.label"
-                    :class="{ 'active': btn.label===covidToggleSelected }"
+                    :class="{ 'active': btn.label===selectedCovidToggle }"
                     @click="onToggleClick($event)"
                   >
                     {{ btn.label }}
@@ -124,7 +124,7 @@
                     v-for="(btn, id) in humanitarianToggleOptions"
                     :key="id"
                     :name="btn.label"
-                    :class="{ 'active': btn.label===humanitarianToggleSelected }"
+                    :class="{ 'active': btn.label===selectedHumanitarianToggle }"
                     @click="onToggleClick($event)"
                   >
                     {{ btn.label }}
@@ -145,7 +145,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <b>{{ Number(activities.length).toLocaleString() }}</b> transactions by <b>all publishing orgs</b>
+          <b>{{ Number(activities.length).toLocaleString() }}</b> activities by <b>{{ this.selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">
           Key Figures
@@ -174,14 +174,13 @@
                   x.x B
                 </div>
                 <b-form-select
-                  id="commitmentsSelect"
-                  v-model="commitmentSelected"
+                  v-model="selectedCommitmentFilter"
                   class="form-select pl-0 my-3"
                   size="sm"
                   :options="keyFigureFilter"
                 />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="fields" :items="commitmentsTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                   </template>
@@ -224,13 +223,13 @@
                 </div>
                 <b-form-select
                   id="spendingSelect"
-                  v-model="spendingSelected"
+                  v-model="selectedSpendingFilter"
                   class="form-select pl-0 my-3"
                   size="sm"
                   :options="keyFigureFilter"
                 />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="fields" :items="spendingTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                   </template>
@@ -278,17 +277,18 @@ export default {
   data () {
     return {
       title: config.head.title,
-      filterOptionSelected: 'org',
+      selectedFilterOption: 'org',
+      selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
-        { text: 'By Publishing Organization', value: 'org' },
-        { text: 'By Recipient Region / Country', value: 'country' },
-        { text: 'By Sector', value: 'sector' }
+        { text: 'By Publishing Organization', value: 'org', label: 'all publishing organizations' },
+        { text: 'By Recipient Region / Country', value: 'country', label: 'all recipient regions / countries' },
+        { text: 'By Sector', value: 'sector', label: 'all sectors' }
       ],
-      commitmentSelected: 'country',
-      spendingSelected: 'country',
+      selectedCommitmentFilter: 'country',
+      selectedSpendingFilter: 'country',
       keyFigureFilter: [
-        { value: 'country', text: 'By Recipient Countries' },
-        { value: 'org', text: 'By Publishing Orgs' }
+        { text: 'By Recipient Countries', value: 'country' },
+        { text: 'By Publishing Orgs', value: 'org' }
       ],
       quickFilters: [
         { name: 'Asian Development Bank' },
@@ -299,17 +299,17 @@ export default {
         { name: 'USAID' },
         { name: 'WFP' }
       ],
-      covidToggleSelected: 'Loose',
-      humanitarianToggleSelected: 'No',
+      selectedCovidToggle: 'Loose',
       covidToggleOptions: [
         { label: 'Loose' },
         { label: 'Strict' }
       ],
+      selectedHumanitarianToggle: 'No',
       humanitarianToggleOptions: [
         { label: 'No' },
         { label: 'Yes' }
       ],
-      fields: [
+      tableFields: [
         { key: 'color', label: 'Color' },
         'item',
         'value'
@@ -390,7 +390,7 @@ export default {
     urls () {
       return {
         DATA_URL: 'https://ocha-dap.github.io/covid19-data/activities.json',
-        ACTIVITY_TRANSACTIONS_DATA_URL: 'https://ocha-dap.github.io/covid19-data/traceability/transactions_sector_country.json',
+        // ACTIVITY_TRANSACTIONS_DATA_URL: 'https://ocha-dap.github.io/covid19-data/traceability/transactions_sector_country.json',
         COUNTRIES_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Country.json',
         REGIONS_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Region.json',
         SECTORS_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Sector.json',
@@ -434,7 +434,7 @@ export default {
       this.loadData()
     },
     async loadData () {
-      const _data = await axios.get('https://ocha-dap.github.io/covid19-data/activities.json')
+      const _data = await axios.get(`${this.urls.DATA_URL}`)
       const activities = _data.data.activities
       this.$store.commit('setOriginalActivityData', activities)
       this.$store.commit('setActivityUsedCodelists', _data.data.codelists)
@@ -460,7 +460,12 @@ export default {
       return _sectorName ? `${sector.code}: ${_sectorName}` : `${sector.code}: Unknown`
     },
     onFilterOptionSelect (selected) {
-      this.filterOptionSelected = selected
+      for (let i = 0; i < this.filterOptions.length; i++) {
+        if (this.filterOptions[i].value === selected) {
+          this.selectedFilterLabel = this.filterOptions[i].label.toLowerCase()
+        }
+      }
+      this.selectedFilterOption = selected
     },
     onToggleClick (event) {
       this[event.target.parentElement.id + 'Selected'] = event.target.name
