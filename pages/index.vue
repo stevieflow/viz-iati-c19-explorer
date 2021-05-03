@@ -145,7 +145,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <b>{{ Number(activities.length).toLocaleString() }}</b> activities by <b>{{ this.selectedFilterLabel }}</b>
+          <b>{{ activityCount }}</b> activities by <b>{{ this.selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">
           Key Figures
@@ -171,7 +171,7 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  x.x B
+                  {{ totalCommitments }}
                 </div>
                 <b-form-select
                   v-model="selectedCommitmentFilter"
@@ -219,7 +219,7 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  x.x B
+                  {{ totalSpending }}
                 </div>
                 <b-form-select
                   id="spendingSelect"
@@ -266,6 +266,7 @@
 <script>
 import axios from 'axios'
 import csvtojson from 'csvtojson'
+import numeral from 'numeral'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
@@ -316,128 +317,42 @@ export default {
       ],
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
-      commitmentsTable: [
-        { item: 'Developing countries, ...', value: 1027.42 },
-        { item: 'India', value: 903.36 },
-        { item: 'Afghanistan', value: 704.28 },
-        { item: 'Pakistan', value: 601.27 },
-        { item: 'Egypt', value: 595.21 },
-        { item: 'Other', value: 2714.21 }
-      ],
-      spendingTable: [
-        { item: 'India', value: 1027.42 },
-        { item: 'Developing countries, ...', value: 903.36 },
-        { item: 'Philippines (the)', value: 704.28 },
-        { item: 'Afghanistan', value: 601.27 },
-        { item: 'Pakistan', value: 595.21 },
-        { item: 'Other', value: 2714.21 }
-      ]
+      transactionData: [],
+      commitmentsTable: [],
+      spendingTable: [],
+      reportingOrgs: [],
+      countries: [],
+      sectors: [],
+      activityCount: 0,
+      totalSpending: 0,
+      totalCommitments: 0
     }
   },
   computed: {
     isBusy () {
-      return this.$store.state.originalActivityData.length === 0
+      return this.transactionData.length === 0
     },
     tooltips () {
       return this.$store.state.tooltips
     },
-    activityUsedCodelists () {
-      return this.$store.state.activityUsedCodelists
-    },
-    codelists () {
-      return this.$store.state.codelists
-    },
-    m49Codelists () {
-      return this.$store.state.m49Codelists
-    },
-    countries () {
-      return this.activityUsedCodelists.countriesRegions.reduce((summary, countryRegion) => {
-        summary.push({ value: countryRegion, text: this.getCountryName({ code: countryRegion }) })
-        return summary
-      }, []).sort((a, b) =>
-        a.text < b.text ? -1 : 1
-      )
-    },
-    reportingOrgs () {
-      return this.activityUsedCodelists.reportingOrgs.reduce((summary, reportingOrg) => {
-        const reportingOrgName = this.activityUsedCodelists.reportingOrgNames[reportingOrg]
-        if (reportingOrgName !== '') { summary.push({ value: reportingOrg, text: reportingOrgName }) }
-        return summary
-      }, []).sort((a, b) =>
-        a.text < b.text ? -1 : 1
-      )
-    },
-    sectors () {
-      return this.activityUsedCodelists.sectors.reduce((summary, sector) => {
-        summary.push({ value: sector, text: this.getSectorName({ code: sector }) })
-        return summary
-      }, []).sort((a, b) =>
-        a.text < b.text ? -1 : 1
-      )
-    },
-    originalActivityData () {
-      return this.$store.state.originalActivityData
-    },
-    activities () {
-      return this.originalActivityData
-    },
+    // originalActivityData () {
+    //   return this.$store.state.originalActivityData
+    // },
+    // activities () {
+    //   return this.originalActivityData
+    // },
     commitmentsSummary () {
       return [15.9, 14, 10.9, 9.9, 7, 43]
     },
     spendingSummary () {
       return [15.9, 14, 10.9, 9.9, 7, 43]
-    },
-    urls () {
-      return {
-        DATA_URL: 'https://ocha-dap.github.io/covid19-data/activities.json',
-        // ACTIVITY_TRANSACTIONS_DATA_URL: 'https://ocha-dap.github.io/covid19-data/traceability/transactions_sector_country.json',
-        COUNTRIES_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Country.json',
-        REGIONS_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Region.json',
-        SECTORS_CODELIST_URL: 'https://codelists.codeforiati.org/api/json/en/Sector.json',
-        M49_CODELIST_URL: 'https://ocha-dap.github.io/covid19-data/m49_countries_simplified.json'
-      }
     }
   },
   mounted () {
-    if (Object.values(this.codelists.countries).length === 0) {
-      // this.$nuxt.$loading.start()
-      this.setup()
-    }
+    this.loadData()
   },
   methods: {
-    async setup () {
-      await axios.get(`${this.urls.COUNTRIES_CODELIST_URL}`).then((response) => {
-        const data = response.data
-        this.$store.commit('setCodelistsCountry', data.data.reduce((countries, country) => {
-          countries[country.code] = country.name
-          return countries
-        }, {}))
-      })
-      await axios.get(`${this.urls.REGIONS_CODELIST_URL}`).then((response) => {
-        const data = response.data
-        this.$store.commit('setCodelistsCountry', data.data.reduce((countries, region) => {
-          countries[region.code] = region.name
-          return countries
-        }, this.$store.state.codelists.countries))
-      })
-      await axios.get(`${this.urls.SECTORS_CODELIST_URL}`).then((response) => {
-        const data = response.data
-        this.$store.commit('setCodelistsSector', data.data.reduce((sectors, sector) => {
-          sectors[sector.code] = sector.name
-          return sectors
-        }, {}))
-      })
-      await axios.get(`${this.urls.M49_CODELIST_URL}`).then((response) => {
-        const data = response.data
-        this.$store.commit('setM49Codelists', data)
-      })
-      this.loadData()
-    },
     async loadData () {
-      const _data = await axios.get(`${this.urls.DATA_URL}`)
-      const activities = _data.data.activities
-      this.$store.commit('setOriginalActivityData', activities)
-      this.$store.commit('setActivityUsedCodelists', _data.data.codelists)
       const filePath = (config.dev) ? '' : '/viz-covid19-visualisation/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
@@ -445,20 +360,24 @@ export default {
             this.$store.commit('setTooltips', jsonData)
           })
         })
+
+      this.transactionData = await axios.get('https://davidmegginson.github.io/c19-iati-data/data/transactions.json')
+      this.getHXLData(this.transactionData)
+
       this.$nuxt.$loading.finish()
     },
     updateRouter () {
       // this.$router.push({ name: 'overview', query: this.urlQuery })
     },
-    getCountryName (recipientCountry) {
-      if (recipientCountry.code === '') { return 'Unspecified' }
-      const _countryName = this.codelists.countries[recipientCountry.code]
-      return _countryName || `Unknown: ${recipientCountry.code}`
-    },
-    getSectorName (sector) {
-      const _sectorName = this.codelists.sectors[sector.code]
-      return _sectorName ? `${sector.code}: ${_sectorName}` : `${sector.code}: Unknown`
-    },
+    // getCountryName (recipientCountry) {
+    //   if (recipientCountry.code === '') { return 'Unspecified' }
+    //   const _countryName = this.codelists.countries[recipientCountry.code]
+    //   return _countryName || `Unknown: ${recipientCountry.code}`
+    // },
+    // getSectorName (sector) {
+    //   const _sectorName = this.codelists.sectors[sector.code]
+    //   return _sectorName ? `${sector.code}: ${_sectorName}` : `${sector.code}: Unknown`
+    // },
     onFilterOptionSelect (selected) {
       for (let i = 0; i < this.filterOptions.length; i++) {
         if (this.filterOptions[i].value === selected) {
@@ -469,6 +388,90 @@ export default {
     },
     onToggleClick (event) {
       this['selected' + event.target.parentElement.id] = event.target.name
+    },
+    getHXLData (data) {
+      const dataset = hxl.wrap(data.data)
+
+      // Parameters from the query string
+      const params = new URLSearchParams(window.location.search)
+
+      // Filter the data
+      const filteredData = this.filterData(dataset, params)
+
+      // set filter select lists
+      this.reportingOrgs = this.populateSelect(filteredData.getValues('#org'), params.get('org'))
+      this.countries = this.populateSelect(filteredData.getValues('#country'), params.get('country'))
+      this.sectors = this.populateSelect(filteredData.getValues('#sector'), params.get('sector'))
+
+      // set key figures
+      this.activityCount = numeral(filteredData.getValues('#activity+code').length).format('0,0')
+
+      // create two pre-filtered views, one for commitments and one for spending
+      const commitments = filteredData.withRows('x_transaction_type=commitments')
+      const spending = filteredData.withRows('x_transaction_type=spending')
+      this.totalCommitments = numeral(commitments.getSum('#value+total')).format('0.0a')
+      this.totalSpending = numeral(spending.getSum('#value+total')).format('0.0a')
+
+      //create top 5 tables
+      this.commitmentsTable = this.populateList(commitments, '#country', '#value+net')
+      this.spendingTable = this.populateList(spending, "#country", "#value+net");
+    },
+    filterData (data, params) {
+      let result = data
+
+      if (params.get('org') && params.get('org') !== '*') {
+        result = result.withRows({
+          pattern: '#org',
+          test: params.get('org')
+        })
+      }
+      if (params.get('sector') && params.get('sector') !== '*') {
+        result = result.withRows({
+          pattern: '#sector',
+          test: params.get('sector')
+        })
+      }
+      if (params.get('country') && params.get('country') !== '*') {
+        result = result.withRows({
+          pattern: '#country',
+          test: params.get('country')
+        })
+      }
+      if (params.get('month') && params.get('month') !== '*') {
+        result = result.withRows({
+          pattern: '#date+month',
+          test: params.get('month')
+        })
+      }
+      if (params.get('humanitarian') === 'on') {
+        result = result.withRows({
+          pattern: '#indicator+bool+humanitarian',
+          test: '1'
+        })
+      }
+      if (params.get('strict') === 'on') {
+        result = result.withRows({
+          pattern: '#indicator+bool+strict',
+          test: '1'
+        })
+      }
+      return result
+    },
+    populateSelect (data, defaultValue) {
+      data = data.sort()
+      const select = []
+      data.forEach((item) => {
+        select.push({ value: item, text: item })
+      })
+      return select
+    },
+    populateList (data, entityPattern, valuePattern) {
+      const rows = data.count(entityPattern, valuePattern).sort('#value+sum', true).preview(5).rows
+      const list = []
+      rows.forEach((row) => {
+        list.push({ item: row.get(entityPattern), value: numeral(row.get("#value+sum")).format('0,0')})
+      })
+      return list
     }
   }
 }
@@ -498,6 +501,7 @@ export default {
     font-family: 'Gotham Book', sans-serif;
     font-size: 42px;
     line-height: 49px;
+    text-transform: uppercase;
   }
   .summary-table {
     font-size: 14px;

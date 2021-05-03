@@ -19,6 +19,6 @@ module.exports = {
     'dot-notation': 'off',
     'vue/require-prop-types': 'off',
     'vue/component-tags-order': 'off',
-    'no-console': 'off'
+    'no-console': 'off',
   }
 }
