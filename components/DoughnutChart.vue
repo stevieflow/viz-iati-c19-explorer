@@ -67,9 +67,9 @@ export default {
         datasets: [{
           borderWidth: 0,
           backgroundColor: this.colors,
-          data: this.doughnutChartData
+          data: this.doughnutChartData.values
         }],
-        labels: ['Developing countries', 'India', 'Afghanistan', 'Pakistan', 'Egypt', 'Other']
+        labels: this.doughnutChartData.labels
       }
     }
   }

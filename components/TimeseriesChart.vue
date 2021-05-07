@@ -17,6 +17,9 @@ export default {
   components: {
     TimeseriesChart
   },
+  props: [
+    'timeseriesChartData'
+  ],
   data () {
     return {}
   },
@@ -42,7 +45,7 @@ export default {
                 fontColor: '#333',
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
-                max: 800000,
+                //max: 800000,
                 callback (value, index, values) {
                   return numeral(value).format('0a')
                 }
@@ -103,7 +106,7 @@ export default {
             borderColor: '#007CE1',
             borderDash: [4, 2],
             borderWidth: 1,
-            data: [4500000, 5000000, 5500000, 6000000, 6000000, 5800000, 5700000, 5900000, 6100000],
+            data: this.timeseriesChartData.cumulative.commitments,
             fill: false,
             label: 'Commitment',
             pointBackgroundColor: '#FFF',
@@ -116,7 +119,7 @@ export default {
             borderColor: '#F2645A',
             borderDash: [4, 2],
             borderWidth: 1,
-            data: [4500000, 4900000, 5000000, 5500000, 5500000, 5250000, 4750000, 4950000, 5200000],
+            data: this.timeseriesChartData.cumulative.spending,
             fill: false,
             label: 'Spending',
             pointBackgroundColor: '#FFF',
@@ -127,17 +130,17 @@ export default {
           {
             label: 'Commitment',
             backgroundColor: '#007CE1',
-            data: [450000, 500000, 550000, 600000, 600000, 580000, 570000, 450000, 480000],
+            data: this.timeseriesChartData.monthly.commitments,
             yAxisID: 'y-axis-left'
           },
           {
             label: 'Spending',
             backgroundColor: '#F2645A',
-            data: [450000, 490000, 500000, 550000, 550000, 525000, 475000, 450000, 440000],
+            data: this.timeseriesChartData.monthly.spending,
             yAxisID: 'y-axis-left'
           }
         ],
-        labels: ['2/1/20', '3/1/20', '4/1/20', '5/1/20', '6/1/20', '7/1/20', '8/1/20', '9/1/20', '10/1/20']
+        labels: this.timeseriesChartData.dates
       }
     },
     customLegend () {
