@@ -36,6 +36,10 @@ export default {
           yAxes: [
             {
               id: 'y-axis-left',
+              scaleLabel: {
+                display: true,
+                labelString: 'Monthly'
+              },
               gridLines: {
                 color: '#000',
                 drawOnChartArea: false
@@ -54,6 +58,10 @@ export default {
             },
             {
               id: 'y-axis-right',
+              scaleLabel: {
+                display: true,
+                labelString: 'Cumulative'
+              },
               gridLines: {
                 color: '#000',
                 drawOnChartArea: false
