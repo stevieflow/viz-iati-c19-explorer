@@ -390,8 +390,7 @@ export default {
     timeseriesData () {
       const monthlyCommitments = this.commitments.count('#date+month', '#value+net')
       const monthlySpending = this.spending.count('#date+month', '#value+net')
-      const cumulativeCommitments = this.commitments.count('#date+month', '#value+total')
-      const cumulativeSpending = this.spending.count('#date+month', '#value+total')
+
       return { 
         dates: monthlyCommitments.getRawValues("#date+month"), 
         monthly: { 
@@ -399,8 +398,8 @@ export default {
           spending: monthlySpending.getRawValues("#value+sum") 
         },
         cumulative: {
-          commitments: cumulativeCommitments.getRawValues("#value+sum"), 
-          spending: cumulativeSpending.getRawValues("#value+sum") 
+          commitments: this.getCumulativeSeries(monthlyCommitments), 
+          spending: this.getCumulativeSeries(monthlySpending) 
         } 
       }
     }
@@ -438,6 +437,7 @@ export default {
       }
     },
     onFilterOptionSelect (selected) {
+      this.resetParams()
       this.selectedFilterDimension = selected
       this.setFilterLabel(selected)
       this.updateFilteredData()
@@ -461,8 +461,6 @@ export default {
       this.filteredData = this.filterData()
     },
     filterData () {
-      console.log('isUpdating')
-      this.isUpdating = true
       let result = this.allData;
       const params = this.filterParams
       const filterDimension = this.selectedFilterDimension
@@ -499,9 +497,6 @@ export default {
           test: '1'
         })
       }
-
-      console.log('is not Updating')
-      this.isUpdating = false
       return result
     },
     populateSelect (data, defaultValue) {
@@ -542,6 +537,21 @@ export default {
       }
       return { values: ratios, labels: labels }
     },
+    getCumulativeSeries (data) {
+      let cumulativeArray = []
+      let total = 0
+      data.forEach(row => {
+        total += row.get('#value+sum')
+        cumulativeArray.push(total)
+      })
+      return cumulativeArray
+    },
+    resetParams () {
+      this.filterParams.org = '*'
+      this.filterParams.country = '*'
+      this.filterParams.sector = '*'
+      this.selectedFilter = '*'
+    }
   }
 }
 </script>

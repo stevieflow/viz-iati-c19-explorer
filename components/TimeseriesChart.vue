@@ -45,7 +45,7 @@ export default {
                 fontColor: '#333',
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
-                //max: 800000,
+                //max: 100000000000,
                 callback (value, index, values) {
                   return numeral(value).format('0a')
                 }
