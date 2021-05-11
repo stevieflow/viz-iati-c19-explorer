@@ -388,8 +388,9 @@ export default {
       return this.populateDonut('spending', this.selectedSpendingFilter, '#value+net')
     },
     timeseriesData () {
-      const monthlyCommitments = this.commitments.count('#date+month', '#value+net')
-      const monthlySpending = this.spending.count('#date+month', '#value+net')
+      const tag = (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
+      const monthlyCommitments = this.commitments.count('#date+month', tag)
+      const monthlySpending = this.spending.count('#date+month', tag)
 
       return { 
         dates: monthlyCommitments.getRawValues("#date+month"), 
