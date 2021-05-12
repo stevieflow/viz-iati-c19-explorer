@@ -35,6 +35,7 @@ var hxl = {
     loggers: [],
 
     version: "0.4"
+
 };
 
 /**
@@ -229,14 +230,14 @@ hxl.types.isNumber = function (s) {
  */
 hxl.types.toNumber = function (s) {
     if (isNaN(s)) {
-	s = s.replace(/[\s|,]+/, '');
+    s = s.replace(/[\s|,]+/, '');
     }
     var intValue = parseInt(s);
     var floatValue = parseFloat(s);
     if (intValue === floatValue) {
-	return intValue;
+    return intValue;
     } else {
-	return floatValue;
+    return floatValue;
     }
 };
 
@@ -619,17 +620,21 @@ hxl.classes.Source.prototype.getValues = function(pattern) {
  * @return {array} A list of unique values.
  */
 hxl.classes.Source.prototype.getRawValues = function(pattern) {
-    var iterator = this.iterator();
-    var rawValues = [];
+    let result = [];
 
-    pattern = hxl.classes.TagPattern.parse(pattern); // more efficient to precompile
+    // precompute the index for speed
+    let index = this.getColumnIndex(pattern);
+
+    // iterate through the dataset
+    this.forEach(row => {
+        if (index === null || row.values.length <= index) {
+            result.push(null);
+        } else {
+            result.push(row.values[index]);
+        }
+    });
     
-    var row = iterator.next();
-    while (row) {
-        rawValues.push(row.get(pattern));
-        row = iterator.next();
-    }
-    return rawValues;
+    return result;
 }
 
 /**
@@ -657,16 +662,29 @@ hxl.classes.Source.prototype.hasColumn = function (pattern) {
 }
 
 /**
- * Get a list of indices for columns matching a tag pattern.
+ * Get the index of the first matching column (0-based)
  */
-hxl.classes.Source.prototype.getMatchingColumns = function(pattern) {
+hxl.classes.Source.prototype.getColumnIndex = function(pattern) {
+    var indices = this.getColumnIndices(pattern);
+    if (indices.length > 0) {
+        return indices[0];
+    } else {
+        return null;
+    }
+};
+
+/**
+ * Get a list of indices for columns matching a tag pattern (0-based)
+ */
+hxl.classes.Source.prototype.getColumnIndices = function(pattern) {
     var result = [];
     pattern = hxl.classes.TagPattern.parse(pattern); // more efficient to precompile
-    this.getColumns().forEach(col => {
-        if (pattern.match(col)) {
-            result.push(col);
+    columns = this.getColumns();
+    for (var i = 0; i < columns.length; i++) {
+        if (pattern.match(columns[i])) {
+            result.push(i);
         }
-    });
+    }
     return result;
 }
 
@@ -1279,7 +1297,16 @@ hxl.classes.TagPattern.parse = function(pattern, useException) {
             return null;
         }
     } else {
-        result = String(pattern).match(/^\s*#?(\*|[A-Za-z][A-Za-z0-9_]*)((?:\s*[+-][A-Za-z][A-Za-z0-9_]*)*)\s*(!)?\s*$/);
+
+        pattern = String(pattern);
+
+        // If we've already compiled this one, don't do it again
+        if (this.cache[pattern]) {
+            return this.cache[pattern];
+        }
+
+        // This one is new, so we need to compile it (and save it to the cache)
+        result = pattern.match(/^\s*#?(\*|[A-Za-z][A-Za-z0-9_]*)((?:\s*[+-][A-Za-z][A-Za-z0-9_]*)*)\s*(!)?\s*$/);
         if (result) {
             includeAttributes = [];
             excludeAttributes = [];
@@ -1295,7 +1322,9 @@ hxl.classes.TagPattern.parse = function(pattern, useException) {
             if (result[3] === "!") {
                 isAbsolute = true;
             }
-            return new hxl.classes.TagPattern('#' + result[1].toLowerCase(), includeAttributes, excludeAttributes, isAbsolute);
+            var compiled = new hxl.classes.TagPattern('#' + result[1].toLowerCase(), includeAttributes, excludeAttributes, isAbsolute);
+            this.cache[pattern] = compiled;
+            return compiled;
         } else if (useException) {
             throw Error("Bad tag pattern: " + pattern);
         } else {
@@ -1341,6 +1370,9 @@ hxl.classes.TagPattern.toString = function() {
     }
     return s;
 }
+
+// Static cache of compiled tag patterns
+hxl.classes.TagPattern.cache = {};
 
 
 ////////////////////////////////////////////////////////////////////////
