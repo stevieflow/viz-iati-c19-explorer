@@ -16,6 +16,7 @@ export const state = () => ({
     reportingOrgNames: {},
     reportingOrgTypes: {}
   },
+  originalOverviewData: [],
   originalActivityData: [],
   originalActivityTransactionData: [],
   originalFlows: [],
@@ -56,6 +57,9 @@ export const mutations = {
   },
   setOriginalActivityData (state, activities) {
     state.originalActivityData = activities
+  },
+  setOriginalOverviewData (state, data) {
+    state.originalOverviewData = data
   },
   setOriginalActivityTransactionData (state, activityTransactions) {
     state.originalActivityTransactionData = activityTransactions

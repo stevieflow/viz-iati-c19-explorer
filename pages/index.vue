@@ -46,44 +46,41 @@
             <v-select
               v-if="selectedFilterDimension==='org'"
               :value="this.selectedFilter"
-              @input="onSelect"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
               :get-option-key="option => option.value"
               :get-option-label="option => option.text"
               :reduce="option => option.value"
+              @input="onSelect"
             />
 
             <v-select
               v-if="selectedFilterDimension==='country'"
               :value="this.selectedFilter"
-              @input="onSelect"
               class="filter-select filter-select-country mb-3"
               :options="countries"
               :get-option-key="option => option.value"
               :get-option-label="option => option.text"
               :reduce="option => option.value"
-              placeholder="All recipient regions/countries"
+              @input="onSelect"
             />
 
             <v-select
               v-if="selectedFilterDimension==='sector'"
               :value="this.selectedFilter"
-              @input="onSelect"
               class="filter-select filter-select-sector mb-3"
               :options="sectors"
               :get-option-key="option => option.value"
               :get-option-label="option => option.text"
               :reduce="option => option.value"
-              label="text"
-              placeholder="All sectors"
+              @input="onSelect"
             />
 
             <div class="quick-filter-list">
               Quick filters:
               <ul class="horizontal-list d-inline">
                 <li v-for="filter in quickFilters" :key="filter.name">
-                  <a href="#" @click="onQuickFilterClick" :name="filter.name">{{ filter.name }}</a> |
+                  <a href="#" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
                 </li>
               </ul>
             </div>
@@ -108,7 +105,7 @@
                     :key="id"
                     :value="btn.value"
                     :class="{ 'active': btn.value===filterParams.strict }"
-                    @click="onToggleClick($event)"
+                    @click="onToggle($event)"
                   >
                     {{ btn.label }}
                   </b-button>
@@ -135,7 +132,7 @@
                     :key="id"
                     :value="btn.value"
                     :class="{ 'active': btn.value===filterParams.humanitarian }"
-                    @click="onToggleClick($event)"
+                    @click="onToggle($event)"
                   >
                     {{ btn.label }}
                   </b-button>
@@ -303,7 +300,7 @@ export default {
         { text: 'By Publishing Orgs', value: '#org' }
       ],
       quickFilters: [
-        { name: 'Asian Development Bank'},
+        { name: 'Asian Development Bank' },
         { name: 'Inter-American Development Bank' },
         { name: 'United Nations Office for the Coordination of Humanitarian Affairs' },
         { name: 'United Nations Development Programme' },
@@ -333,8 +330,8 @@ export default {
         strict: 'off',
         org: '*',
         country: '*',
-        sector: '*',
-        //month: '*'
+        sector: '*'
+        // month: '*'
       }
     }
   },
@@ -360,48 +357,50 @@ export default {
     spending () {
       return this.filteredData.withRows('x_transaction_type=spending')
     },
-    commitmentsCountryRanked () {
-      return this.commitments.count('#country', '#value+net').sort('#value+sum', true).preview(5).rows
+    commitmentsRanked () {
+      return this.commitments.count(this.selectedCommitmentFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
     },
-    spendingCountryRanked () {
-      return this.spending.count('#country', '#value+net').sort('#value+sum', true).preview(5).rows
+    spendingRanked () {
+      return this.spending.count(this.selectedSpendingFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
     },
     activityCount () {
       return numeral(this.filteredData.getValues('#activity+code').length).format('0,0')
     },
     totalCommitments () {
-      return numeral(this.commitments.getSum('#value+total')).format('0.0a')
+      return numeral(this.commitments.getSum(this.tagPattern)).format('0.0a')
+    },
+    tagPattern() {
+      return (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     totalSpending () {
-      return numeral(this.spending.getSum('#value+total')).format('0.0a')
+      return numeral(this.spending.getSum(this.tagPattern)).format('0.0a')
     },
     commitmentsTable () {
-      return this.populateList(this.commitments, this.selectedCommitmentFilter, '#value+net')
+      return this.populateList(this.commitmentsRanked, this.selectedCommitmentFilter)
     },
     spendingTable () {
-      return this.populateList(this.spending, this.selectedSpendingFilter, "#value+net")
+      return this.populateList(this.spendingRanked, this.selectedSpendingFilter)
     },
     commitmentsDonut () {
-      return this.populateDonut('commitments', this.selectedCommitmentFilter, '#value+net')
+      return this.populateDonut('commitments', this.selectedCommitmentFilter)
     },
     spendingDonut () {
-      return this.populateDonut('spending', this.selectedSpendingFilter, '#value+net')
+      return this.populateDonut('spending', this.selectedSpendingFilter)
     },
     timeseriesData () {
-      const tag = (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
-      const monthlyCommitments = this.commitments.count('#date+month', tag)
-      const monthlySpending = this.spending.count('#date+month', tag)
+      const monthlyCommitments = this.commitments.count('#date+month', this.tagPattern)
+      const monthlySpending = this.spending.count('#date+month', this.tagPattern)
 
-      return { 
-        dates: monthlyCommitments.getRawValues("#date+month"), 
-        monthly: { 
-          commitments: monthlyCommitments.getRawValues("#value+sum"), 
-          spending: monthlySpending.getRawValues("#value+sum") 
+      return {
+        dates: monthlyCommitments.getRawValues('#date+month'),
+        monthly: {
+          commitments: monthlyCommitments.getRawValues('#value+sum'),
+          spending: monthlySpending.getRawValues('#value+sum')
         },
         cumulative: {
-          commitments: this.getCumulativeSeries(monthlyCommitments), 
-          spending: this.getCumulativeSeries(monthlySpending) 
-        } 
+          commitments: this.getCumulativeSeries(monthlyCommitments),
+          spending: this.getCumulativeSeries(monthlySpending)
+        }
       }
     }
   },
@@ -443,18 +442,17 @@ export default {
       this.setFilterLabel(selected)
       this.updateFilteredData()
     },
-    onSelect(value) {
+    onSelect (value) {
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
-      if (value!=='*') this.selectedFilterLabel = value
-      else this.setFilterLabel(this.selectedFilterDimension)
+      if (value !== '*') { this.selectedFilterLabel = value } else { this.setFilterLabel(this.selectedFilterDimension) }
       this.updateFilteredData()
     },
-    onToggleClick (event) {
+    onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
     },
-    onQuickFilterClick (event) {
+    onQuickFilter (event) {
       this.selectedFilterDimension = 'org'
       this.onSelect(event.target.name)
     },
@@ -462,23 +460,19 @@ export default {
       this.filteredData = this.filterData()
     },
     filterData () {
-      let result = this.allData;
+      let result = this.allData
       const params = this.filterParams
       const filterDimension = this.selectedFilterDimension
-      if (params['org'] && params['org'] !== '*') {
-        this.selectedFilterLabel = params['org']
-        result = result.withRows({
-          pattern: '#' + 'org',
-          test: params['org']
-        })
-      }
-      if (params[filterDimension] && params[filterDimension] !== '*') {
-        this.selectedFilterLabel = params[filterDimension]
-        result = result.withRows({
-          pattern: '#' + filterDimension,
-          test: params[filterDimension]
-        })
-      }
+
+      // this.filterOptions.forEach(function(option) {
+      //   if (params[option.value] && params[option.value] !== '*') {
+      //     this.selectedFilterLabel = params[option.value]
+      //     result = result.withRows({
+      //       pattern: '#' + option.value,
+      //       test: params[option.value]
+      //     })
+      //   }
+      // })
       if (params[filterDimension] && params[filterDimension] !== '*') {
         this.selectedFilterLabel = params[filterDimension]
         result = result.withRows({
@@ -508,40 +502,37 @@ export default {
       })
       return select
     },
-    populateList (data, entityPattern, valuePattern) {
-      //const rows = data.count(entityPattern, valuePattern).sort('#value+sum', true).preview(5).rows
-      const rows = this.commitmentsCountryRanked
+    populateList (data, entityPattern) {
+      const rows = data
       const list = []
       rows.forEach((row) => {
-        list.push({ item: row.get(entityPattern), value: numeral(row.get("#value+sum")).format('0,0')})
+        list.push({ item: row.get(entityPattern), value: numeral(row.get('#value+sum')).format('0,0') })
       })
       return list
     },
-    populateDonut (dimension, entityPattern, valuePattern) {
-      const data = this[dimension]
-      //const rows = data.count(entityPattern, valuePattern).sort('#value+sum', true).preview(5).rows
-      const rows = this.commitmentsCountryRanked
+    populateDonut (category, entityPattern) {
+      const rows = this[category + 'Ranked']
+      const total = this[category].getSum(this.tagPattern)
       const ratios = []
       const labels = []
-      const total = data.getSum('#value+total')
       let sum = Number(0)
       rows.forEach((row) => {
-        const value = row.get("#value+sum")
+        const value = row.get('#value+sum')
         const ratio = numeral((value / total) * 100).format('0.0')
         sum += Number(ratio)
-        ratios.push( Number(ratio) )
-        labels.push( row.get(entityPattern) )
+        ratios.push(Number(ratio))
+        labels.push(row.get(entityPattern))
       })
-      if (sum!==100) { //calculate Other value if sum < 100
+      if (sum < 100) { // calculate Other value if sum < 100
         ratios[ratios.length] = Number(numeral(100 - sum).format('0.0'))
         labels.push('Other')
       }
-      return { values: ratios, labels: labels }
+      return { values: ratios, labels }
     },
     getCumulativeSeries (data) {
-      let cumulativeArray = []
+      const cumulativeArray = []
       let total = 0
-      data.forEach(row => {
+      data.forEach((row) => {
         total += row.get('#value+sum')
         cumulativeArray.push(total)
       })
