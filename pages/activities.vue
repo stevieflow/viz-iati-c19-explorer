@@ -323,6 +323,7 @@ export default {
     },
     reportingOrgs () {
       return this.activityUsedCodelists.reportingOrgs.reduce((summary, reportingOrg) => {
+        console.log(summary, reportingOrg)
         const reportingOrgName = this.activityUsedCodelists.reportingOrgNames[reportingOrg]
         summary.push({ value: reportingOrg, text: reportingOrgName })
         return summary
