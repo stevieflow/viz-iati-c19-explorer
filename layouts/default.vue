@@ -41,7 +41,7 @@
 }
 .navbar-brand {
   color: #000;
-  font-family: 'Gotham-Bold';
+  font-family: 'Gotham Bold', sans-serif;
   font-size: 24px;
 }
 .navbar-iati {
@@ -50,7 +50,7 @@
   padding: 0 27px;
   .nav-item {
     color: #888;
-    font-family: 'Gotham-Bold';
+    font-family: 'Gotham Bold', sans-serif;
     font-size: 14px;
     .nav-link {
       padding: 8px 30px;

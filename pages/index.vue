@@ -623,6 +623,10 @@ export default {
 </script>
 
 <style lang='scss'>
+  abbr[title], abbr[data-original-title] {
+    text-decoration: none;
+    cursor: auto;
+  }
   .download-button {
     border-color: #000;
     color: #000;
