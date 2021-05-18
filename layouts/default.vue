@@ -13,10 +13,10 @@
           </b-nav-item>
           <!-- <b-nav-item :to="{name: 'contributions'}" active-class="active" no-prefetch>
               Contributions
-            </b-nav-item> -->
+            </b-nav-item>
             <b-nav-item :to="{name: 'activities'}" active-class="active" no-prefetch>
               Activities
-            </b-nav-item>
+            </b-nav-item> -->
           <b-nav-item :to="{name: 'flows'}" active-class="active" no-prefetch>
             Flows
           </b-nav-item>

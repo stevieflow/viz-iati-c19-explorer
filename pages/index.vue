@@ -155,10 +155,10 @@
         <b-row>
           <b-col>
             <div class="key-figure-container">
-              <!-- <DoughnutChart
+              <DoughnutChart
                 :doughnut-chart-data="commitmentsDonut"
                 :colors="commitmentColors"
-              /> -->
+              />
               <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
                   Total Commitments (USD)
@@ -181,7 +181,7 @@
                   :options="keyFigureFilter"
                 />
 
-                <!-- <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                   </template>
@@ -197,16 +197,16 @@
                       </td>
                     </tr>
                   </template>
-                </b-table> -->
+                </b-table>
               </div>
             </div>
           </b-col>
           <b-col>
             <div class="key-figure-container">
-              <!-- <DoughnutChart
+              <DoughnutChart
                 :doughnut-chart-data="spendingDonut"
                 :colors="spendingColors"
-              /> -->
+              />
               <div class="key-figure-breakdown w-100 ml-4 mr-5">
                 <h3>
                   Total Spending (USD)
@@ -230,7 +230,7 @@
                   :options="keyFigureFilter"
                 />
 
-                <!-- <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
+                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                   </template>
@@ -246,7 +246,7 @@
                       </td>
                     </tr>
                   </template>
-                </b-table> -->
+                </b-table>
               </div>
             </div>
           </b-col>
@@ -291,7 +291,7 @@ export default {
       selectedSpendingFilter: '#country',
       keyFigureFilter: [
         { text: 'By Recipient Countries', value: '#country' },
-        { text: 'By Publishing Orgs', value: '#org' }
+        { text: 'By Publishing Orgs', value: '#org+name' }
       ],
       quickFilters: [
         { name: 'Asian Development Bank' },
@@ -316,7 +316,6 @@ export default {
       ],
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
-      allData: [],
       fullData: [],
       filteredData: {},
       testOrgs: [],
@@ -338,124 +337,127 @@ export default {
       return this.$store.state.tooltips
     },
     reportingOrgs () {
-      console.log('reportingOrgs')
       const orgList = [...new Set(this.fullData.map(item => item['#org+name'] ))]
       return this.populateSelect(orgList, 'All publishing organizations')
     },
     countries () {
-      console.log('countries')
       const countryList = [...new Set(this.fullData.map(item => item['#country'] ))]
       return this.populateSelect(countryList, 'All recipient regions/countries')
     },
     sectors () {
-      console.log('sectors')
       const sectorList = [...new Set(this.fullData.map(item => item['#sector'] ))]
       return this.populateSelect(sectorList, 'All sectors')
     },
     commitments () {
-      console.log('commitments')
       return this.filteredData.filter(item => item['#x_transaction_type'] === 'commitments')
     },
     spending () {
-      console.log('spending')
       return this.filteredData.filter(item => item['#x_transaction_type'] === 'spending')
     },
     commitmentsRanked () {
-      console.log('commitmentsRanked')
+      const test = this.commitments.reduce((acc, it) => {
+        acc[it[this.selectedCommitmentFilter]] = acc[it[this.selectedCommitmentFilter]] + Number(it[this.tagPattern]) || 0;
+        return acc;
+      }, {})
 
-      const items = [...new Set(this.commitments.map(item => item[this.selectedCommitmentFilter] ))]
-      let temp = []
-      const ref = this
-      items.forEach(function(item) {
-        const arr = ref.commitments.filter(it => it[ref.selectedCommitmentFilter] === item)
-        let total = 0
-        arr.forEach(function(a) {
-          total += Number(a[ref.tagPattern])
-        })
-        temp.push({item: item, value: total})
-      })
+      let arr = Object.entries(test)
+      arr = arr.sort((a,b) => b[1] - a[1])
+      return arr.slice(0,5)
 
-      let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
-      return ranked.slice(0,5)
+      // const items = [...new Set(this.commitments.map(item => item[this.selectedCommitmentFilter] ))]
+      // let temp = []
+      // const ref = this
+      // items.forEach(function(item) {
+      //   const arr = ref.commitments.filter(it => it[ref.selectedCommitmentFilter] === item)
+      //   let total = 0
+      //   arr.forEach(function(a) {
+      //     total += Number(a[ref.tagPattern])
+      //   })
+      //   temp.push({item: item, value: total})
+      // })
+
+      // let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
+      // return ranked.slice(0,5)
       //return this.commitments.count(this.selectedCommitmentFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
     },
     spendingRanked () {
-      console.log('spendingRanked')
+      const test = this.spending.reduce((acc, it) => {
+        acc[it[this.selectedSpendingFilter]] = acc[it[this.selectedSpendingFilter]] + Number(it[this.tagPattern]) || 0;
+        return acc;
+      }, {})
 
-      const items = [...new Set(this.spending.map(item => item[this.selectedSpendingFilter] ))]
-      let temp = []
-      const ref = this
-      items.forEach(function(item) {
-        const arr = ref.spending.filter(it => it[ref.selectedSpendingFilter] === item)
-        let total = 0
-        arr.forEach(function(a) {
-          total += Number(a[ref.tagPattern])
-        })
-        temp.push({item: item, value: total})
-      })
+      let arr = Object.entries(test)
+      arr = arr.sort((a,b) => b[1] - a[1])
+      return arr.slice(0,5)
 
-      let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
-      return ranked.slice(0,5)
+      // const items = [...new Set(this.spending.map(item => item[this.selectedSpendingFilter] ))]
+      // let temp = []
+      // const ref = this
+      // items.forEach(function(item) {
+      //   const arr = ref.spending.filter(it => it[ref.selectedSpendingFilter] === item)
+      //   let total = 0
+      //   arr.forEach(function(a) {
+      //     total += Number(a[ref.tagPattern])
+      //   })
+      //   temp.push({item: item, value: total})
+      // })
+
+      // let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
+      // return ranked.slice(0,5)
       //return this.spending.count(this.selectedSpendingFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
     },
     activityCount () {
-      console.log('activityCount')
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code'] ))]
       return numeral(activities.length).format('0,0')
     },
     totalCommitments () {
-      console.log('totalCommitments')
       const result = this.commitments.map( item => Number(item[this.tagPattern]) )
       const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
       return numeral(sum).format('0.0a')
     },
     tagPattern() {
-      console.log('tagPattern')
       return (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     totalSpending () {
-      console.log('totalSpending')
       const result = this.spending.map( item => Number(item[this.tagPattern]) )
       const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
       return numeral(sum).format('0.0a')
     },
     commitmentsTable () {
-      console.log('commitmentsTable')
       return this.populateList(this.commitmentsRanked, this.selectedCommitmentFilter)
     },
     spendingTable () {
-      console.log('spendingTable')
       return this.populateList(this.spendingRanked, this.selectedSpendingFilter)
     },
     commitmentsDonut () {
-      console.log('commitmentsDonut')
       return this.populateDonut('commitments', this.selectedCommitmentFilter)
     },
     spendingDonut () {
-      console.log('spendingDonut')
       return this.populateDonut('spending', this.selectedSpendingFilter)
     },
     timeseriesData () {
-      console.log('timeseriesData')
       const dates = [...new Set(this.filteredData.map(item => item['#date+month'] ))]
 
       let monthlyCommitments = []
       let monthlySpending = []
       const ref = this
-      dates.forEach(function(date) {
-        const currentCommitment = ref.commitments.filter(item => item['#date+month'] === date)
-        let totalCommitments = 0
-        currentCommitment.forEach(function(month) {
-          totalCommitments += Number(month[ref.tagPattern])
-        })
-        monthlyCommitments.push(totalCommitments)
 
-        const currentSpending = ref.spending.filter(item => item['#date+month'] === date)
-        let totalSpending = 0
-        currentSpending.forEach(function(month) {
-          totalSpending += Number(month[ref.tagPattern])
-        })
-        monthlySpending.push(totalSpending)
+      const cm = this.commitments.reduce((acc, it) => {
+        acc[it['#date+month']] = acc[it['#date+month']] + Number(it[ref.tagPattern]) || 0;
+        return acc;
+      }, {})
+      
+      Object.entries(cm).forEach(function(item) {
+        monthlyCommitments.push(item[1])
+      })
+
+      const sp = this.spending.reduce((acc, it) => {
+        acc[it['#date+month']] = acc[it['#date+month']] + Number(it[ref.tagPattern]) || 0;
+        return acc;
+      }, {})
+
+      Object.entries(sp).forEach(function(item) {
+        monthlySpending.push(item[1])
       })
 
       return {
@@ -476,7 +478,6 @@ export default {
   },
   methods: {
     async loadData () {
-      console.log('loadData')
       const filePath = (config.dev) ? '' : '/viz-covid19-visualisation/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
@@ -487,7 +488,6 @@ export default {
 
       await axios.get('https://proxy.hxlstandard.org/data.objects.json?dest=data_edit&strip-headers=on&url=https%3A%2F%2Focha-dap.github.io%2Fhdx-scraper-iati-viz%2Ftransactions.csv')
         .then((response) => {
-          console.log('proxy',response)
           this.fullData = response.data
           this.filteredData = this.filterData()
         })
@@ -498,7 +498,6 @@ export default {
       // this.$router.push({ name: 'overview', query: this.urlQuery })
     },
     setFilterLabel (dimension) {
-      console.log('setFilterLabel')
       this.selectedFilterLabel = '*'
       for (let i = 0; i < this.filterOptions.length; i++) {
         if (this.filterOptions[i].value === dimension) {
@@ -507,35 +506,29 @@ export default {
       }
     },
     onFilterOptionSelect (selected) {
-      console.log('onFilterOptionSelect')
       this.resetParams()
       this.selectedFilterDimension = selected
       this.setFilterLabel(selected)
       this.updateFilteredData()
     },
     onSelect (value) {
-      console.log('onSelect')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') { this.selectedFilterLabel = value } else { this.setFilterLabel(this.selectedFilterDimension) }
       this.updateFilteredData()
     },
     onToggle (event) {
-      console.log('onToggle')
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
     },
     onQuickFilter (event) {
-      console.log('onQuickFilter')
       this.selectedFilterDimension = 'org'
       this.onSelect(event.target.name)
     },
     updateFilteredData () {
-      console.log('updateFilteredData')
       this.filteredData = this.filterData()
     },
     filterData () {
-      console.log('filterData')
       let result = this.fullData
       const params = this.filterParams
       const filterDimension = this.selectedFilterDimension
@@ -565,7 +558,6 @@ export default {
       return result
     },
     populateSelect (data, defaultValue) {
-      console.log('populateSelect')
       data = data.sort()
       const select = [{ value: '*', text: defaultValue }]
       data.forEach((item) => {
@@ -582,29 +574,26 @@ export default {
       // return selectList
     },
     populateList (data, entityPattern) {
-      console.log('populateList')
       const rows = data
       const list = []
       rows.forEach((row) => {
-        list.push({ item: row.item, value: numeral(row.value).format('0,0') })
-        //list.push({ item: row.get(entityPattern), value: numeral(row.get('#value+sum')).format('0,0') })
+        list.push({ item: row[0], value: numeral(row[1]).format('0,0') })
       })
       return list
     },
     populateDonut (category, entityPattern) {
-      console.log('populateDonut')
       const rows = this[category + 'Ranked']
-      const total = this[category].map( item => Number(item[this.tagPattern]) ).reduce((total, amount) => total + amount)
-      //const total = this[category].getSum(this.tagPattern)
+      const result = this[category].map( item => Number(item[this.tagPattern]) )
+      const total = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
       const ratios = []
       const labels = []
       let sum = Number(0)
       rows.forEach((row) => {
-        const value = row.value
+        const value = row[1]
         const ratio = numeral((value / total) * 100).format('0.0')
         sum += Number(ratio)
         ratios.push(Number(ratio))
-        labels.push(row.item)
+        labels.push(row[0])
       })
       if (sum < 100) { // calculate Other value if sum < 100
         ratios[ratios.length] = Number(numeral(100 - sum).format('0.0'))
@@ -613,7 +602,6 @@ export default {
       return { values: ratios, labels: labels }
     },
     getCumulativeSeries (data) {
-      console.log('getCumulativeSeries')
       const cumulativeArray = []
       let total = 0
       data.forEach((value) => {
