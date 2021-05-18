@@ -72,9 +72,27 @@
 
             <div class="quick-filter-list">
               Quick filters:
-              <ul class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters" :key="filter.name">
-                  <a href="#" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
+              <ul
+                v-if="selectedFilterDimension==='org'"
+                class="horizontal-list d-inline">
+                <li v-for="filter in quickFilters[0]" :key="filter.name">
+                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
+                </li>
+              </ul>
+
+              <ul
+                v-if="selectedFilterDimension==='country'"
+                class="horizontal-list d-inline">
+                <li v-for="filter in quickFilters[1]" :key="filter.name">
+                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
+                </li>
+              </ul>
+
+              <ul
+                v-if="selectedFilterDimension==='sector'"
+                class="horizontal-list d-inline">
+                <li v-for="filter in quickFilters[2]" :key="filter.name">
+                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
                 </li>
               </ul>
             </div>
@@ -185,11 +203,14 @@
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                   </template>
+                  <template #cell(item)="data">
+                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
+                  </template>
                   <template #custom-foot>
                     <tr>
                       <td colspan="2 pt-3">
                         <span class="small text-muted">
-                          Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                          May 18, 2021 | IATI
                         </span>
                       </td>
                       <td colspan="pt-3">
@@ -234,11 +255,14 @@
                   <template #cell(color)="data">
                     <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                   </template>
+                  <template #cell(item)="data">
+                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
+                  </template>
                   <template #custom-foot>
                     <tr>
                       <td colspan="2 pt-3">
                         <span class="small text-muted">
-                          Mar 05, 2021 | IATI | <a href="#">DATA</a>
+                          May 18, 2021 | IATI
                         </span>
                       </td>
                       <td colspan="pt-3">
@@ -284,7 +308,7 @@ export default {
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
         { text: 'By Publishing Organization', value: 'org', label: 'all publishing organizations' },
-        { text: 'By Recipient Region / Country', value: 'country', label: 'all recipient regions / countries' },
+        { text: 'By Recipient Country', value: 'country', label: 'all recipient countries' },
         { text: 'By Sector', value: 'sector', label: 'all sectors' }
       ],
       selectedCommitmentFilter: '#country',
@@ -294,12 +318,28 @@ export default {
         { text: 'By Publishing Orgs', value: '#org+name' }
       ],
       quickFilters: [
-        { name: 'Asian Development Bank' },
-        { name: 'Inter-American Development Bank' },
-        { name: 'United Nations Office for the Coordination of Humanitarian Affairs' },
-        { name: 'United Nations Development Programme' },
-        { name: 'U.S. Agency for International Development' },
-        { name: 'World Food Programme' }
+        [
+          { name: 'Asian Development Bank' },
+          { name: 'Inter-American Development Bank' },
+          { name: 'OCHA Country Based Pooled Funds' },
+          { name: 'United Nations Development Programme (UNDP)' },
+          { name: 'United States Agency for International Development (USAID)' },
+          { name: 'World Food Programme' }
+        ],
+        [
+          { name: 'India' },
+          { name: 'Brazil' },
+          { name: 'Afghanistan' },
+          { name: 'Bangladesh' },
+          { name: 'South Sudan' }
+        ],
+        [
+          { name: 'Emergency Response' },
+          { name: 'Health' },
+          { name: 'Education' },
+          { name: 'Reconstruction Relief & Rehabilitation' },
+          { name: 'Transport & Storage' }
+        ]
       ],
       strictToggleOptions: [
         { label: 'Loose', value: 'off' },
@@ -318,14 +358,12 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       fullData: [],
       filteredData: {},
-      testOrgs: [],
       filterParams: {
         humanitarian: 'off',
         strict: 'off',
         org: '*',
         country: '*',
         sector: '*'
-        // month: '*'
       }
     }
   },
@@ -342,7 +380,7 @@ export default {
     },
     countries () {
       const countryList = [...new Set(this.fullData.map(item => item['#country'] ))]
-      return this.populateSelect(countryList, 'All recipient regions/countries')
+      return this.populateSelect(countryList, 'All recipient countries')
     },
     sectors () {
       const sectorList = [...new Set(this.fullData.map(item => item['#sector'] ))]
@@ -355,56 +393,10 @@ export default {
       return this.filteredData.filter(item => item['#x_transaction_type'] === 'spending')
     },
     commitmentsRanked () {
-      const test = this.commitments.reduce((acc, it) => {
-        acc[it[this.selectedCommitmentFilter]] = acc[it[this.selectedCommitmentFilter]] + Number(it[this.tagPattern]) || 0;
-        return acc;
-      }, {})
-
-      let arr = Object.entries(test)
-      arr = arr.sort((a,b) => b[1] - a[1])
-      return arr.slice(0,5)
-
-      // const items = [...new Set(this.commitments.map(item => item[this.selectedCommitmentFilter] ))]
-      // let temp = []
-      // const ref = this
-      // items.forEach(function(item) {
-      //   const arr = ref.commitments.filter(it => it[ref.selectedCommitmentFilter] === item)
-      //   let total = 0
-      //   arr.forEach(function(a) {
-      //     total += Number(a[ref.tagPattern])
-      //   })
-      //   temp.push({item: item, value: total})
-      // })
-
-      // let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
-      // return ranked.slice(0,5)
-      //return this.commitments.count(this.selectedCommitmentFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
+      return this.getRankedList(this.commitments, this.selectedCommitmentFilter)
     },
     spendingRanked () {
-      const test = this.spending.reduce((acc, it) => {
-        acc[it[this.selectedSpendingFilter]] = acc[it[this.selectedSpendingFilter]] + Number(it[this.tagPattern]) || 0;
-        return acc;
-      }, {})
-
-      let arr = Object.entries(test)
-      arr = arr.sort((a,b) => b[1] - a[1])
-      return arr.slice(0,5)
-
-      // const items = [...new Set(this.spending.map(item => item[this.selectedSpendingFilter] ))]
-      // let temp = []
-      // const ref = this
-      // items.forEach(function(item) {
-      //   const arr = ref.spending.filter(it => it[ref.selectedSpendingFilter] === item)
-      //   let total = 0
-      //   arr.forEach(function(a) {
-      //     total += Number(a[ref.tagPattern])
-      //   })
-      //   temp.push({item: item, value: total})
-      // })
-
-      // let ranked = temp.sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
-      // return ranked.slice(0,5)
-      //return this.spending.count(this.selectedSpendingFilter, this.tagPattern).sort('#value+sum', true).preview(5).rows
+      return this.getRankedList(this.spending, this.selectedSpendingFilter)
     },
     activityCount () {
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code'] ))]
@@ -415,50 +407,43 @@ export default {
       const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
       return numeral(sum).format('0.0a')
     },
-    tagPattern() {
-      return (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
-    },
     totalSpending () {
       const result = this.spending.map( item => Number(item[this.tagPattern]) )
       const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
       return numeral(sum).format('0.0a')
     },
+    tagPattern() {
+      return (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
+    },
     commitmentsTable () {
-      return this.populateList(this.commitmentsRanked, this.selectedCommitmentFilter)
+      return this.populateList(this.commitmentsRanked)
     },
     spendingTable () {
-      return this.populateList(this.spendingRanked, this.selectedSpendingFilter)
+      return this.populateList(this.spendingRanked)
     },
     commitmentsDonut () {
-      return this.populateDonut('commitments', this.selectedCommitmentFilter)
+      return this.populateDonut(this.commitments, this.commitmentsRanked)
     },
     spendingDonut () {
-      return this.populateDonut('spending', this.selectedSpendingFilter)
+      return this.populateDonut(this.spending, this.spendingRanked)
     },
     timeseriesData () {
+      const ref = this
       const dates = [...new Set(this.filteredData.map(item => item['#date+month'] ))]
 
-      let monthlyCommitments = []
-      let monthlySpending = []
-      const ref = this
-
-      const cm = this.commitments.reduce((acc, it) => {
-        acc[it['#date+month']] = acc[it['#date+month']] + Number(it[ref.tagPattern]) || 0;
+      const monthlyCommitments = Object.values(this.commitments.reduce((acc, it) => {
+        let val = Number(it[ref.tagPattern])
+        val = (val<0) ? 0 : val
+        acc[it['#date+month']] = acc[it['#date+month']] + val || 0;
         return acc;
-      }, {})
-      
-      Object.entries(cm).forEach(function(item) {
-        monthlyCommitments.push(item[1])
-      })
+      }, {}))
 
-      const sp = this.spending.reduce((acc, it) => {
-        acc[it['#date+month']] = acc[it['#date+month']] + Number(it[ref.tagPattern]) || 0;
+      const monthlySpending = Object.values(this.spending.reduce((acc, it) => {
+        let val = Number(it[ref.tagPattern])
+        val = (val<0) ? 0 : val
+        acc[it['#date+month']] = acc[it['#date+month']] + val || 0;
         return acc;
-      }, {})
-
-      Object.entries(sp).forEach(function(item) {
-        monthlySpending.push(item[1])
-      })
+      }, {}))
 
       return {
         dates: dates,
@@ -522,7 +507,7 @@ export default {
       this.updateFilteredData()
     },
     onQuickFilter (event) {
-      this.selectedFilterDimension = 'org'
+      event.preventDefault()
       this.onSelect(event.target.name)
     },
     updateFilteredData () {
@@ -558,57 +543,65 @@ export default {
       return result
     },
     populateSelect (data, defaultValue) {
-      data = data.sort()
-      const select = [{ value: '*', text: defaultValue }]
-      data.forEach((item) => {
-        select.push({ value: item, text: item })
-      })
-      return select
-      // const selectList = data.reduce((itemList, item) => {
-      //   itemList.push({ value: item, text: item })
-      //   return itemList
-      // }, []).sort((a, b) =>
-      //   a.text < b.text ? -1 : 1
-      // )
-      // selectList.unshift({ value: '*', text: defaultValue })
-      // return selectList
+      // data = data.sort()
+      // const select = [{ value: '*', text: defaultValue }]
+      // data.forEach((item) => {
+      //   select.push({ value: item, text: item })
+      // })
+      // return select
+      const selectList = data.reduce((itemList, item) => {
+        itemList.push({ value: item, text: item })
+        return itemList
+      }, []).sort((a, b) =>
+        a.text < b.text ? -1 : 1
+      )
+      selectList.unshift({ value: '*', text: defaultValue })
+      return selectList
     },
-    populateList (data, entityPattern) {
-      const rows = data
-      const list = []
-      rows.forEach((row) => {
-        list.push({ item: row[0], value: numeral(row[1]).format('0,0') })
-      })
-      return list
+    populateList (data) {
+      return data.reduce((list, item) => {
+        //const name = (item[0].length>20) ? item[0].slice(0, 20) + '...' : item[0]
+        list.push({ item: item[0], value: numeral(item[1]).format('0,0') })
+        return list
+      }, []).sort((a, b) =>
+        a.text < b.text ? -1 : 1
+      )
     },
-    populateDonut (category, entityPattern) {
-      const rows = this[category + 'Ranked']
-      const result = this[category].map( item => Number(item[this.tagPattern]) )
+    populateDonut (data, ranked) {
+      const result = data.map( item => Number(item[this.tagPattern]) )
       const total = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
-      const ratios = []
-      const labels = []
-      let sum = Number(0)
-      rows.forEach((row) => {
-        const value = row[1]
-        const ratio = numeral((value / total) * 100).format('0.0')
-        sum += Number(ratio)
-        ratios.push(Number(ratio))
-        labels.push(row[0])
-      })
-      if (sum < 100) { // calculate Other value if sum < 100
+      let sum = 0
+      const ratios = ranked.reduce((list, item) => {
+        const ratio = Number(((item[1] / total) * 100).toFixed(1))
+        sum += ratio
+        list.push(ratio)
+        return list
+      }, [])
+      const labels = ranked.map(row => row[0])
+
+      // calculate and append 'Other' value if sum < 100
+      if (sum < 100) { 
         ratios[ratios.length] = Number(numeral(100 - sum).format('0.0'))
         labels.push('Other')
       }
       return { values: ratios, labels: labels }
     },
     getCumulativeSeries (data) {
-      const cumulativeArray = []
       let total = 0
-      data.forEach((value) => {
+      return data.reduce((cumulativeValues, value) => {
         total += value
-        cumulativeArray.push(total)
-      })
-      return cumulativeArray
+        cumulativeValues.push(total)
+        return cumulativeValues
+      }, [])
+    },
+    getRankedList (data, dimension) {
+      const ranked = Object.entries(data.reduce((acc, it) => {
+        acc[it[dimension]] = acc[it[dimension]] + Number(it[this.tagPattern]) || 0;
+        return acc;
+      }, {})).sort((a,b) => 
+        b[1] - a[1]
+      ).slice(0,5)
+      return ranked
     },
     resetParams () {
       this.filterParams.org = '*'
@@ -616,6 +609,15 @@ export default {
       this.filterParams.sector = '*'
       this.selectedFilter = '*'
     }
+  },
+  filters: {
+    truncate: function (text, length, suffix) {
+      if (text.length > length) {
+        return text.substring(0, length) + suffix;
+      } else {
+        return text;
+      }
+    },
   }
 }
 </script>

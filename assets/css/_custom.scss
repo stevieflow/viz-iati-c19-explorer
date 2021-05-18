@@ -1,14 +1,14 @@
 @font-face {
   font-family: 'Gotham Bold';
-  src: url('../fonts/Gotham-Bold.otf');
+  src: url('~@/assets/fonts/Gotham-Bold.otf');
 }
 @font-face {
   font-family: 'Gotham Book';
-  src: url('../fonts/Gotham-Book.otf');
+  src: url('~@/assets/fonts/Gotham-Book.otf');
 }
 @font-face {
   font-family: 'Gotham Light';
-  src: url('../fonts/Gotham-Light.otf');
+  src: url('~@/assets/fonts/Gotham-Light.otf');
 }
 
 *,
@@ -63,6 +63,11 @@ h6 {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
   font-size: 13px;
   font-weight: 600;
+}
+
+abbr {
+  text-decoration: none;
+  cursor: auto;
 }
 
 .iati-viz {
