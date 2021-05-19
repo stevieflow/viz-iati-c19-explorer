@@ -564,7 +564,7 @@ export default {
         list.push({ item: item[0], value: numeral(item[1]).format('0,0') })
         return list
       }, []).sort((a, b) =>
-        a.text < b.text ? -1 : 1
+        b.value - a.value
       )
     },
     populateDonut (data, ranked) {
