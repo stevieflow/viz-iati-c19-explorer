@@ -38,7 +38,7 @@
             </b-form-group>
 
             <v-select
-              v-if="selectedFilterDimension==='org'"
+              v-if="selectedFilterDimension==='#org+name'"
               :value="this.selectedFilter"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
@@ -49,7 +49,7 @@
             />
 
             <v-select
-              v-if="selectedFilterDimension==='country'"
+              v-if="selectedFilterDimension==='#country'"
               :value="this.selectedFilter"
               class="filter-select filter-select-country mb-3"
               :options="countries"
@@ -60,7 +60,7 @@
             />
 
             <v-select
-              v-if="selectedFilterDimension==='sector'"
+              v-if="selectedFilterDimension==='#sector'"
               :value="this.selectedFilter"
               class="filter-select filter-select-sector mb-3"
               :options="sectors"
@@ -72,26 +72,8 @@
 
             <div class="quick-filter-list">
               Quick filters:
-              <ul
-                v-if="selectedFilterDimension==='org'"
-                class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters[0]" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
-                </li>
-              </ul>
-
-              <ul
-                v-if="selectedFilterDimension==='country'"
-                class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters[1]" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
-                </li>
-              </ul>
-
-              <ul
-                v-if="selectedFilterDimension==='sector'"
-                class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters[2]" :key="filter.name">
+              <ul class="horizontal-list d-inline">
+                <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.name">
                   <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
                 </li>
               </ul>
@@ -196,7 +178,7 @@
                   v-model="selectedCommitmentFilter"
                   class="form-select pl-0 my-3"
                   size="sm"
-                  :options="keyFigureFilter"
+                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
                 />
 
                 <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
@@ -214,7 +196,7 @@
                         </span>
                       </td>
                       <td colspan="pt-3">
-                        (USDm)
+                        (USD)
                       </td>
                     </tr>
                   </template>
@@ -248,7 +230,7 @@
                   v-model="selectedSpendingFilter"
                   class="form-select pl-0 my-3"
                   size="sm"
-                  :options="keyFigureFilter"
+                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
                 />
 
                 <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
@@ -266,7 +248,7 @@
                         </span>
                       </td>
                       <td colspan="pt-3">
-                        (USDm)
+                        (USD)
                       </td>
                     </tr>
                   </template>
@@ -303,19 +285,29 @@ export default {
   data () {
     return {
       title: config.head.title,
-      selectedFilterDimension: 'org',
+      selectedFilterDimension: '#org+name',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
-        { text: 'By Publishing Organization', value: 'org', label: 'all publishing organizations' },
-        { text: 'By Recipient Country', value: 'country', label: 'all recipient countries' },
-        { text: 'By Sector', value: 'sector', label: 'all sectors' }
+        { text: 'By Publishing Organization', value: '#org+name', label: 'all publishing organizations' },
+        { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
+        { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
       selectedCommitmentFilter: '#country',
       selectedSpendingFilter: '#country',
       keyFigureFilter: [
-        { text: 'By Recipient Countries', value: '#country' },
-        { text: 'By Publishing Orgs', value: '#org+name' }
+        [
+          { text: 'By Recipient Countries', value: '#country' },
+          { text: 'By Sector', value: '#sector' }
+        ],
+        [
+          { text: 'By Publishing Orgs', value: '#org+name' },
+          { text: 'By Sector', value: '#sector' }
+        ],
+        [
+          { text: 'By Recipient Countries', value: '#country' },
+          { text: 'By Publishing Orgs', value: '#org+name' }
+        ]
       ],
       quickFilters: [
         [
@@ -357,14 +349,8 @@ export default {
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       fullData: [],
-      filteredData: {},
-      filterParams: {
-        humanitarian: 'off',
-        strict: 'off',
-        org: '*',
-        country: '*',
-        sector: '*'
-      }
+      filteredData: [],
+      filterParams: {},
     }
   },
   computed: {
@@ -411,7 +397,7 @@ export default {
       return numeral(sum).format('0.0a')
     },
     tagPattern() {
-      return (this.selectedFilterDimension === 'org' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
+      return (this.selectedFilterDimension === '#org+name' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     commitmentsTable () {
       return this.populateList(this.commitmentsRanked)
@@ -457,6 +443,14 @@ export default {
     }
   },
   mounted () {
+    this.filterParams = {
+      humanitarian: 'off',
+      strict: 'off',
+    }
+    this.filterParams['#org+name'] = '*'
+    this.filterParams['#country'] = '*'
+    this.filterParams['#sector'] = '*'
+
     this.loadData()
   },
   methods: {
@@ -489,6 +483,9 @@ export default {
       }
     },
     onFilterOptionSelect (selected) {
+      const filterArray = this.keyFigureFilter[this.getFilterID(selected)]
+      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+
       this.resetParams()
       this.selectedFilterDimension = selected
       this.setFilterLabel(selected)
@@ -527,17 +524,14 @@ export default {
       // })
       if (params[filterDimension] && params[filterDimension] !== '*') {
         this.selectedFilterLabel = params[filterDimension]
-        const tag = (filterDimension === 'org') ? '#org+name' : '#'+filterDimension
-        result = result.filter(item => item[tag] === params[filterDimension])
+        result = result.filter(item => item[filterDimension] === params[filterDimension])
       }
-
       if (params['humanitarian'] === 'on') {
         result = result.filter(item => item['#indicator+bool+humanitarian'] === '1')
       }
       if (params['strict'] === 'on') {
         result = result.filter(item => item['#indicator+bool+strict'] === '1')
       }
-
       return result
     },
     populateSelect (data, defaultValue) {
@@ -603,10 +597,18 @@ export default {
       if (sum < total) ranked.push(['Other', total - sum ])
       return ranked
     },
+    getFilterID () {
+      if (this.selectedFilterDimension === '#sector')
+        return 2
+      else if (this.selectedFilterDimension === '#country')
+        return 1
+      else
+        return 0
+    },
     resetParams () {
-      this.filterParams.org = '*'
-      this.filterParams.country = '*'
-      this.filterParams.sector = '*'
+      this.filterParams['#org+name'] = '*'
+      this.filterParams['#country'] = '*'
+      this.filterParams['#sector'] = '*'
       this.selectedFilter = '*'
     }
   },
