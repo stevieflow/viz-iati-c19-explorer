@@ -403,13 +403,11 @@ export default {
       return numeral(activities.length).format('0,0')
     },
     totalCommitments () {
-      const result = this.commitments.map( item => Number(item[this.tagPattern]) )
-      const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
+      const sum = this.getTotal(this.commitments)
       return numeral(sum).format('0.0a')
     },
     totalSpending () {
-      const result = this.spending.map( item => Number(item[this.tagPattern]) )
-      const sum = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
+      const sum = this.getTotal(this.spending)
       return numeral(sum).format('0.0a')
     },
     tagPattern() {
@@ -431,19 +429,19 @@ export default {
       const ref = this
       const dates = [...new Set(this.filteredData.map(item => item['#date+month'] ))]
 
-      const monthlyCommitments = Object.values(this.commitments.reduce((acc, it) => {
-        let val = Number(it[ref.tagPattern])
+      const monthlyCommitments = Object.values(this.commitments.reduce((acc, item) => {
+        let val = Number(item[ref.tagPattern])
         val = (val<0) ? 0 : val
-        acc[it['#date+month']] = acc[it['#date+month']] + val || 0;
+        acc[item['#date+month']] = acc[item['#date+month']] + val || 0;
         return acc;
-      }, {}))
+      }, []))
 
-      const monthlySpending = Object.values(this.spending.reduce((acc, it) => {
-        let val = Number(it[ref.tagPattern])
+      const monthlySpending = Object.values(this.spending.reduce((acc, item) => {
+        let val = Number(item[ref.tagPattern])
         val = (val<0) ? 0 : val
-        acc[it['#date+month']] = acc[it['#date+month']] + val || 0;
+        acc[item['#date+month']] = acc[item['#date+month']] + val || 0;
         return acc;
-      }, {}))
+      }, []))
 
       return {
         dates: dates,
@@ -560,7 +558,6 @@ export default {
     },
     populateList (data) {
       return data.reduce((list, item) => {
-        //const name = (item[0].length>20) ? item[0].slice(0, 20) + '...' : item[0]
         list.push({ item: item[0], value: numeral(item[1]).format('0,0') })
         return list
       }, []).sort((a, b) =>
@@ -568,22 +565,13 @@ export default {
       )
     },
     populateDonut (data, ranked) {
-      const result = data.map( item => Number(item[this.tagPattern]) )
-      const total = (result.length>0) ? result.reduce((total, amount) => total + amount) : 0
-      let sum = 0
+      const total = this.getTotal(data)
       const ratios = ranked.reduce((list, item) => {
         const ratio = Number(((item[1] / total) * 100).toFixed(1))
-        sum += ratio
         list.push(ratio)
         return list
       }, [])
       const labels = ranked.map(row => row[0])
-
-      // calculate and append 'Other' value if sum < 100
-      if (sum < 100) { 
-        ratios[ratios.length] = Number(numeral(100 - sum).format('0.0'))
-        labels.push('Other')
-      }
       return { values: ratios, labels: labels }
     },
     getCumulativeSeries (data) {
@@ -594,13 +582,25 @@ export default {
         return cumulativeValues
       }, [])
     },
+    getTotal (data) {
+      const result = data.map( item => Number(item[this.tagPattern]) )
+      return (result.length>0) ? result.reduce((total, value) => total + value) : 0
+    },
     getRankedList (data, dimension) {
-      const ranked = Object.entries(data.reduce((acc, it) => {
-        acc[it[dimension]] = acc[it[dimension]] + Number(it[this.tagPattern]) || 0;
-        return acc;
+      const total = this.getTotal(data)
+      const ranked = Object.entries(data.reduce((list, item) => {
+        const value = Number(item[this.tagPattern])
+        list[item[dimension]] = list[item[dimension]] + value || 0;
+        return list;
       }, {})).sort((a,b) => 
         b[1] - a[1]
       ).slice(0,5)
+
+      // calculate and append 'Other' value if sum < 100
+      const sum = ranked.reduce((total, amount) => {
+        return total + amount[1]
+      }, 0)
+      if (sum < total) ranked.push(['Other', total - sum ])
       return ranked
     },
     resetParams () {
