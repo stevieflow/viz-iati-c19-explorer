@@ -15,7 +15,7 @@
             </p>
           </b-col>
           <b-col>
-            <b-button block class="download-button" variant="outline-dark">
+            <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
               Download Data
             </b-button>
             <b-col />
@@ -282,6 +282,15 @@ export default {
     DoughnutChart,
     TimeseriesChart
   },
+  filters: {
+    truncate (text, length, suffix) {
+      if (text.length > length) {
+        return text.substring(0, length) + suffix
+      } else {
+        return text
+      }
+    }
+  },
   data () {
     return {
       title: config.head.title,
@@ -350,7 +359,7 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       fullData: [],
       filteredData: [],
-      filterParams: {},
+      filterParams: {}
     }
   },
   computed: {
@@ -361,15 +370,15 @@ export default {
       return this.$store.state.tooltips
     },
     reportingOrgs () {
-      const orgList = [...new Set(this.fullData.map(item => item['#org+name'] ))]
+      const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
       return this.populateSelect(orgList, 'All publishing organizations')
     },
     countries () {
-      const countryList = [...new Set(this.fullData.map(item => item['#country'] ))]
+      const countryList = [...new Set(this.fullData.map(item => item['#country']))]
       return this.populateSelect(countryList, 'All recipient countries')
     },
     sectors () {
-      const sectorList = [...new Set(this.fullData.map(item => item['#sector'] ))]
+      const sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
       return this.populateSelect(sectorList, 'All sectors')
     },
     commitments () {
@@ -385,7 +394,7 @@ export default {
       return this.getRankedList(this.spending, this.selectedSpendingFilter)
     },
     activityCount () {
-      const activities = [...new Set(this.filteredData.map(item => item['#activity+code'] ))]
+      const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
       return numeral(activities.length).format('0,0')
     },
     totalCommitments () {
@@ -396,7 +405,7 @@ export default {
       const sum = this.getTotal(this.spending)
       return numeral(sum).format('0.0a')
     },
-    tagPattern() {
+    tagPattern () {
       return (this.selectedFilterDimension === '#org+name' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     commitmentsTable () {
@@ -413,24 +422,24 @@ export default {
     },
     timeseriesData () {
       const ref = this
-      const dates = [...new Set(this.filteredData.map(item => item['#date+month'] ))]
+      const dates = [...new Set(this.filteredData.map(item => item['#date+month']))]
 
       const monthlyCommitments = Object.values(this.commitments.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
-        val = (val<0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0;
-        return acc;
+        val = (val < 0) ? 0 : val
+        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        return acc
       }, []))
 
       const monthlySpending = Object.values(this.spending.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
-        val = (val<0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0;
-        return acc;
+        val = (val < 0) ? 0 : val
+        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        return acc
       }, []))
 
       return {
-        dates: dates,
+        dates,
         monthly: {
           commitments: monthlyCommitments,
           spending: monthlySpending
@@ -445,7 +454,7 @@ export default {
   mounted () {
     this.filterParams = {
       humanitarian: 'off',
-      strict: 'off',
+      strict: 'off'
     }
     this.filterParams['#org+name'] = '*'
     this.filterParams['#country'] = '*'
@@ -463,7 +472,7 @@ export default {
           })
         })
 
-      await axios.get('https://proxy.hxlstandard.org/data.objects.json?dest=data_edit&strip-headers=on&url=https%3A%2F%2Focha-dap.github.io%2Fhdx-scraper-iati-viz%2Ftransactions.csv')
+      await axios.get('https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json')
         .then((response) => {
           this.fullData = response.data
           this.filteredData = this.filterData()
@@ -487,7 +496,7 @@ export default {
       this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
 
       this.resetParams()
-      this.selectedFilterDimension = selected
+      // this.selectedFilterDimension = selected
       this.setFilterLabel(selected)
       this.updateFilteredData()
     },
@@ -566,7 +575,7 @@ export default {
         return list
       }, [])
       const labels = ranked.map(row => row[0])
-      return { values: ratios, labels: labels }
+      return { values: ratios, labels }
     },
     getCumulativeSeries (data) {
       let total = 0
@@ -577,33 +586,30 @@ export default {
       }, [])
     },
     getTotal (data) {
-      const result = data.map( item => Number(item[this.tagPattern]) )
-      return (result.length>0) ? result.reduce((total, value) => total + value) : 0
+      const result = data.map(item => Number(item[this.tagPattern]))
+      return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
     getRankedList (data, dimension) {
       const total = this.getTotal(data)
       const ranked = Object.entries(data.reduce((list, item) => {
-        const value = Number(item[this.tagPattern])
-        list[item[dimension]] = list[item[dimension]] + value || 0;
-        return list;
-      }, {})).sort((a,b) => 
+        if (!item[dimension].includes('Unspecified')) {
+          const value = Number(item[this.tagPattern])
+          list[item[dimension]] = list[item[dimension]] + value || 0
+        }
+        return list
+      }, {})).sort((a, b) =>
         b[1] - a[1]
-      ).slice(0,5)
+      ).slice(0, 5)
 
       // calculate and append 'Other' value if sum < 100
       const sum = ranked.reduce((total, amount) => {
         return total + amount[1]
       }, 0)
-      if (sum < total) ranked.push(['Other', total - sum ])
+      if (sum < total) { ranked.push(['Other or unspecified', total - sum]) }
       return ranked
     },
     getFilterID () {
-      if (this.selectedFilterDimension === '#sector')
-        return 2
-      else if (this.selectedFilterDimension === '#country')
-        return 1
-      else
-        return 0
+      if (this.selectedFilterDimension === '#sector') { return 2 } else if (this.selectedFilterDimension === '#country') { return 1 } else { return 0 }
     },
     resetParams () {
       this.filterParams['#org+name'] = '*'
@@ -611,15 +617,6 @@ export default {
       this.filterParams['#sector'] = '*'
       this.selectedFilter = '*'
     }
-  },
-  filters: {
-    truncate: function (text, length, suffix) {
-      if (text.length > length) {
-        return text.substring(0, length) + suffix;
-      } else {
-        return text;
-      }
-    },
   }
 }
 </script>

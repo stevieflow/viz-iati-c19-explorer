@@ -27,7 +27,6 @@ export default {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap' }
     ],
     script: [
-      { type: 'text/javascript', src: 'lib/hxl.js' }
     ],
     htmlAttrs: {
       lang: 'en'
@@ -75,9 +74,9 @@ export default {
     // LINTING
     // Doc: https://github.com/nuxt-community/eslint-module
     // Comment out the below 3 lines to disable linting
-    // ['@nuxtjs/eslint-module', {
-    //   fix: true
-    // }]
+    ['@nuxtjs/eslint-module', {
+      fix: true
+    }]
   ],
   gtm: {
     id: 'GTM-KHMLMZX'
