@@ -536,10 +536,10 @@ export default {
         result = result.filter(item => item[filterDimension] === params[filterDimension])
       }
       if (params['humanitarian'] === 'on') {
-        result = result.filter(item => item['#indicator+bool+humanitarian'] === '1')
+        result = result.filter(item => item['#indicator+bool+humanitarian'] === 1)
       }
       if (params['strict'] === 'on') {
-        result = result.filter(item => item['#indicator+bool+strict'] === '1')
+        result = result.filter(item => item['#indicator+bool+strict'] === 1)
       }
       return result
     },
