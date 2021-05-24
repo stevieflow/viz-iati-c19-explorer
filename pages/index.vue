@@ -192,7 +192,7 @@
                     <tr>
                       <td colspan="2 pt-3">
                         <span class="small text-muted">
-                          May 18, 2021 | IATI
+                          {{ lastUpdatedDate }} | IATI
                         </span>
                       </td>
                       <td colspan="pt-3">
@@ -244,7 +244,7 @@
                     <tr>
                       <td colspan="2 pt-3">
                         <span class="small text-muted">
-                          May 18, 2021 | IATI
+                          {{ lastUpdatedDate }} | IATI
                         </span>
                       </td>
                       <td colspan="pt-3">
@@ -368,6 +368,12 @@ export default {
     },
     tooltips () {
       return this.$store.state.tooltips
+    },
+    lastUpdatedDate () {
+      const today = new Date()
+      const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      const date = month[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear()
+      return date
     },
     reportingOrgs () {
       const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
