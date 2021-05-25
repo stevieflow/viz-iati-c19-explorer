@@ -482,7 +482,6 @@ export default {
 
       await axios.get(filePath + '/data/transactions.json')
         .then((response) => {
-          console.log(response.data.metadata)
           const metadata = response.data.metadata
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
@@ -608,7 +607,7 @@ export default {
       const ranked = Object.entries(data.reduce((list, item) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
-          list[item[dimension]] = list[item[dimension]] + value || 0
+          list[item[dimension]] = (list[item[dimension]] === undefined) ? value : list[item[dimension]] + value
         }
         return list
       }, {})).sort((a, b) =>
