@@ -39,7 +39,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#org+name'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
               :get-option-key="option => option.value"
@@ -50,7 +50,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#country'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-country mb-3"
               :options="countries"
               :get-option-key="option => option.value"
@@ -61,7 +61,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#sector'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-sector mb-3"
               :options="sectors"
               :get-option-key="option => option.value"
@@ -357,9 +357,11 @@ export default {
       ],
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       fullData: [],
       filteredData: [],
-      filterParams: {}
+      filterParams: {},
+      lastUpdatedDate: ''
     }
   },
   computed: {
@@ -369,12 +371,12 @@ export default {
     tooltips () {
       return this.$store.state.tooltips
     },
-    lastUpdatedDate () {
-      const today = new Date()
-      const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      const date = month[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear()
-      return date
-    },
+    // lastUpdatedDate () {
+    //   const today = new Date()
+    //   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    //   const date = month[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear()
+    //   return date
+    // },
     reportingOrgs () {
       const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
       return this.populateSelect(orgList, 'All publishing organizations')
@@ -480,6 +482,11 @@ export default {
 
       await axios.get('https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json')
         .then((response) => {
+          // const metadata = response.metadata
+          // const dateRun = new Date(metadata['#date+run'])
+          // const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
+          // this.lastUpdatedDate = date
+
           this.fullData = response.data
           this.filteredData = this.filterData()
         })
@@ -600,7 +607,7 @@ export default {
       const ranked = Object.entries(data.reduce((list, item) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
-          list[item[dimension]] = list[item[dimension]] + value || 0
+          list[item[dimension]] = (list[item[dimension]] === undefined) ? value : list[item[dimension]] + value
         }
         return list
       }, {})).sort((a, b) =>
