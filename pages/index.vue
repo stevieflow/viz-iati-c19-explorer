@@ -470,7 +470,7 @@ export default {
   },
   methods: {
     async loadData () {
-      const filePath = (config.dev) ? '' : '/viz-covid19-visualisation/'
+      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
