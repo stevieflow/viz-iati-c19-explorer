@@ -470,7 +470,7 @@ export default {
   },
   methods: {
     async loadData () {
-      const filePath = (config.dev) ? '' : '/viz-covid19-visualisation/'
+      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
@@ -478,7 +478,7 @@ export default {
           })
         })
 
-      await axios.get('https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json')
+      await axios.get(filePath + '/data/transactions.json')
         .then((response) => {
           this.fullData = response.data
           this.filteredData = this.filterData()
