@@ -1,7 +1,7 @@
 <template>
   <b-container class="iati-viz my-4">
     <b-navbar-brand :to="'/'">
-      COVID-19 IATI Data
+      {{ pageTitle }}
     </b-navbar-brand>
     <b-navbar toggleable="lg" type="light" variant="bg-white" class="navbar-iati">
       <b-navbar-toggle target="nav-collapse" />
@@ -77,6 +77,15 @@ export default {
   data () {
     return {
       title: config.head.title
+    }
+  },
+  computed: {
+    pageTitle () {
+      let isProd = true
+      if (process.client) {
+        isProd = !!(window.location.host.includes('ocha-dap'))
+      }
+      return (isProd) ? 'COVID-19 IATI Data' : 'STAGE COVID-19 IATI Data'
     }
   }
 }
