@@ -39,7 +39,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#org+name'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
               :get-option-key="option => option.value"
@@ -50,7 +50,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#country'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-country mb-3"
               :options="countries"
               :get-option-key="option => option.value"
@@ -61,7 +61,7 @@
 
             <v-select
               v-if="selectedFilterDimension==='#sector'"
-              :value="this.selectedFilter"
+              :value="selectedFilter"
               class="filter-select filter-select-sector mb-3"
               :options="sectors"
               :get-option-key="option => option.value"
@@ -480,7 +480,7 @@ export default {
           })
         })
 
-      await axios.get(filePath + '/data/transactions.json')
+      await axios.get('https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json')
         .then((response) => {
           const metadata = response.data.metadata
           const dateRun = new Date(metadata['#date+run'])
