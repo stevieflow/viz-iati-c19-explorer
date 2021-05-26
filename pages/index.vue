@@ -361,7 +361,8 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      lastUpdatedDate: ''
+      lastUpdatedDate: '',
+      isProd: true
     }
   },
   computed: {
@@ -371,12 +372,6 @@ export default {
     tooltips () {
       return this.$store.state.tooltips
     },
-    // lastUpdatedDate () {
-    //   const today = new Date()
-    //   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    //   const date = month[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear()
-    //   return date
-    // },
     reportingOrgs () {
       const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
       return this.populateSelect(orgList, 'All publishing organizations')
@@ -472,6 +467,10 @@ export default {
   },
   methods: {
     async loadData () {
+      if (process.client) {
+        this.isProd = !!(window.location.host.includes('ocha-dap'))
+      }
+      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
@@ -480,14 +479,14 @@ export default {
           })
         })
 
-      await axios.get('https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json')
+      await axios.get(dataPath)
         .then((response) => {
-          // const metadata = response.metadata
-          // const dateRun = new Date(metadata['#date+run'])
-          // const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
-          // this.lastUpdatedDate = date
+          const metadata = response.data.metadata
+          const dateRun = new Date(metadata['#date+run'])
+          const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
+          this.lastUpdatedDate = date
 
-          this.fullData = response.data
+          this.fullData = response.data.data
           this.filteredData = this.filterData()
         })
 
@@ -509,7 +508,6 @@ export default {
       this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
 
       this.resetParams()
-      // this.selectedFilterDimension = selected
       this.setFilterLabel(selected)
       this.updateFilteredData()
     },
@@ -535,15 +533,6 @@ export default {
       const params = this.filterParams
       const filterDimension = this.selectedFilterDimension
 
-      // this.filterOptions.forEach(function(option) {
-      //   if (params[option.value] && params[option.value] !== '*') {
-      //     this.selectedFilterLabel = params[option.value]
-      //     result = result.withRows({
-      //       pattern: '#' + option.value,
-      //       test: params[option.value]
-      //     })
-      //   }
-      // })
       if (params[filterDimension] && params[filterDimension] !== '*') {
         this.selectedFilterLabel = params[filterDimension]
         result = result.filter(item => item[filterDimension] === params[filterDimension])
@@ -557,12 +546,6 @@ export default {
       return result
     },
     populateSelect (data, defaultValue) {
-      // data = data.sort()
-      // const select = [{ value: '*', text: defaultValue }]
-      // data.forEach((item) => {
-      //   select.push({ value: item, text: item })
-      // })
-      // return select
       const selectList = data.reduce((itemList, item) => {
         itemList.push({ value: item, text: item })
         return itemList
