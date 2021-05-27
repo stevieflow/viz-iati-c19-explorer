@@ -38,7 +38,7 @@ export default {
               id: 'y-axis-left',
               scaleLabel: {
                 display: true,
-                labelString: 'Monthly'
+                labelString: 'Monthly Commitments/Spending'
               },
               gridLines: {
                 color: '#000',
@@ -60,7 +60,7 @@ export default {
               id: 'y-axis-right',
               scaleLabel: {
                 display: true,
-                labelString: 'Cumulative'
+                labelString: 'Cumulative Commitments/Spending'
               },
               gridLines: {
                 color: '#000',
@@ -116,7 +116,7 @@ export default {
             borderWidth: 1,
             data: this.timeseriesChartData.cumulative.commitments,
             fill: false,
-            label: 'Commitment',
+            label: 'Commitments',
             pointBackgroundColor: '#FFF',
             pointRadius: 4,
             tension: 0,
@@ -136,7 +136,7 @@ export default {
             yAxisID: 'y-axis-right'
           },
           {
-            label: 'Commitment',
+            label: 'Commitments',
             backgroundColor: '#007CE1',
             data: this.timeseriesChartData.monthly.commitments,
             yAxisID: 'y-axis-left'
@@ -158,9 +158,9 @@ export default {
         if (i === 0) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
         if (i === 2) { htmlLegend.push('</div><div class="mr-4"><h6 class="d-inline">Monthly: </h6>') }
         if (item.type === 'line') {
-          htmlLegend.push('<div class="key key-circle mr-1 ml-2" style="border-color:' + item.borderColor + '">' + '</div>All ' + item.label)
+          htmlLegend.push('<div class="key key-circle mr-1 ml-2" style="border-color:' + item.borderColor + '">' + '</div>' + item.label)
         } else {
-          htmlLegend.push('<div class="key key-square mr-1 ml-2" style="background-color:' + item.backgroundColor + '">' + '</div>All ' + item.label)
+          htmlLegend.push('<div class="key key-square mr-1 ml-2" style="background-color:' + item.backgroundColor + '">' + '</div>' + item.label)
         }
       }
       htmlLegend.push('</div>')

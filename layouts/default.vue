@@ -18,12 +18,12 @@
               Activities
             </b-nav-item> -->
           <b-nav-item :to="{name: 'flows'}" active-class="active" no-prefetch>
-            Flows
+            Financial Flows
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-auto" no-prefetch>
-            About the page
+            About this Tool
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
@@ -85,7 +85,7 @@ export default {
       if (process.client) {
         isProd = !!(window.location.host.includes('ocha-dap'))
       }
-      return (isProd) ? 'COVID-19 IATI Data' : 'STAGE COVID-19 IATI Data'
+      return (isProd) ? 'IATI COVID-19 Data Explorer' : '*STAGE* IATI COVID-19 Data Explorer'
     }
   }
 }
