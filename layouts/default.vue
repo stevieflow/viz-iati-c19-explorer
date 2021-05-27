@@ -1,18 +1,8 @@
 <template>
   <b-container class="iati-viz my-4">
-    <b-container>
-      <b-row>
-        <b-col cols="9">
-          <b-navbar-brand :to="'/'">
-            {{ pageTitle }}
-          </b-navbar-brand>
-
-          <p class="mt-3">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative (IATI)</a> is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. In March 2020, the IATI Secretariat issued a <a href="https://bit.ly/2wNwAzN" target="_blank">Guidance Note</a> on how to publish data on COVID-19 using the <a href="https://iatistandard.org/en/iati-standard/" target="_blank">IATI Standard</a>. <b>This website allows you to explore, visualize, and analyze all of the published IATI data that is related to coronavirus pandemic.</b>
-          </p>
-        </b-col>
-      </b-row>
-    </b-container>
+    <b-navbar-brand :to="'/'">
+      {{ pageTitle }}
+    </b-navbar-brand>
     <b-navbar toggleable="lg" type="light" variant="bg-white" class="navbar-iati">
       <b-navbar-toggle target="nav-collapse" />
 

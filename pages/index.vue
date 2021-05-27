@@ -11,28 +11,7 @@
         <b-row>
           <b-col cols="9">
             <p class="overview-description">
-              Scroll down to view the total COVID-19 commitments <b-badge
-                v-b-tooltip.hover
-                class="info-icon p-0"
-                variant="dark"
-                pill
-                :title="tooltips['commitmentsOverview']">
-                ?
-              </b-badge> and actual spending <b-badge
-                v-b-tooltip.hover
-                class="info-icon p-0"
-                variant="dark"
-                pill
-                :title="tooltips['spendingOverview']">
-                ?
-              </b-badge> reported by all IATI publishing organizations <b-badge
-                v-b-tooltip.hover
-                class="info-icon p-0"
-                variant="dark"
-                pill
-                :title="tooltips['publishingOrgsOverview']">
-                ?
-              </b-badge>, or use the filters below to look at a specific organization, recipient country, or sector.
+              The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This tool allows you to explore and analyze all of the published IATI data that is related to the coronavirus pandemic by using the filters below to look at a specific organization, recipient country, or sector.
             </p>
           </b-col>
           <b-col>
@@ -156,7 +135,7 @@
             </b-row>
             <hr class="my-3">
             <p class="small text-muted">
-              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the previous update, XX,XXX invalid transactions were excluded from consideration. Learn more on the <a href="/about">About this Tool</a> tab.
+              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, XX,XXX transactions were excluded from consideration. Learn more on the <a href="/about">About this Tool</a> tab.
             </p>
           </b-col>
         </b-row>
@@ -194,7 +173,7 @@
                 </div>
                 <b-form-select
                   v-model="selectedCommitmentFilter"
-                  class="form-select pl-0 my-3"
+                  class="form-select px-2 my-3"
                   size="sm"
                   :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
                 />
@@ -246,7 +225,7 @@
                 <b-form-select
                   id="spendingSelect"
                   v-model="selectedSpendingFilter"
-                  class="form-select pl-0 my-3"
+                  class="form-select px-2 my-3"
                   size="sm"
                   :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
                 />
