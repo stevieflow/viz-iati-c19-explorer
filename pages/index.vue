@@ -1,5 +1,19 @@
 <template>
   <div>
+    <b-container>
+      <b-row>
+        <b-col cols="9">
+          <p class="overview-description">
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This tool allows you to explore and analyze all of the published IATI data that is related to the coronavirus pandemic by using the filters below to look at a specific organization, recipient country, or sector.
+          </p>
+        </b-col>
+        <b-col>
+          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
+            Download All Data
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-container>
     <template v-if="isBusy">
       <div class="text-center text-secondary">
         <b-spinner class="align-middle" />
@@ -8,20 +22,6 @@
     </template>
     <template v-if="!isBusy">
       <b-container>
-        <b-row>
-          <b-col cols="9">
-            <p class="overview-description">
-              The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This tool allows you to explore and analyze all of the published IATI data that is related to the coronavirus pandemic by using the filters below to look at a specific organization, recipient country, or sector.
-            </p>
-          </b-col>
-          <b-col>
-            <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
-              Download All Data
-            </b-button>
-            <b-col />
-          </b-col>
-        </b-row>
-
         <hr class="my-4">
 
         <b-row>
