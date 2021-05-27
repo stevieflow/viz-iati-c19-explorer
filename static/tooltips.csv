@@ -8,4 +8,10 @@ Activities table header,commitmentsCOVID,Covid-19-specific (USD),The total sum o
 Activities table header,humanitarianDevelopment,Humanitarian?,"Whether this activity is flagged as being humanitarian, development, or a mix.  ",live
 Customise data sidebase,Reporting organisation,,This is the organisation that provided the IATI data,
 Customise data sidebase,HRP Code,,HRP = Humanitarian Response Plan,
-Placeholder,placeholder,,Lorem ipsum dolor,
+Commitments and Spending overview,commitmentsOverview,,"A firm, written obligation from a donor to provide a specified amount of funds, under particular terms and conditions, for specific purposes, for the benefit of the recipient.",
+Commitments and Spending overview,spendingOverview,,Outgoing funds that are placed at the disposal of a recipient (disbursement) or are spent on goods and services for the activity (expenditure). Please see the About this Tool tab for more information.,
+Commitments and Spending overview,publishingOrgsOverview,,Organizations that publish data to the IATI Registry.,
+Commitments and Spending Filters,activitiesCOVID,,We use an algorithm to determine if a transaction is related to COVID-19. Changing this setting to ‘strict’ will show only transactions with a high degree of confidence. Learn more on the About this Tool tab.,
+Commitments and Spending Filters,activitiesHumanitarian,,Changing this filter to ‘yes’ will show only transactions reported with the humanitarian aid flag. Learn more on the About this Tool tab.
+Commitments and Spending Key Figures,totalCommitments,,"A firm, written obligation from a donor to provide a specified amount of funds, under particular terms and conditions, for specific purposes, for the benefit of the recipient.",
+Commitments and Spending Key Figures,totalSpending,,Outgoing funds that are placed at the disposal of a recipient (disbursement) or are spent on goods and services for the activity (expenditure). Please see the About this Tool tab for more information.,

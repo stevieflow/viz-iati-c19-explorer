@@ -1,8 +1,18 @@
 <template>
   <b-container class="iati-viz my-4">
-    <b-navbar-brand :to="'/'">
-      {{ pageTitle }}
-    </b-navbar-brand>
+    <b-container>
+      <b-row>
+        <b-col cols="9">
+          <b-navbar-brand :to="'/'">
+            {{ pageTitle }}
+          </b-navbar-brand>
+
+          <p class="mt-3">
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative (IATI)</a> is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. In March 2020, the IATI Secretariat issued a <a href="https://bit.ly/2wNwAzN" target="_blank">Guidance Note</a> on how to publish data on COVID-19 using the <a href="https://iatistandard.org/en/iati-standard/" target="_blank">IATI Standard</a>. <b>This website allows you to explore, visualize, and analyze all of the published IATI data that is related to coronavirus pandemic.</b>
+          </p>
+        </b-col>
+      </b-row>
+    </b-container>
     <b-navbar toggleable="lg" type="light" variant="bg-white" class="navbar-iati">
       <b-navbar-toggle target="nav-collapse" />
 
@@ -18,12 +28,12 @@
               Activities
             </b-nav-item> -->
           <b-nav-item :to="{name: 'flows'}" active-class="active" no-prefetch>
-            Flows
+            Financial Flows
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-auto" no-prefetch>
-            About the page
+            About this Tool
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
@@ -85,7 +95,7 @@ export default {
       if (process.client) {
         isProd = !!(window.location.host.includes('ocha-dap'))
       }
-      return (isProd) ? 'COVID-19 IATI Data' : 'STAGE COVID-19 IATI Data'
+      return (isProd) ? 'IATI COVID-19 Data Explorer' : '*STAGE* IATI COVID-19 Data Explorer'
     }
   }
 }

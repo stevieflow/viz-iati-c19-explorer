@@ -11,12 +11,33 @@
         <b-row>
           <b-col cols="9">
             <p class="overview-description">
-              Project description - lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <a href="#">Link</a>
+              Scroll down to view the total COVID-19 commitments <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['commitmentsOverview']">
+                ?
+              </b-badge> and actual spending <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['spendingOverview']">
+                ?
+              </b-badge> reported by all IATI publishing organizations <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['publishingOrgsOverview']">
+                ?
+              </b-badge>, or use the filters below to look at a specific organization, recipient country, or sector.
             </p>
           </b-col>
           <b-col>
             <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
-              Download Data
+              Download All Data
             </b-button>
             <b-col />
           </b-col>
@@ -74,7 +95,7 @@
               Quick filters:
               <ul class="horizontal-list d-inline">
                 <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a> |
+                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
                 </li>
               </ul>
             </div>
@@ -88,7 +109,7 @@
                   class="info-icon p-0"
                   variant="dark"
                   pill
-                  :title="tooltips['placeholder']">
+                  :title="tooltips['activitiesCOVID']">
                   ?
                 </b-badge>:
               </b-col>
@@ -115,7 +136,7 @@
                   class="info-icon p-0"
                   variant="dark"
                   pill
-                  :title="tooltips['placeholder']">
+                  :title="tooltips['activitiesHumanitarian']">
                   ?
                 </b-badge>:
               </b-col>
@@ -135,10 +156,7 @@
             </b-row>
             <hr class="my-3">
             <p class="small text-muted">
-              xx,xxx transactions excluded. Explanation/definition about the Icon here lorem ipsum dolor sit amet, consectetur adipiscing elit,  lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-            <p class="small text-muted">
-              All reported transactions are as of X date
+              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the previous update, XX,XXX invalid transactions were excluded from consideration. Learn more on the <a href="/about">About this Tool</a> tab.
             </p>
           </b-col>
         </b-row>
@@ -167,7 +185,7 @@
                     class="info-icon p-0"
                     variant="dark"
                     pill
-                    :title="tooltips['placeholder']">
+                    :title="tooltips['totalCommitments']">
                     ?
                   </b-badge>
                 </h3>
@@ -218,7 +236,7 @@
                     class="info-icon p-0"
                     variant="dark"
                     pill
-                    :title="tooltips['placeholder']">
+                    :title="tooltips['totalSpending']">
                     ?
                   </b-badge>
                 </h3>
@@ -259,7 +277,7 @@
         </b-row>
 
         <h2 class="header">
-          Cumulative Total Commitments and Spending Over Time
+          Commitments and Spending Over Time
         </h2>
 
         <TimeseriesChart
@@ -306,16 +324,16 @@ export default {
       selectedSpendingFilter: '#country',
       keyFigureFilter: [
         [
-          { text: 'By Recipient Countries', value: '#country' },
+          { text: 'By Recipient Country', value: '#country' },
           { text: 'By Sector', value: '#sector' }
         ],
         [
-          { text: 'By Publishing Orgs', value: '#org+name' },
+          { text: 'By Publishing Org', value: '#org+name' },
           { text: 'By Sector', value: '#sector' }
         ],
         [
-          { text: 'By Recipient Countries', value: '#country' },
-          { text: 'By Publishing Orgs', value: '#org+name' }
+          { text: 'By Recipient Country', value: '#country' },
+          { text: 'By Publishing Org', value: '#org+name' }
         ]
       ],
       quickFilters: [
@@ -591,7 +609,7 @@ export default {
       const ranked = Object.entries(data.reduce((list, item) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
-          list[item[dimension]] = (list[item[dimension]] === undefined) ? value : list[item[dimension]] + value
+          list[item[dimension]] = list[item[dimension]] + value || value
         }
         return list
       }, {})).sort((a, b) =>
@@ -668,6 +686,16 @@ export default {
   .quick-filter-list {
     font-size: 14px;
     line-height: 18px;
+    li {
+      &::after {
+        content: " | ";
+      }
+      &:last-child {
+        &::after {
+          content: "";
+        }
+      }
+    }
   }
   .filter-select {
     .vs__dropdown-toggle {
