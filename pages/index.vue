@@ -489,7 +489,6 @@ export default {
         this.isProd = !!(window.location.host.includes('ocha-dap'))
       }
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
-
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
