@@ -135,7 +135,7 @@
             </b-row>
             <hr class="my-3">
             <p class="small text-muted">
-              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, XX,XXX transactions were excluded from consideration. Learn more on the <a href="/about">About this Tool</a> tab.
+              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, {{ skippedTransactions }} transactions were excluded from consideration. Learn more on the <a href="/about">About this Tool</a> tab.
             </p>
           </b-col>
         </b-row>
@@ -359,6 +359,7 @@ export default {
       filteredData: [],
       filterParams: {},
       lastUpdatedDate: '',
+      skippedTransactions: 0,
       isProd: true
     }
   },
@@ -478,11 +479,14 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
+          // process the metadata
           const metadata = response.data.metadata
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
+          this.skippedTransactions = numeral(metadata['#meta+transactions+skipped+num']).format('0,0')
 
+          // process the transaction data
           this.fullData = response.data.data
           this.filteredData = this.filterData()
         })
