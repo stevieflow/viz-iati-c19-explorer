@@ -135,7 +135,9 @@
             </b-row>
             <hr class="my-3">
             <p class="small text-muted">
-              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, {{ skippedTransactions }} transactions were excluded from consideration. Learn more on the <NuxtLink to="/about">About this Tool</NuxtLink> tab.
+              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, {{ skippedTransactions }} transactions were excluded from consideration. Learn more on the <NuxtLink to="/about">
+                About this Tool
+              </NuxtLink> tab.
             </p>
           </b-col>
         </b-row>
