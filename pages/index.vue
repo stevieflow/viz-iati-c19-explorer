@@ -400,11 +400,11 @@ export default {
     },
     totalCommitments () {
       const sum = this.getTotal(this.commitments)
-      return numeral(sum).format('0.0a')
+      return numeral(sum).format('$0.0a')
     },
     totalSpending () {
       const sum = this.getTotal(this.spending)
-      return numeral(sum).format('0.0a')
+      return numeral(sum).format('$0.0a')
     },
     tagPattern () {
       return (this.selectedFilterDimension === '#org+name' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
