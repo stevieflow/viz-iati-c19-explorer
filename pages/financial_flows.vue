@@ -232,6 +232,10 @@ export default {
       this.filterParams[this.selectedFilterDimension] = value
       this.updateFilteredData()
     },
+    onToggle (event) {
+      this.filterParams[event.target.parentElement.id] = event.target.value
+      this.updateFilteredData()
+    },
     onQuickFilter (event) {
       event.preventDefault()
       this.onSelect(event.target.name)
