@@ -18,7 +18,7 @@
           :y="node.y0"
           :height="Math.max(node.y1-node.y0, 0)"
           :width="node.x1-node.x0"
-          :fill="node.name=='» Direct Expenditure' ? 'url(#diagonalHatch)': color(node)"
+          :fill="node.name=='» (unspecified org)' ? 'url(#diagonalHatch)': color(node)"
           class="node" />
       </g>
       <g>
@@ -59,7 +59,7 @@
           :y="(node.y1 + node.y0) / 2"
           :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
           dy="0.35em">
-          {{ node.name }} <template v-if="node.name=='» Direct Expenditure'"> (no organisation)</template>
+          {{ node.name }}
         </text>
       </g>
       <g font-family="sans-serif" font-size="12">
@@ -71,7 +71,7 @@
           class="linkText"
           @mouseover="mouseoverLink(link.index)"
           @mouseleave="mouseleaveLink(link.index)">
-          <text
+          <!-- <text
             :x="link.source.x1+(link.target.x0-link.source.x1)/2"
             :y="(link.y1 + link.y0) / 2"
             :width="link.width"
@@ -94,6 +94,14 @@
             dy="0.35em"
             text-anchor="middle">
             USD {{ numberFormatter(link.value) }}<br />
+          </text> -->
+          <text
+            :x="link.source.x1+(link.target.x0-link.source.x1)/2"
+            :y="((link.y1 + link.y0) / 2)"
+            :width="link.width"
+            dy="0.35em"
+            text-anchor="middle">
+            USD {{ numberFormatter(link.value) }}
           </text>
         </g>
       </g>
@@ -140,7 +148,8 @@ export default {
       chart: null,
       width: 10,
       height: 10,
-      selectedLink: null
+      selectedLink: null,
+      chartColors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#EFF2AA', '#C6E69B', '#AEEAE6']
     }
   },
   computed: {
@@ -154,6 +163,7 @@ export default {
       return this.sankey.links
     },
     sankey () {
+      console.log('--', this.chartData)
       const nodes = this.chartData.nodes
       const links = this.chartData.links
       const sankey = d3Sankey()
@@ -194,8 +204,9 @@ export default {
         : ''
     },
     color (d) {
-      if (d.name === '» Direct Expenditure') { return '#bbbbbb' }
-      return this.colors(d.name)
+      if (d.name === '» (unspecified org)') { return '#999' }
+      // return this.colors(d.name)
+      return this.chartColors[d.index]
     },
     makeChart () {
       d3Select('#sankeyChart')

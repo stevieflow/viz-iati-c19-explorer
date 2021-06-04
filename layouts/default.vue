@@ -17,7 +17,7 @@
             <b-nav-item :to="{name: 'activities'}" active-class="active" no-prefetch>
               Activities
             </b-nav-item> -->
-          <b-nav-item :to="{name: 'flows'}" active-class="active" no-prefetch>
+          <b-nav-item :to="{name: 'financial_flows'}" active-class="active" no-prefetch>
             Financial Flows
           </b-nav-item>
         </b-navbar-nav>
