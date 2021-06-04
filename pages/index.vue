@@ -143,7 +143,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <b>{{ activityCount }}</b> activities by <b>{{ selectedFilterLabel }}</b>
+          <b>{{ numberFormatter(activityCount) }}</b> activities by <b>{{ selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">
           Key Figures
@@ -396,7 +396,7 @@ export default {
     },
     activityCount () {
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
-      return numeral(activities.length).format('0,0')
+      return activities.length
     },
     totalCommitments () {
       const sum = this.getTotal(this.commitments)
@@ -484,7 +484,7 @@ export default {
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
-          this.skippedTransactions = numeral(metadata['#meta+transactions+skipped+num']).format('0,0')
+          this.skippedTransactions = this.numberFormatter(metadata['#meta+transactions+skipped+num'])
 
           // process the transaction data
           this.fullData = response.data.data
@@ -495,6 +495,12 @@ export default {
     },
     updateRouter () {
       // this.$router.push({ name: 'overview', query: this.urlQuery })
+    },
+    numberFormatter (value) {
+      if (value === 0) { return '0' }
+      return value
+        ? numeral(value).format('0,0')
+        : ''
     },
     setFilterLabel (dimension) {
       this.selectedFilterLabel = '*'
@@ -558,7 +564,7 @@ export default {
     },
     populateList (data) {
       return data.reduce((list, item) => {
-        list.push({ item: item[0], value: numeral(item[1]).format('0,0') })
+        list.push({ item: item[0], value: this.numberFormatter(item[1]) })
         return list
       }, []).sort((a, b) =>
         b.value - a.value

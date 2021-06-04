@@ -112,7 +112,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ activityCount }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilter }}</b>
+          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilter }}</b>
         </h2>
 
         <b-row>
@@ -185,9 +185,7 @@ export default {
       return this.populateSelect(orgList, 'All reporting organizations')
     },
     activityCount () {
-      // const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
-      // return numeral(activities.length).format('0,0')
-      return numeral(this.filteredData.length).format('0,0')
+      return this.filteredData.length
     }
   },
   mounted () {
@@ -204,7 +202,7 @@ export default {
       if (process.client) {
         this.isProd = !!(window.location.host.includes('ocha-dap'))
       }
-      // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json'
+      // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
       const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
@@ -226,6 +224,12 @@ export default {
         })
 
       this.$nuxt.$loading.finish()
+    },
+    numberFormatter (value) {
+      if (value === 0) { return '0' }
+      return value
+        ? numeral(value).format('0,0')
+        : ''
     },
     onSelect (value) {
       this.selectedFilter = value
