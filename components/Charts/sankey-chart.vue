@@ -208,13 +208,25 @@ export default {
         : ''
     },
     labelXPosition (link) {
-      if (this.maxNodeDepth < 2) { return link.source.x1 + (link.target.x0 - link.source.x1) / 2 } else { return link.source.x1 > this.width / 2 ? link.source.x1 + 15 : link.target.x0 - 15 }
+      if (this.maxNodeDepth < 2) {
+        return link.source.x1 + (link.target.x0 - link.source.x1) / 2
+      } else {
+        return link.source.x1 > this.width / 2 ? link.source.x1 + 15 : link.target.x0 - 15
+      }
     },
     labelYPosition (link) {
-      if (this.maxNodeDepth < 2) { return (link.y1 + link.y0) / 2 } else { return link.y1 }
+      if (this.maxNodeDepth < 2) {
+        return (link.y1 + link.y0) / 2
+      } else {
+        return link.source.x1 > this.width / 2 ? link.y0 : link.y1
+      }
     },
     labelAnchor (link) {
-      if (this.maxNodeDepth < 2) { return 'middle' } else { return link.source.x1 > this.width / 2 ? 'start' : 'end' }
+      if (this.maxNodeDepth < 2) {
+        return 'middle'
+      } else {
+        return link.source.x1 > this.width / 2 ? 'start' : 'end'
+      }
     },
     color (d) {
       if (d.name === '» (unspecified org)') { return '#999' }
