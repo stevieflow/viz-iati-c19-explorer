@@ -96,11 +96,11 @@
             USD {{ numberFormatter(link.value) }}<br />
           </text> -->
           <text
-            :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-            :y="((link.y1 + link.y0) / 2)"
+            :x="labelXPosition(link)"
+            :y="labelYPosition(link)"
             :width="link.width"
             dy="0.35em"
-            text-anchor="middle">
+            :text-anchor="labelAnchor(link)">
             USD {{ numberFormatter(link.value) }}
           </text>
         </g>
@@ -162,6 +162,10 @@ export default {
     links () {
       return this.sankey.links
     },
+    maxNodeDepth () {
+      const depths = this.sankey.nodes.map(n => n.depth)
+      return Math.max(...depths)
+    },
     sankey () {
       console.log('--', this.chartData)
       const nodes = this.chartData.nodes
@@ -202,6 +206,15 @@ export default {
           maximumFractionDigits: 0
         })
         : ''
+    },
+    labelXPosition (link) {
+      if (this.maxNodeDepth < 2) { return link.source.x1 + (link.target.x0 - link.source.x1) / 2 } else { return link.source.x1 > this.width / 2 ? link.source.x1 + 15 : link.target.x0 - 15 }
+    },
+    labelYPosition (link) {
+      if (this.maxNodeDepth < 2) { return (link.y1 + link.y0) / 2 } else { return link.y1 }
+    },
+    labelAnchor (link) {
+      if (this.maxNodeDepth < 2) { return 'middle' } else { return link.source.x1 > this.width / 2 ? 'start' : 'end' }
     },
     color (d) {
       if (d.name === '» (unspecified org)') { return '#999' }
