@@ -142,9 +142,9 @@
           </b-col>
         </b-row>
 
-        <hr class="my-4">
+        <hr class="mt-4 mb-0">
 
-        <h2 class="my-4">
+        <h2 class="header-sticky">
           <b>{{ numberFormatter(activityCount) }}</b> activities by <b>{{ selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">

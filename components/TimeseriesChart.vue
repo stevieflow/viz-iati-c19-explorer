@@ -38,7 +38,7 @@ export default {
               id: 'y-axis-left',
               scaleLabel: {
                 display: true,
-                labelString: 'Monthly Commitments/Spending'
+                labelString: 'Monthly Commitments/Spending (USD)'
               },
               gridLines: {
                 color: '#000',
@@ -60,7 +60,7 @@ export default {
               id: 'y-axis-right',
               scaleLabel: {
                 display: true,
-                labelString: 'Cumulative Commitments/Spending'
+                labelString: 'Cumulative Commitments/Spending (USD)'
               },
               gridLines: {
                 color: '#000',

@@ -24,7 +24,7 @@
       v-if="!isBusy">
       <b-container>
         <h2 class="header">
-          Flows
+          Financial Flows
         </h2>
         <b-row>
           <b-col cols="7">
