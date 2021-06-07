@@ -211,7 +211,7 @@ export default {
       if (this.maxNodeDepth < 2) {
         return link.source.x1 + (link.target.x0 - link.source.x1) / 2
       } else {
-        return link.source.x1 > this.width / 2 ? link.source.x1 + 15 : link.target.x0 - 15
+        return link.source.x1 > this.width / 2 ? link.source.x1 + 6 : link.target.x0 - 6
       }
     },
     labelYPosition (link) {
