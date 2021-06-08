@@ -15,7 +15,7 @@
       </b-row>
     </b-container>
     <template v-if="isBusy">
-      <div class="text-center text-secondary">
+      <div class="text-center text-secondary my-5">
         <b-spinner class="align-middle" />
         <strong>Loading...</strong>
       </div>

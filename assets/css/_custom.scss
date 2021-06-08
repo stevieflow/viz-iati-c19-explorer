@@ -73,6 +73,10 @@ h6 {
 }
 
 .iati-viz {
+  .spinner-border {
+    border: 0.25em solid #999;
+    border-right-color: transparent;
+  }
   p.small {
     font-size: 12px;
     line-height: 15px;

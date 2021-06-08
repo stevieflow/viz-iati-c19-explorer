@@ -73,7 +73,6 @@
         Note: the chart above is generated from the organisation's own IATI
         data. However, some data processing was required to standardise the data.
       </p>
-
       <h2>Flows between organisations</h2>
       <b-row>
         <b-col sm="7" md="9">

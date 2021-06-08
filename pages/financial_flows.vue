@@ -8,14 +8,14 @@
           </p>
         </b-col>
         <b-col>
-          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
+          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
         </b-col>
       </b-row>
     </b-container>
     <template v-if="isBusy">
-      <div class="text-center text-secondary">
+      <div class="text-center text-secondary mt-5">
         <b-spinner class="align-middle" />
         <strong>Loading...</strong>
       </div>
@@ -114,7 +114,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilter }}</b>
+          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <b-row>
@@ -150,13 +150,14 @@ export default {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+name+reporting',
-      selectedFilter: 'U.S. Agency for International Development',
+      selectedFilterLabel: 'United States Agency for International Development (USAID)',
+      selectedFilter: 'United States Agency for International Development (USAID)',
       quickFilters: [
         { name: 'Asian Development Bank' },
         { name: 'Inter-American Development Bank' },
         { name: 'UNOCHA - Central Emergency Response Fund (CERF)' },
         { name: 'United Nations Development Programme' },
-        { name: 'U.S. Agency for International Development' },
+        { name: 'United States Agency for International Development (USAID)' },
         { name: 'World Food Programme' }
       ],
       strictToggleOptions: [
@@ -204,8 +205,7 @@ export default {
       if (process.client) {
         this.isProd = !!(window.location.host.includes('ocha-dap'))
       }
-      // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
-      const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json'
+      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
@@ -236,6 +236,7 @@ export default {
     onSelect (value) {
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
+      if (value !== '*') { this.selectedFilterLabel = value } else { this.selectedFilterLabel = 'all reporting organizations' }
       this.updateFilteredData()
     },
     onToggle (event) {
