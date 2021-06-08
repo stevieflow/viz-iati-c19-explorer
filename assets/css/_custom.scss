@@ -73,9 +73,15 @@ h6 {
 }
 
 .iati-viz {
-  .spinner-border {
-    border: 0.25em solid #999;
-    border-right-color: transparent;
+  .custom-loader {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    .spinner-border {
+      border: 0.25em solid #999;
+      border-right-color: transparent;
+    }
   }
   p.small {
     font-size: 12px;
