@@ -463,7 +463,28 @@ export default {
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    this.loadData()
+    this.$nextTick(() => {
+      if ('org' in this.$route.query) {
+        this.filterParams['#org+name'] = this.$route.query.org
+        this.querySetup('#org+name')
+      }
+      if ('country' in this.$route.query) {
+        this.filterParams['#country'] = this.$route.query.country
+        this.querySetup('#country')
+      }
+      if ('sector' in this.$route.query) {
+        this.filterParams['#sector'] = this.$route.query.sector
+        this.querySetup('#sector')
+      }
+      if ('humanitarian' in this.$route.query) {
+        this.filterParams.humanitarian = this.$route.query.humanitarian
+      }
+      if ('strict' in this.$route.query) {
+        this.filterParams.strict = this.$route.query.strict
+      }
+
+      this.loadData()
+    })
   },
   methods: {
     async loadData () {
@@ -492,11 +513,34 @@ export default {
           this.fullData = response.data.data
           this.filteredData = this.filterData()
         })
-
-      this.$nuxt.$loading.finish()
+    },
+    urlQuery () {
+      const _query = {}
+      if (this.filterParams['#org+name'] !== '*') {
+        _query.org = this.filterParams['#org+name']
+      }
+      if (this.filterParams['#country'] !== '*') {
+        _query.country = this.filterParams['#country']
+      }
+      if (this.filterParams['#sector'] !== '*') {
+        _query.sector = this.filterParams['#sector']
+      }
+      if (this.filterParams.humanitarian !== 'off') {
+        _query.humanitarian = this.filterParams.humanitarian
+      }
+      if (this.filterParams.strict !== 'off') {
+        _query.strict = this.filterParams.strict
+      }
+      return _query
     },
     updateRouter () {
-      // this.$router.push({ name: 'overview', query: this.urlQuery })
+      this.$router.push({ name: 'index', query: this.urlQuery() })
+    },
+    querySetup (dimension) {
+      this.selectedFilterDimension = dimension
+      this.selectedFilter = this.filterParams[dimension]
+      const filterArray = this.keyFigureFilter[this.getFilterID(dimension)]
+      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
     },
     numberFormatter (value) {
       if (value === 0) { return '0' }
@@ -536,6 +580,7 @@ export default {
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
+      this.updateRouter()
     },
     filterData () {
       let result = this.fullData

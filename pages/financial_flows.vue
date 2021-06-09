@@ -102,12 +102,6 @@
                 </b-button-group>
               </b-col>
             </b-row>
-            <hr class="my-3">
-            <p class="small text-muted">
-              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, XX,XXX transactions were excluded from consideration. Learn more on the <NuxtLink to="/about">
-                About this Tool
-              </NuxtLink> tab.
-            </p>
           </b-col>
         </b-row>
 
@@ -171,7 +165,6 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      skippedTransactions: 0,
       lastUpdatedDate: '',
       isProd: true
     }
@@ -197,8 +190,21 @@ export default {
       humanitarian: 'off',
       strict: 'off'
     }
-    this.filterParams[this.selectedFilterDimension] = this.selectedFilter
-    this.loadData()
+
+    this.$nextTick(() => {
+      if ('org' in this.$route.query) {
+        this.filterParams['#org+name+reporting'] = this.$route.query.org
+        this.selectedFilter = this.selectedFilterLabel = this.filterParams['#org+name+reporting']
+      }
+      if ('humanitarian' in this.$route.query) {
+        this.filterParams.humanitarian = this.$route.query.humanitarian
+      }
+      if ('strict' in this.$route.query) {
+        this.filterParams.strict = this.$route.query.strict
+      }
+
+      this.loadData()
+    })
   },
   methods: {
     async loadData () {
@@ -224,8 +230,22 @@ export default {
           this.fullData = response.data.data
           this.updateFilteredData()
         })
-
-      this.$nuxt.$loading.finish()
+    },
+    urlQuery () {
+      const _query = {}
+      if (this.filterParams['#org+name+reporting'] !== '*') {
+        _query.org = this.filterParams['#org+name+reporting']
+      }
+      if (this.filterParams.humanitarian !== 'off') {
+        _query.humanitarian = this.filterParams.humanitarian
+      }
+      if (this.filterParams.strict !== 'off') {
+        _query.strict = this.filterParams.strict
+      }
+      return _query
+    },
+    updateRouter () {
+      this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
     },
     numberFormatter (value) {
       if (value === 0) { return '0' }
@@ -249,6 +269,7 @@ export default {
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
+      this.updateRouter()
     },
     filterData () {
       let result = this.fullData
