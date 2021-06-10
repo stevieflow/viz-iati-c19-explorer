@@ -72,6 +72,16 @@ h6 {
   font-weight: 600;
 }
 
+//get around exact active matching for index page with query params and force index tab to be active
+body.index {
+  .navbar-iati .nav-index {
+    .nuxt-link-active {
+      border-bottom: 3px solid #F2645A;
+      color: #F2645A;
+    }
+  }
+}
+
 .iati-viz {
   .custom-loader {
     left: 50%;

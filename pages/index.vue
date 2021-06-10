@@ -145,7 +145,7 @@
         <hr class="mt-4 mb-0">
 
         <h2 class="header-sticky">
-          <b>{{ numberFormatter(activityCount) }}</b> activities by <b>{{ selectedFilterLabel }}</b>
+          <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">
           Key Figures
@@ -455,6 +455,8 @@ export default {
     }
   },
   mounted () {
+    this.toggleBodyClass('addClass', 'index')
+
     this.filterParams = {
       humanitarian: 'off',
       strict: 'off'
@@ -485,6 +487,9 @@ export default {
 
       this.loadData()
     })
+  },
+  destroyed () {
+    this.toggleBodyClass('removeClass', 'index')
   },
   methods: {
     async loadData () {
@@ -666,6 +671,15 @@ export default {
       this.filterParams['#country'] = '*'
       this.filterParams['#sector'] = '*'
       this.selectedFilter = '*'
+    },
+    toggleBodyClass (addRemoveClass, className) {
+      const el = document.body
+
+      if (addRemoveClass === 'addClass') {
+        el.classList.add(className)
+      } else {
+        el.classList.remove(className)
+      }
     }
   }
 }
