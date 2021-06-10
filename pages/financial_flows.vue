@@ -108,7 +108,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">financial flows</span><span v-else>financial flow</span> involving <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <b-row>
