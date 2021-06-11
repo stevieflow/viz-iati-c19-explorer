@@ -38,7 +38,7 @@
             </b-form-group>
 
             <v-select
-              v-if="selectedFilterDimension==='#org+name'"
+              v-if="selectedFilterDimension==='#org+id'"
               :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
@@ -73,8 +73,8 @@
             <div class="quick-filter-list">
               Quick filters:
               <ul class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
+                <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.id">
+                  <a :id="filter.id" href="#" :title="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
                 </li>
               </ul>
             </div>
@@ -293,11 +293,11 @@ export default {
   data () {
     return {
       title: config.head.title,
-      selectedFilterDimension: '#org+name',
+      selectedFilterDimension: '#org+id',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
-        { text: 'By Publishing Organization', value: '#org+name', label: 'all publishing organizations' },
+        { text: 'By Publishing Organization', value: '#org+id', label: 'all publishing organizations' },
         { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
@@ -309,36 +309,36 @@ export default {
           { text: 'By Sector', value: '#sector' }
         ],
         [
-          { text: 'By Publishing Org', value: '#org+name' },
+          { text: 'By Publishing Org', value: '#org+id' },
           { text: 'By Sector', value: '#sector' }
         ],
         [
           { text: 'By Recipient Country', value: '#country' },
-          { text: 'By Publishing Org', value: '#org+name' }
+          { text: 'By Publishing Org', value: '#org+id' }
         ]
       ],
       quickFilters: [
         [
-          { name: 'Asian Development Bank' },
-          { name: 'Inter-American Development Bank' },
-          { name: 'OCHA Country Based Pooled Funds' },
-          { name: 'United Nations Development Programme (UNDP)' },
-          { name: 'United States Agency for International Development (USAID)' },
-          { name: 'World Food Programme' }
+          { name: 'Asian Development Bank', id: 'xm-dac-46004' },
+          { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
+          { name: 'UNOCHA - Central Emergency Response Fund (CERF)', id: 'xm-ocha-cerf' },
+          { name: 'United Nations Development Programme', id: 'xm-dac-41114' },
+          { name: 'United States Agency for International Development (USAID)', id: 'us-gov-1' },
+          { name: 'World Food Programme', id: 'xm-dac-41140' }
         ],
         [
-          { name: 'India' },
-          { name: 'Brazil' },
-          { name: 'Afghanistan' },
-          { name: 'Bangladesh' },
-          { name: 'South Sudan' }
+          { name: 'India', id: 'India' },
+          { name: 'Brazil', id: 'Brazil' },
+          { name: 'Afghanistan', id: 'Afghanistan' },
+          { name: 'Bangladesh', id: 'Bangladesh' },
+          { name: 'South Sudan', id: 'South Sudan' }
         ],
         [
-          { name: 'Emergency Response' },
-          { name: 'Health' },
-          { name: 'Education' },
-          { name: 'Reconstruction Relief & Rehabilitation' },
-          { name: 'Transport & Storage' }
+          { name: 'Emergency Response', id: 'Emergency Response' },
+          { name: 'Health', id: 'Health' },
+          { name: 'Education', id: 'Education' },
+          { name: 'Reconstruction Relief & Rehabilitation', id: 'Reconstruction Relief & Rehabilitation' },
+          { name: 'Transport & Storage', id: 'Transport & Storage' }
         ]
       ],
       strictToggleOptions: [
@@ -358,6 +358,7 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       fullData: [],
+      orgNames: [],
       filteredData: [],
       filterParams: {},
       lastUpdatedDate: '',
@@ -373,15 +374,32 @@ export default {
       return this.$store.state.tooltips
     },
     reportingOrgs () {
-      const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
+      const orgList = this.orgNames.map((item) => {
+        const org = {}
+        org.value = item['#org+id+reporting']
+        org.text = item['#org+name+reporting']
+        return org
+      })
       return this.populateSelect(orgList, 'All publishing organizations')
     },
     countries () {
-      const countryList = [...new Set(this.fullData.map(item => item['#country']))]
+      let countryList = [...new Set(this.fullData.map(item => item['#country']))]
+      countryList = countryList.map((item) => {
+        const country = {}
+        country.value = item
+        country.text = item
+        return country
+      })
       return this.populateSelect(countryList, 'All recipient countries')
     },
     sectors () {
-      const sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
+      let sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
+      sectorList = sectorList.map((item) => {
+        const sector = {}
+        sector.value = item
+        sector.text = item
+        return sector
+      })
       return this.populateSelect(sectorList, 'All sectors')
     },
     commitments () {
@@ -409,7 +427,7 @@ export default {
       return numeral(sum).format('$0.0a')
     },
     tagPattern () {
-      return (this.selectedFilterDimension === '#org+name' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
+      return (this.selectedFilterDimension === '#org+id' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     commitmentsTable () {
       return this.populateList(this.commitmentsRanked)
@@ -461,32 +479,40 @@ export default {
       humanitarian: 'off',
       strict: 'off'
     }
-    this.filterParams['#org+name'] = '*'
+    this.filterParams['#org+id'] = '*'
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    this.$nextTick(() => {
-      if ('org' in this.$route.query) {
-        this.filterParams['#org+name'] = this.$route.query.org
-        this.querySetup('#org+name')
-      }
-      if ('country' in this.$route.query) {
-        this.filterParams['#country'] = this.$route.query.country
-        this.querySetup('#country')
-      }
-      if ('sector' in this.$route.query) {
-        this.filterParams['#sector'] = this.$route.query.sector
-        this.querySetup('#sector')
-      }
-      if ('humanitarian' in this.$route.query) {
-        this.filterParams.humanitarian = this.$route.query.humanitarian
-      }
-      if ('strict' in this.$route.query) {
-        this.filterParams.strict = this.$route.query.strict
-      }
+    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(orgDataPath)
+      .then((response) => {
+        this.orgNames = response.data.data
+        this.$store.commit('setOrgNames', response.data.data)
 
-      this.loadData()
-    })
+        this.$nextTick(() => {
+          if ('org' in this.$route.query) {
+            this.filterParams['#org+id'] = this.getOrgID(this.$route.query.org)
+            this.selectedFilterLabel = this.$route.query.org
+            this.querySetup('#org+id')
+          }
+          if ('country' in this.$route.query) {
+            this.filterParams['#country'] = this.$route.query.country
+            this.querySetup('#country')
+          }
+          if ('sector' in this.$route.query) {
+            this.filterParams['#sector'] = this.$route.query.sector
+            this.querySetup('#sector')
+          }
+          if ('humanitarian' in this.$route.query) {
+            this.filterParams.humanitarian = this.$route.query.humanitarian
+          }
+          if ('strict' in this.$route.query) {
+            this.filterParams.strict = this.$route.query.strict
+          }
+
+          this.loadData()
+        })
+      })
   },
   destroyed () {
     this.toggleBodyClass('removeClass', 'index')
@@ -516,13 +542,14 @@ export default {
 
           // process the transaction data
           this.fullData = response.data.data
+
           this.filteredData = this.filterData()
         })
     },
     urlQuery () {
       const _query = {}
-      if (this.filterParams['#org+name'] !== '*') {
-        _query.org = this.filterParams['#org+name']
+      if (this.filterParams['#org+id'] !== '*') {
+        _query.org = this.getOrgName(this.filterParams['#org+id'])
       }
       if (this.filterParams['#country'] !== '*') {
         _query.country = this.filterParams['#country']
@@ -553,26 +580,22 @@ export default {
         ? numeral(value).format('0,0')
         : ''
     },
-    setFilterLabel (dimension) {
-      this.selectedFilterLabel = '*'
-      for (let i = 0; i < this.filterOptions.length; i++) {
-        if (this.filterOptions[i].value === dimension) {
-          this.selectedFilterLabel = this.filterOptions[i].label.toLowerCase()
-        }
-      }
-    },
     onFilterOptionSelect (selected) {
       const filterArray = this.keyFigureFilter[this.getFilterID(selected)]
       this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
 
       this.resetParams()
-      this.setFilterLabel(selected)
+      this.setDefaultFilterLabel(selected)
       this.updateFilteredData()
     },
     onSelect (value) {
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
-      if (value !== '*') { this.selectedFilterLabel = value } else { this.setFilterLabel(this.selectedFilterDimension) }
+      if (value !== '*') {
+        this.selectedFilterLabel = (this.selectedFilterDimension === '#org+id') ? this.getOrgName(value) : value
+      } else {
+        this.setDefaultFilterLabel(this.selectedFilterDimension)
+      }
       this.updateFilteredData()
     },
     onToggle (event) {
@@ -581,7 +604,11 @@ export default {
     },
     onQuickFilter (event) {
       event.preventDefault()
-      this.onSelect(event.target.name)
+      this.onSelect(event.target.id)
+    },
+    setDefaultFilterLabel (dimension) {
+      const filterOption = this.filterOptions.filter(option => option.value === dimension)
+      this.selectedFilterLabel = filterOption[0].label.toLowerCase()
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
@@ -593,7 +620,6 @@ export default {
       const filterDimension = this.selectedFilterDimension
 
       if (params[filterDimension] && params[filterDimension] !== '*') {
-        this.selectedFilterLabel = params[filterDimension]
         result = result.filter(item => item[filterDimension] === params[filterDimension])
       }
       if (params['humanitarian'] === 'on') {
@@ -606,7 +632,7 @@ export default {
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
-        itemList.push({ value: item, text: item })
+        itemList.push({ value: item.value, text: item.text })
         return itemList
       }, []).sort((a, b) =>
         a.text < b.text ? -1 : 1
@@ -631,6 +657,14 @@ export default {
       }, [])
       const labels = ranked.map(row => row[0])
       return { values: ratios, labels }
+    },
+    getOrgName (id) {
+      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      return org[0]['#org+name+reporting']
+    },
+    getOrgID (name) {
+      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      return org[0]['#org+id+reporting']
     },
     getCumulativeSeries (data) {
       let total = 0
@@ -667,7 +701,7 @@ export default {
       if (this.selectedFilterDimension === '#sector') { return 2 } else if (this.selectedFilterDimension === '#country') { return 1 } else { return 0 }
     },
     resetParams () {
-      this.filterParams['#org+name'] = '*'
+      this.filterParams['#org+id'] = '*'
       this.filterParams['#country'] = '*'
       this.filterParams['#sector'] = '*'
       this.selectedFilter = '*'

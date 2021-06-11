@@ -36,6 +36,9 @@ export default {
     }
   },
   computed: {
+    orgNames () {
+      return this.$store.state.orgNames
+    },
     chartData () {
       const trimName = (value) => {
         if (typeof value === 'undefined') { return value }
@@ -49,7 +52,7 @@ export default {
       }
       const getProvider = (item, transactionType) => {
         if (('outgoing').includes(transactionType)) {
-          return `${trimName(item['#org+name+provider']) || trimName(item['#org+name+reporting']) || 'UNKNOWN'} »`
+          return `${trimName(item['#org+name+provider']) || trimName(this.getOrgName(item['#org+id+reporting'])) || 'UNKNOWN'} »`
         } else {
           return `${trimName(item['#org+name+provider'])}`
         }
@@ -58,14 +61,13 @@ export default {
         if (('outgoing').includes(transactionType)) {
           return `» ${trimName(item['#org+name+receiver'])}`
         } else {
-          return `${trimName(item['#org+name+reporting'])} »`
+          return `${trimName(this.getOrgName(item['#org+id+reporting']))} »`
         }
       }
       const items = [...this.items].sort((a, b) =>
         a['#value+total'] > b['#value+total'] ? -1 : 1
       ).slice(0, this.maximumVisibleItems)
       const nodes = items.reduce((summary, item) => {
-        console.log(item)
         const provider = getProvider(item, item['#x_transaction_direction'])
         const receiver = getReceiver(item, item['#x_transaction_direction'])
         if (!summary.includes(provider)) {
@@ -92,6 +94,12 @@ export default {
         links
       }
       return out
+    }
+  },
+  methods: {
+    getOrgName (id) {
+      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      return org[0]['#org+name+reporting']
     }
   }
 }

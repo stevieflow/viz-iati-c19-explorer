@@ -42,8 +42,8 @@
             <div class="quick-filter-list">
               Quick filters:
               <ul class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
+                <li v-for="filter in quickFilters" :key="filter.id">
+                  <a :id="filter.id" href="#" :title="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
                 </li>
               </ul>
             </div>
@@ -143,16 +143,16 @@ export default {
   data () {
     return {
       title: config.head.title,
-      selectedFilterDimension: '#org+name+reporting',
+      selectedFilterDimension: '#org+id+reporting',
+      selectedFilter: 'us-gov-1',
       selectedFilterLabel: 'United States Agency for International Development (USAID)',
-      selectedFilter: 'United States Agency for International Development (USAID)',
       quickFilters: [
-        { name: 'Asian Development Bank' },
-        { name: 'Inter-American Development Bank' },
-        { name: 'UNOCHA - Central Emergency Response Fund (CERF)' },
-        { name: 'United Nations Development Programme' },
-        { name: 'United States Agency for International Development (USAID)' },
-        { name: 'World Food Programme' }
+        { name: 'Asian Development Bank', id: 'xm-dac-46004' },
+        { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
+        { name: 'UNOCHA - Central Emergency Response Fund (CERF)', id: 'xm-ocha-cerf' },
+        { name: 'United Nations Development Programme', id: 'xm-dac-41114' },
+        { name: 'United States Agency for International Development (USAID)', id: 'us-gov-1' },
+        { name: 'World Food Programme', id: 'xm-dac-41140' }
       ],
       strictToggleOptions: [
         { label: 'Loose', value: 'off' },
@@ -163,6 +163,7 @@ export default {
         { label: 'Yes', value: 'on' }
       ],
       fullData: [],
+      orgNames: [],
       filteredData: [],
       filterParams: {},
       lastUpdatedDate: '',
@@ -177,7 +178,12 @@ export default {
       return this.$store.state.tooltips
     },
     reportingOrgs () {
-      const orgList = [...new Set(this.fullData.map(item => item[this.selectedFilterDimension]))]
+      const orgList = this.orgNames.map((item) => {
+        const org = {}
+        org.value = item['#org+id+reporting']
+        org.text = item['#org+name+reporting']
+        return org
+      })
       return this.populateSelect(orgList, 'All reporting organizations')
     },
     activityCount () {
@@ -190,21 +196,29 @@ export default {
       humanitarian: 'off',
       strict: 'off'
     }
+    this.filterParams['#org+id+reporting'] = this.selectedFilter
 
-    this.$nextTick(() => {
-      if ('org' in this.$route.query) {
-        this.filterParams['#org+name+reporting'] = this.$route.query.org
-        this.selectedFilter = this.selectedFilterLabel = this.filterParams['#org+name+reporting']
-      }
-      if ('humanitarian' in this.$route.query) {
-        this.filterParams.humanitarian = this.$route.query.humanitarian
-      }
-      if ('strict' in this.$route.query) {
-        this.filterParams.strict = this.$route.query.strict
-      }
+    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(orgDataPath)
+      .then((response) => {
+        this.orgNames = response.data.data
+        this.$store.commit('setOrgNames', response.data.data)
 
-      this.loadData()
-    })
+        this.$nextTick(() => {
+          if ('org' in this.$route.query) {
+            this.filterParams['#org+id+reporting'] = this.selectedFilter = this.getOrgID(this.$route.query.org)
+            this.selectedFilterLabel = this.$route.query.org
+          }
+          if ('humanitarian' in this.$route.query) {
+            this.filterParams.humanitarian = this.$route.query.humanitarian
+          }
+          if ('strict' in this.$route.query) {
+            this.filterParams.strict = this.$route.query.strict
+          }
+
+          this.loadData()
+        })
+      })
   },
   methods: {
     async loadData () {
@@ -233,8 +247,8 @@ export default {
     },
     urlQuery () {
       const _query = {}
-      if (this.filterParams['#org+name+reporting'] !== '*') {
-        _query.org = this.filterParams['#org+name+reporting']
+      if (this.filterParams['#org+id+reporting'] !== '*') {
+        _query.org = this.getOrgName(this.filterParams['#org+id+reporting'])
       }
       if (this.filterParams.humanitarian !== 'off') {
         _query.humanitarian = this.filterParams.humanitarian
@@ -256,7 +270,11 @@ export default {
     onSelect (value) {
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
-      if (value !== '*') { this.selectedFilterLabel = value } else { this.selectedFilterLabel = 'all reporting organizations' }
+      if (value !== '*') {
+        this.selectedFilterLabel = this.getOrgName(value)
+      } else {
+        this.selectedFilterLabel = 'all reporting organizations'
+      }
       this.updateFilteredData()
     },
     onToggle (event) {
@@ -265,7 +283,7 @@ export default {
     },
     onQuickFilter (event) {
       event.preventDefault()
-      this.onSelect(event.target.name)
+      this.onSelect(event.target.id)
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
@@ -292,7 +310,7 @@ export default {
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
-        itemList.push({ value: item, text: item })
+        itemList.push({ value: item.value, text: item.text })
         return itemList
       }, []).sort((a, b) =>
         a.text < b.text ? -1 : 1
@@ -303,6 +321,14 @@ export default {
     getTotal (data) {
       const result = data.map(item => Number(item['#value+total']))
       return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
+    },
+    getOrgName (id) {
+      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      return org[0]['#org+name+reporting']
+    },
+    getOrgID (name) {
+      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      return org[0]['#org+id+reporting']
     }
   }
 }
