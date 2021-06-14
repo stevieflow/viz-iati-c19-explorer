@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="9">
           <p class="mb-4">
-            The International Aid Transparency Initiative (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
           </p>
         </b-col>
         <b-col>
