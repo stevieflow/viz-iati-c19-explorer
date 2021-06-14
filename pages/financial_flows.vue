@@ -28,7 +28,7 @@
         </h2>
         <b-row>
           <b-col cols="7">
-            <h3>Filter:</h3>
+            <h3>Reporting organization:</h3>
             <v-select
               :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
