@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="9">
           <p class="overview-description">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This tool allows you to explore and analyze all of the published IATI data that is related to the coronavirus pandemic by using the filters below to look at a specific organization, recipient country, or sector.
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country, or sector.
           </p>
         </b-col>
         <b-col>
@@ -292,7 +292,6 @@ export default {
   },
   data () {
     return {
-      title: config.head.title,
       selectedFilterDimension: '#org+id',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
@@ -364,6 +363,11 @@ export default {
       lastUpdatedDate: '',
       skippedTransactions: 0,
       isProd: true
+    }
+  },
+  head () {
+    return {
+      title: config.head.title + ': Commitments and Spending'
     }
   },
   computed: {

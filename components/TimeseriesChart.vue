@@ -21,7 +21,9 @@ export default {
     'timeseriesChartData'
   ],
   data () {
-    return {}
+    return {
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    }
   },
   computed: {
     timeseriesChartOptions () {
@@ -51,7 +53,7 @@ export default {
                 fontSize: 11,
                 // max: 100000000000,
                 callback (value, index, values) {
-                  return numeral(value).format('0a')
+                  return numeral(value).format('0a').toUpperCase()
                 }
               },
               position: 'left'
@@ -72,7 +74,7 @@ export default {
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
                 callback (value, index, values) {
-                  return numeral(value).format('0a')
+                  return numeral(value).format('0a').toUpperCase()
                 }
               },
               position: 'right'
@@ -107,6 +109,11 @@ export default {
       }
     },
     chartData () {
+      const dates = this.timeseriesChartData.dates.map((date) => {
+        const dateStr = date.split('-')
+        const d = new Date(dateStr[0], dateStr[1] - 1)
+        return this.months[d.getMonth()] + ' ' + d.getFullYear()
+      })
       return {
         datasets: [
           {
@@ -148,7 +155,7 @@ export default {
             yAxisID: 'y-axis-left'
           }
         ],
-        labels: this.timeseriesChartData.dates
+        labels: dates
       }
     },
     customLegend () {

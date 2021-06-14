@@ -167,7 +167,6 @@ export default {
       return Math.max(...depths)
     },
     sankey () {
-      console.log('--', this.chartData)
       const nodes = this.chartData.nodes
       const links = this.chartData.links
       const sankey = d3Sankey()

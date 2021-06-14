@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="9">
           <p class="mb-4">
-            Project description - lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            The International Aid Transparency Initiative (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implmenting organizations.
           </p>
         </b-col>
         <b-col>
@@ -168,6 +168,11 @@ export default {
       filterParams: {},
       lastUpdatedDate: '',
       isProd: true
+    }
+  },
+  head () {
+    return {
+      title: config.head.title + ': Financial Flows'
     }
   },
   computed: {
