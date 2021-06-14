@@ -211,8 +211,8 @@ export default {
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
-            this.filterParams['#org+id+reporting'] = this.selectedFilter = this.getOrgID(this.$route.query.org)
-            this.selectedFilterLabel = this.$route.query.org
+            this.filterParams['#org+id+reporting'] = this.selectedFilter = this.$route.query.org
+            this.selectedFilterLabel = this.getOrgName(this.$route.query.org)
           }
           if ('humanitarian' in this.$route.query) {
             this.filterParams.humanitarian = this.$route.query.humanitarian
@@ -253,7 +253,7 @@ export default {
     urlQuery () {
       const _query = {}
       if (this.filterParams['#org+id+reporting'] !== '*') {
-        _query.org = this.getOrgName(this.filterParams['#org+id+reporting'])
+        _query.org = this.filterParams['#org+id+reporting']
       }
       if (this.filterParams.humanitarian !== 'off') {
         _query.humanitarian = this.filterParams.humanitarian

@@ -495,8 +495,7 @@ export default {
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
-            this.filterParams['#org+id'] = this.getOrgID(this.$route.query.org)
-            this.selectedFilterLabel = this.$route.query.org
+            this.filterParams['#org+id'] = this.$route.query.org
             this.querySetup('#org+id')
           }
           if ('country' in this.$route.query) {
@@ -553,7 +552,7 @@ export default {
     urlQuery () {
       const _query = {}
       if (this.filterParams['#org+id'] !== '*') {
-        _query.org = this.getOrgName(this.filterParams['#org+id'])
+        _query.org = this.filterParams['#org+id']
       }
       if (this.filterParams['#country'] !== '*') {
         _query.country = this.filterParams['#country']
