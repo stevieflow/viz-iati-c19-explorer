@@ -645,7 +645,7 @@ export default {
     },
     populateList (data) {
       return data.reduce((list, item) => {
-        list.push({ item: item[0], value: this.numberFormatter(item[1]) })
+        list.push({ item: item[0], value: '$' + this.numberFormatter(item[1]) })
         return list
       }, []).sort((a, b) =>
         b.value - a.value
