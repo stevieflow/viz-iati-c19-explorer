@@ -19,7 +19,7 @@ export default {
       { name: 'twitter:site', content: '@humdata' },
       { name: 'twitter:title', content: 'IATI COVID-19 Data Explorer' },
       { name: 'twitter:description', content: 'This site allows you to explore all of the published International Aid Transparency Initiative (IATI) data that is related to the coronavirus pandemic.' },
-      { name: 'twitter:image', content: 'https://ocha-dap.github.io/viz-iati-c19-explorer/visualisation.png' },
+      { name: 'twitter:image', content: 'https://ocha-dap.github.io/viz-iati-c19-explorer/preview.png' },
       { name: 'twitter:image:alt', content: 'Contributions to the Covid-19 emergency.' }
     ],
     link: [
