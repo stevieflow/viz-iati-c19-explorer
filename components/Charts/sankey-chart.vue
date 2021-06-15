@@ -1,114 +1,128 @@
 <template>
-  <div id="sankeyChart" ref="sankeyChart">
-    <svg :width="width" :height="height">
-      <pattern
-        id="diagonalHatch"
-        width="10"
-        height="10"
-        patternTransform="rotate(45 0 0)"
-        patternUnits="userSpaceOnUse">
-        <line x1="0" y1="0" x2="0" y2="10" style="stroke:black; stroke-width:1" />
-      </pattern>
-      <g>
-        <rect
-          v-for="(node) in nodes"
-          v-bind="nodes"
-          :key="node.index"
-          :x="node.x0"
-          :y="node.y0"
-          :height="Math.max(node.y1-node.y0, 0)"
-          :width="node.x1-node.x0"
-          :fill="node.name=='» (unspecified org)' ? 'url(#diagonalHatch)': color(node)"
-          class="node" />
-      </g>
-      <g>
-        <g
-          v-for="(link) in links"
-          v-bind="links"
-          :id="`link-${link.index}`"
-          :key="link.index"
-          :class="selectedLink == link.index ? 'link linkHover' : 'link'"
-          style="mix-blend-mode: multiply;">
-          <linearGradient
-            :id="`${link.index}-gradient`"
-            :x1="link.source.x1"
-            :x2="link.target.x0"
-            gradientUnits="userSpaceOnUse">
-            <stop
-              :stop-color="color(link.source)"
-              offset="0%" />
-            <stop
-              :stop-color="color(link.target)"
-              offset="100%" />
-          </linearGradient>
-          <path
-            :d="sankeyLinkPaths(link)"
-            :stroke="`url(#${link.index}-gradient)`"
-            :stroke-width="Math.max(1, link.width)"
+  <div>
+    <div class="badges">
+      <b-badge variant="dark">
+        Funded by
+      </b-badge>
+      <b-badge variant="dark">
+        Implemented by
+      </b-badge>
+    </div>
+    <div id="sankeyChart" ref="sankeyChart">
+      <svg :width="width" :height="height">
+        <pattern
+          id="diagonalHatch"
+          width="10"
+          height="10"
+          patternTransform="rotate(45 0 0)"
+          patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="10" style="stroke:black; stroke-width:1" />
+        </pattern>
+        <g>
+          <rect
+            v-for="(node) in nodes"
+            v-bind="nodes"
+            :key="node.index"
+            :x="node.x0"
+            :y="node.y0"
+            :height="Math.max(node.y1-node.y0, 0)"
+            :width="node.x1-node.x0"
+            :fill="node.name=='» (unspecified org)' ? 'url(#diagonalHatch)': color(node)"
+            class="node" />
+        </g>
+        <g>
+          <g
+            v-for="(link) in links"
+            v-bind="links"
+            :id="`link-${link.index}`"
+            :key="link.index"
+            :class="selectedLink == link.index ? 'link linkHover' : 'link'"
+            style="mix-blend-mode: multiply;">
+            <linearGradient
+              :id="`${link.index}-gradient`"
+              :x1="link.source.x1"
+              :x2="link.target.x0"
+              gradientUnits="userSpaceOnUse">
+              <stop
+                :stop-color="color(link.source)"
+                offset="0%" />
+              <stop
+                :stop-color="color(link.target)"
+                offset="100%" />
+            </linearGradient>
+            <path
+              :d="sankeyLinkPaths(link)"
+              :stroke="`url(#${link.index}-gradient)`"
+              :stroke-width="Math.max(1, link.width)"
+              @mouseover="mouseoverLink(link.index)"
+              @mouseleave="mouseleaveLink(link.index)"
+            />
+          </g>
+        </g>
+        <g font-family="sans-serif" font-size="12">
+          <text
+            v-for="(node) in nodes"
+            v-bind="nodes"
+            :key="node.index"
+            :x="node.x0 < width / 2 ? node.x1 + 6 : node.x0 - 6"
+            :y="(node.y1 + node.y0) / 2"
+            :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
+            dy="0.35em">
+            {{ node.name }}
+          </text>
+        </g>
+        <g font-family="sans-serif" font-size="12">
+          <g
+            v-for="(link) in links"
+            v-bind="links"
+            :key="`${link.index}-label`"
+            :style="selectedLink == link.index ? 'display: block;' : 'display: none;'"
+            class="linkText"
             @mouseover="mouseoverLink(link.index)"
-            @mouseleave="mouseleaveLink(link.index)"
-          />
+            @mouseleave="mouseleaveLink(link.index)">
+            <!-- <text
+              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
+              :y="(link.y1 + link.y0) / 2"
+              :width="link.width"
+              dy="0.35em"
+              text-anchor="middle">
+              From {{ link.source.name }}<br />
+            </text>
+            <text
+              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
+              :y="((link.y1 + link.y0) / 2)+15"
+              :width="link.width"
+              dy="0.35em"
+              text-anchor="middle">
+              To {{ link.target.name }}<br />
+            </text>
+            <text
+              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
+              :y="((link.y1 + link.y0) / 2)+30"
+              :width="link.width"
+              dy="0.35em"
+              text-anchor="middle">
+              USD {{ numberFormatter(link.value) }}<br />
+            </text> -->
+            <text
+              :x="labelXPosition(link)"
+              :y="labelYPosition(link)"
+              :width="link.width"
+              dy="0.35em"
+              :text-anchor="labelAnchor(link)">
+              USD {{ numberFormatter(link.value) }}
+            </text>
+          </g>
         </g>
-      </g>
-      <g font-family="sans-serif" font-size="12">
-        <text
-          v-for="(node) in nodes"
-          v-bind="nodes"
-          :key="node.index"
-          :x="node.x0 < width / 2 ? node.x1 + 6 : node.x0 - 6"
-          :y="(node.y1 + node.y0) / 2"
-          :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
-          dy="0.35em">
-          {{ node.name }}
-        </text>
-      </g>
-      <g font-family="sans-serif" font-size="12">
-        <g
-          v-for="(link) in links"
-          v-bind="links"
-          :key="`${link.index}-label`"
-          :style="selectedLink == link.index ? 'display: block;' : 'display: none;'"
-          class="linkText"
-          @mouseover="mouseoverLink(link.index)"
-          @mouseleave="mouseleaveLink(link.index)">
-          <!-- <text
-            :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-            :y="(link.y1 + link.y0) / 2"
-            :width="link.width"
-            dy="0.35em"
-            text-anchor="middle">
-            From {{ link.source.name }}<br />
-          </text>
-          <text
-            :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-            :y="((link.y1 + link.y0) / 2)+15"
-            :width="link.width"
-            dy="0.35em"
-            text-anchor="middle">
-            To {{ link.target.name }}<br />
-          </text>
-          <text
-            :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-            :y="((link.y1 + link.y0) / 2)+30"
-            :width="link.width"
-            dy="0.35em"
-            text-anchor="middle">
-            USD {{ numberFormatter(link.value) }}<br />
-          </text> -->
-          <text
-            :x="labelXPosition(link)"
-            :y="labelYPosition(link)"
-            :width="link.width"
-            dy="0.35em"
-            :text-anchor="labelAnchor(link)">
-            USD {{ numberFormatter(link.value) }}
-          </text>
-        </g>
-      </g>
-    </svg>
+      </svg>
+    </div>
   </div>
 </template>
 <style>
+.badges {
+  display: flex;
+  justify-content: space-between;
+}
 #sankeyChart {
   width: 100%;
   height: 400px;

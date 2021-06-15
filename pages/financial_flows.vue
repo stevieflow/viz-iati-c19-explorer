@@ -111,18 +111,6 @@
           <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">financial flows</span><span v-else>financial flow</span> involving <b>{{ selectedFilterLabel }}</b>
         </h2>
 
-        <b-row>
-          <b-col>
-            <b-badge variant="dark">
-              Funded by
-            </b-badge>
-          </b-col>
-          <b-col class="text-right">
-            <b-badge variant="dark">
-              Implemented by
-            </b-badge>
-          </b-col>
-        </b-row>
         <SankeyChart :items="filteredData" />
       </b-container>
     </template>

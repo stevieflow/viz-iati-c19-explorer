@@ -53,7 +53,7 @@ export default {
                 fontSize: 11,
                 // max: 100000000000,
                 callback (value, index, values) {
-                  return numeral(value).format('0a').toUpperCase()
+                  return numeral(value).format('$0a').toUpperCase()
                 }
               },
               position: 'left'
@@ -74,7 +74,7 @@ export default {
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
                 callback (value, index, values) {
-                  return numeral(value).format('0a').toUpperCase()
+                  return numeral(value).format('$0a').toUpperCase()
                 }
               },
               position: 'right'
