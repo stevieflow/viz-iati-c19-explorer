@@ -206,6 +206,11 @@ export default {
     return {
       title: config.head.title
     }
+  },
+  head () {
+    return {
+      title: config.head.title + ': About this Tool'
+    }
   }
 }
 </script>

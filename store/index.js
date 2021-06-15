@@ -26,7 +26,8 @@ export const state = () => ({
     developing: [],
     developed: []
   },
-  tooltips: {}
+  tooltips: {},
+  orgNames: []
 })
 
 export const mutations = {
@@ -68,6 +69,9 @@ export const mutations = {
       summary[item.key] = item.tooltip
       return summary
     }, {})
+  },
+  setOrgNames (state, orgNames) {
+    state.orgNames = orgNames
   }
 }
 

@@ -10,15 +10,15 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: 'Covid-19 Response Visualisation',
+    title: 'IATI COVID-19 Data Explorer',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'A prototype visualisation to track the Covid-19 response.' },
+      { hid: 'description', name: 'description', content: 'This site allows you to explore all of the published International Aid Transparency Initiative (IATI) data that is related to the coronavirus pandemic.' },
       { name: 'twitter:card', content: 'summary' },
-      { name: 'twitter:site', content: '@devinit' },
-      { name: 'twitter:title', content: 'Covid-19 Response Visualisation' },
-      { name: 'twitter:description', content: 'A prototype visualisation to track the Covid-19 response' },
+      { name: 'twitter:site', content: '@humdata' },
+      { name: 'twitter:title', content: 'IATI COVID-19 Data Explorer' },
+      { name: 'twitter:description', content: 'This site allows you to explore all of the published International Aid Transparency Initiative (IATI) data that is related to the coronavirus pandemic.' },
       { name: 'twitter:image', content: 'https://ocha-dap.github.io/viz-iati-c19-explorer/visualisation.png' },
       { name: 'twitter:image:alt', content: 'Contributions to the Covid-19 emergency.' }
     ],
