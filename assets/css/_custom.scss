@@ -50,6 +50,13 @@ h2 {
     margin-bottom: 32px;
     padding: 0 20px;
   }
+  &.header-sticky {
+    background-color: #FFF;
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
 }
 
 h3 {
@@ -65,7 +72,27 @@ h6 {
   font-weight: 600;
 }
 
+//get around exact active matching for index page with query params and force index tab to be active
+body.index {
+  .navbar-iati .nav-index {
+    .nuxt-link-active {
+      border-bottom: 3px solid #F2645A;
+      color: #F2645A;
+    }
+  }
+}
+
 .iati-viz {
+  .custom-loader {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    .spinner-border {
+      border: 0.25em solid #999;
+      border-right-color: transparent;
+    }
+  }
   p.small {
     font-size: 12px;
     line-height: 15px;

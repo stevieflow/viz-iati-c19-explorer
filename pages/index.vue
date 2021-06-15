@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="9">
           <p class="overview-description">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This tool allows you to explore and analyze all of the published IATI data that is related to the coronavirus pandemic by using the filters below to look at a specific organization, recipient country, or sector.
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country, or sector.
           </p>
         </b-col>
         <b-col>
@@ -15,7 +15,7 @@
       </b-row>
     </b-container>
     <template v-if="isBusy">
-      <div class="text-center text-secondary">
+      <div class="custom-loader text-center text-secondary my-5">
         <b-spinner class="align-middle" />
         <strong>Loading...</strong>
       </div>
@@ -38,7 +38,7 @@
             </b-form-group>
 
             <v-select
-              v-if="selectedFilterDimension==='#org+name'"
+              v-if="selectedFilterDimension==='#org+id'"
               :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
               :options="reportingOrgs"
@@ -73,8 +73,8 @@
             <div class="quick-filter-list">
               Quick filters:
               <ul class="horizontal-list d-inline">
-                <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.name">
-                  <a href="#" :title="filter.name" :name="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
+                <li v-for="filter in quickFilters[getFilterID(selectedFilterDimension)]" :key="filter.id">
+                  <a :id="filter.id" href="#" :title="filter.name" @click="onQuickFilter">{{ filter.name }}</a>
                 </li>
               </ul>
             </div>
@@ -142,10 +142,10 @@
           </b-col>
         </b-row>
 
-        <hr class="my-4">
+        <hr class="mt-4 mb-0">
 
-        <h2 class="my-4">
-          <b>{{ activityCount }}</b> activities by <b>{{ selectedFilterLabel }}</b>
+        <h2 class="header-sticky">
+          <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
         </h2>
         <h2 class="header">
           Key Figures
@@ -292,12 +292,11 @@ export default {
   },
   data () {
     return {
-      title: config.head.title,
-      selectedFilterDimension: '#org+name',
+      selectedFilterDimension: '#org+id',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
-        { text: 'By Publishing Organization', value: '#org+name', label: 'all publishing organizations' },
+        { text: 'By Publishing Organization', value: '#org+id', label: 'all publishing organizations' },
         { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
@@ -309,36 +308,36 @@ export default {
           { text: 'By Sector', value: '#sector' }
         ],
         [
-          { text: 'By Publishing Org', value: '#org+name' },
+          { text: 'By Publishing Org', value: '#org+id' },
           { text: 'By Sector', value: '#sector' }
         ],
         [
           { text: 'By Recipient Country', value: '#country' },
-          { text: 'By Publishing Org', value: '#org+name' }
+          { text: 'By Publishing Org', value: '#org+id' }
         ]
       ],
       quickFilters: [
         [
-          { name: 'Asian Development Bank' },
-          { name: 'Inter-American Development Bank' },
-          { name: 'OCHA Country Based Pooled Funds' },
-          { name: 'United Nations Development Programme (UNDP)' },
-          { name: 'United States Agency for International Development (USAID)' },
-          { name: 'World Food Programme' }
+          { name: 'Asian Development Bank', id: 'xm-dac-46004' },
+          { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
+          { name: 'UNOCHA - Central Emergency Response Fund (CERF)', id: 'xm-ocha-cerf' },
+          { name: 'United Nations Development Programme', id: 'xm-dac-41114' },
+          { name: 'United States Agency for International Development (USAID)', id: 'us-gov-1' },
+          { name: 'World Food Programme', id: 'xm-dac-41140' }
         ],
         [
-          { name: 'India' },
-          { name: 'Brazil' },
-          { name: 'Afghanistan' },
-          { name: 'Bangladesh' },
-          { name: 'South Sudan' }
+          { name: 'India', id: 'India' },
+          { name: 'Brazil', id: 'Brazil' },
+          { name: 'Afghanistan', id: 'Afghanistan' },
+          { name: 'Bangladesh', id: 'Bangladesh' },
+          { name: 'South Sudan', id: 'South Sudan' }
         ],
         [
-          { name: 'Emergency Response' },
-          { name: 'Health' },
-          { name: 'Education' },
-          { name: 'Reconstruction Relief & Rehabilitation' },
-          { name: 'Transport & Storage' }
+          { name: 'Emergency Response', id: 'Emergency Response' },
+          { name: 'Health', id: 'Health' },
+          { name: 'Education', id: 'Education' },
+          { name: 'Reconstruction Relief & Rehabilitation', id: 'Reconstruction Relief & Rehabilitation' },
+          { name: 'Transport & Storage', id: 'Transport & Storage' }
         ]
       ],
       strictToggleOptions: [
@@ -358,11 +357,17 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       fullData: [],
+      orgNames: [],
       filteredData: [],
       filterParams: {},
       lastUpdatedDate: '',
       skippedTransactions: 0,
       isProd: true
+    }
+  },
+  head () {
+    return {
+      title: config.head.title + ': Commitments and Spending'
     }
   },
   computed: {
@@ -373,15 +378,32 @@ export default {
       return this.$store.state.tooltips
     },
     reportingOrgs () {
-      const orgList = [...new Set(this.fullData.map(item => item['#org+name']))]
+      const orgList = this.orgNames.map((item) => {
+        const org = {}
+        org.value = item['#org+id+reporting']
+        org.text = item['#org+name+reporting']
+        return org
+      })
       return this.populateSelect(orgList, 'All publishing organizations')
     },
     countries () {
-      const countryList = [...new Set(this.fullData.map(item => item['#country']))]
+      let countryList = [...new Set(this.fullData.map(item => item['#country']))]
+      countryList = countryList.map((item) => {
+        const country = {}
+        country.value = item
+        country.text = item
+        return country
+      })
       return this.populateSelect(countryList, 'All recipient countries')
     },
     sectors () {
-      const sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
+      let sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
+      sectorList = sectorList.map((item) => {
+        const sector = {}
+        sector.value = item
+        sector.text = item
+        return sector
+      })
       return this.populateSelect(sectorList, 'All sectors')
     },
     commitments () {
@@ -398,7 +420,7 @@ export default {
     },
     activityCount () {
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
-      return numeral(activities.length).format('0,0')
+      return activities.length
     },
     totalCommitments () {
       const sum = this.getTotal(this.commitments)
@@ -409,7 +431,7 @@ export default {
       return numeral(sum).format('$0.0a')
     },
     tagPattern () {
-      return (this.selectedFilterDimension === '#org+name' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
+      return (this.selectedFilterDimension === '#org+id' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
     },
     commitmentsTable () {
       return this.populateList(this.commitmentsRanked)
@@ -455,15 +477,48 @@ export default {
     }
   },
   mounted () {
+    this.toggleBodyClass('addClass', 'index')
+
     this.filterParams = {
       humanitarian: 'off',
       strict: 'off'
     }
-    this.filterParams['#org+name'] = '*'
+    this.filterParams['#org+id'] = '*'
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    this.loadData()
+    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(orgDataPath)
+      .then((response) => {
+        this.orgNames = response.data.data
+        this.$store.commit('setOrgNames', response.data.data)
+
+        this.$nextTick(() => {
+          if ('org' in this.$route.query) {
+            this.filterParams['#org+id'] = this.$route.query.org
+            this.querySetup('#org+id')
+          }
+          if ('country' in this.$route.query) {
+            this.filterParams['#country'] = this.$route.query.country
+            this.querySetup('#country')
+          }
+          if ('sector' in this.$route.query) {
+            this.filterParams['#sector'] = this.$route.query.sector
+            this.querySetup('#sector')
+          }
+          if ('humanitarian' in this.$route.query) {
+            this.filterParams.humanitarian = this.$route.query.humanitarian
+          }
+          if ('strict' in this.$route.query) {
+            this.filterParams.strict = this.$route.query.strict
+          }
+
+          this.loadData()
+        })
+      })
+  },
+  destroyed () {
+    this.toggleBodyClass('removeClass', 'index')
   },
   methods: {
     async loadData () {
@@ -486,38 +541,64 @@ export default {
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
-          this.skippedTransactions = numeral(metadata['#meta+transactions+skipped+num']).format('0,0')
+          this.skippedTransactions = this.numberFormatter(metadata['#meta+transactions+skipped+num'])
 
           // process the transaction data
           this.fullData = response.data.data
+
           this.filteredData = this.filterData()
         })
-
-      this.$nuxt.$loading.finish()
+    },
+    urlQuery () {
+      const _query = {}
+      if (this.filterParams['#org+id'] !== '*') {
+        _query.org = this.filterParams['#org+id']
+      }
+      if (this.filterParams['#country'] !== '*') {
+        _query.country = this.filterParams['#country']
+      }
+      if (this.filterParams['#sector'] !== '*') {
+        _query.sector = this.filterParams['#sector']
+      }
+      if (this.filterParams.humanitarian !== 'off') {
+        _query.humanitarian = this.filterParams.humanitarian
+      }
+      if (this.filterParams.strict !== 'off') {
+        _query.strict = this.filterParams.strict
+      }
+      return _query
     },
     updateRouter () {
-      // this.$router.push({ name: 'overview', query: this.urlQuery })
+      this.$router.push({ name: 'index', query: this.urlQuery() })
     },
-    setFilterLabel (dimension) {
-      this.selectedFilterLabel = '*'
-      for (let i = 0; i < this.filterOptions.length; i++) {
-        if (this.filterOptions[i].value === dimension) {
-          this.selectedFilterLabel = this.filterOptions[i].label.toLowerCase()
-        }
-      }
+    querySetup (dimension) {
+      this.selectedFilterDimension = dimension
+      this.selectedFilter = this.filterParams[dimension]
+      const filterArray = this.keyFigureFilter[this.getFilterID(dimension)]
+      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+    },
+    numberFormatter (value) {
+      if (value === 0) { return '0' }
+      return value
+        ? numeral(value).format('0,0')
+        : ''
     },
     onFilterOptionSelect (selected) {
       const filterArray = this.keyFigureFilter[this.getFilterID(selected)]
       this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
 
       this.resetParams()
-      this.setFilterLabel(selected)
+      this.setDefaultFilterLabel(selected)
       this.updateFilteredData()
     },
     onSelect (value) {
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
-      if (value !== '*') { this.selectedFilterLabel = value } else { this.setFilterLabel(this.selectedFilterDimension) }
+      if (value !== '*') {
+        this.selectedFilterLabel = (this.selectedFilterDimension === '#org+id') ? this.getOrgName(value) : value
+      } else {
+        this.setDefaultFilterLabel(this.selectedFilterDimension)
+      }
       this.updateFilteredData()
     },
     onToggle (event) {
@@ -526,10 +607,15 @@ export default {
     },
     onQuickFilter (event) {
       event.preventDefault()
-      this.onSelect(event.target.name)
+      this.onSelect(event.target.id)
+    },
+    setDefaultFilterLabel (dimension) {
+      const filterOption = this.filterOptions.filter(option => option.value === dimension)
+      this.selectedFilterLabel = filterOption[0].label.toLowerCase()
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
+      this.updateRouter()
     },
     filterData () {
       let result = this.fullData
@@ -537,7 +623,6 @@ export default {
       const filterDimension = this.selectedFilterDimension
 
       if (params[filterDimension] && params[filterDimension] !== '*') {
-        this.selectedFilterLabel = params[filterDimension]
         result = result.filter(item => item[filterDimension] === params[filterDimension])
       }
       if (params['humanitarian'] === 'on') {
@@ -550,7 +635,7 @@ export default {
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
-        itemList.push({ value: item, text: item })
+        itemList.push({ value: item.value, text: item.text })
         return itemList
       }, []).sort((a, b) =>
         a.text < b.text ? -1 : 1
@@ -560,7 +645,7 @@ export default {
     },
     populateList (data) {
       return data.reduce((list, item) => {
-        list.push({ item: item[0], value: numeral(item[1]).format('0,0') })
+        list.push({ item: item[0], value: '$' + this.numberFormatter(item[1]) })
         return list
       }, []).sort((a, b) =>
         b.value - a.value
@@ -575,6 +660,14 @@ export default {
       }, [])
       const labels = ranked.map(row => row[0])
       return { values: ratios, labels }
+    },
+    getOrgName (id) {
+      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      return org[0]['#org+name+reporting']
+    },
+    getOrgID (name) {
+      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      return org[0]['#org+id+reporting']
     },
     getCumulativeSeries (data) {
       let total = 0
@@ -611,10 +704,19 @@ export default {
       if (this.selectedFilterDimension === '#sector') { return 2 } else if (this.selectedFilterDimension === '#country') { return 1 } else { return 0 }
     },
     resetParams () {
-      this.filterParams['#org+name'] = '*'
+      this.filterParams['#org+id'] = '*'
       this.filterParams['#country'] = '*'
       this.filterParams['#sector'] = '*'
       this.selectedFilter = '*'
+    },
+    toggleBodyClass (addRemoveClass, className) {
+      const el = document.body
+
+      if (addRemoveClass === 'addClass') {
+        el.classList.add(className)
+      } else {
+        el.classList.remove(className)
+      }
     }
   }
 }
