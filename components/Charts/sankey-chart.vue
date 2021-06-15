@@ -154,6 +154,7 @@
 import { select as d3Select } from 'd3-selection'
 import { scaleOrdinal as d3ScaleOrdinal, schemeCategory10 as d3SchemeCategory10 } from 'd3'
 import { sankey as d3Sankey, sankeyLinkHorizontal as d3SsankeyLinkHorizontal } from 'd3-sankey'
+import numeral from 'numeral'
 export default {
   name: 'SankeyChart',
   props: ['chartData'],
@@ -215,9 +216,7 @@ export default {
     numberFormatter (value) {
       if (value === 0) { return '0' }
       return value
-        ? value.toLocaleString(undefined, {
-          maximumFractionDigits: 0
-        })
+        ? numeral(value).format('$0,0')
         : ''
     },
     labelXPosition (link) {
