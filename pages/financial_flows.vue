@@ -191,7 +191,7 @@ export default {
     }
     this.filterParams['#org+id+reporting'] = this.selectedFilter
 
-    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    const orgDataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
     axios.get(orgDataPath)
       .then((response) => {
         this.orgNames = response.data.data
