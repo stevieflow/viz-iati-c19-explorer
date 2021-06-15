@@ -1,7 +1,7 @@
 <template>
   <b-container class="iati-viz my-4">
     <b-navbar-brand :to="'/'">
-      {{ pageTitle }}
+      <span v-html="pageTitle" />
     </b-navbar-brand>
     <b-navbar toggleable="lg" type="light" variant="bg-white" class="navbar-iati">
       <b-navbar-toggle target="nav-collapse" />
@@ -67,6 +67,9 @@
 .number-value {
   text-align: right;
 }
+sup {
+  font-size: 11px;
+}
 </style>
 
 <script>
@@ -85,7 +88,7 @@ export default {
       if (process.client) {
         isProd = !!(window.location.host.includes('ocha-dap'))
       }
-      return (isProd) ? 'IATI COVID-19 Data Explorer' : '*STAGE* IATI COVID-19 Data Explorer'
+      return (isProd) ? 'IATI COVID-19 Data Explorer <sup>ALPHA</sup>' : '*STAGE* IATI COVID-19 Data Explorer <sup>ALPHA</sup>'
     }
   }
 }
