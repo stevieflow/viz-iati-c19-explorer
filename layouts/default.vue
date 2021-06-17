@@ -87,6 +87,7 @@ export default {
       let isProd = true
       if (process.client) {
         isProd = !!(window.location.host.includes('ocha-dap'))
+        this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Data Explorer <sup>ALPHA</sup>' : '*STAGE* IATI COVID-19 Data Explorer <sup>ALPHA</sup>'
     }

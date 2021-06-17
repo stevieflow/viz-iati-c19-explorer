@@ -152,7 +152,6 @@
 </style>
 <script>
 import { select as d3Select } from 'd3-selection'
-import { scaleOrdinal as d3ScaleOrdinal, schemeCategory10 as d3SchemeCategory10 } from 'd3'
 import { sankey as d3Sankey, sankeyLinkHorizontal as d3SsankeyLinkHorizontal } from 'd3-sankey'
 import numeral from 'numeral'
 export default {
@@ -160,17 +159,15 @@ export default {
   props: ['chartData'],
   data () {
     return {
+      maximumVisibleItems: 10,
       chart: null,
       width: 10,
       height: 10,
       selectedLink: null,
-      chartColors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#EFF2AA', '#C6E69B', '#AEEAE6']
+      colors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#EFF2AA', '#C6E69B', '#AEEAE6']
     }
   },
   computed: {
-    colors () {
-      return d3ScaleOrdinal(d3SchemeCategory10)
-    },
     nodes () {
       return this.sankey.nodes
     },
@@ -242,8 +239,7 @@ export default {
     },
     color (d) {
       if (d.name === '» (unspecified org)') { return '#999' }
-      // return this.colors(d.name)
-      return this.chartColors[d.index]
+      return this.colors[d.index]
     },
     makeChart () {
       d3Select('#sankeyChart')

@@ -52,10 +52,24 @@ h2 {
   }
   &.header-sticky {
     background-color: #FFF;
+    display: flex;
     padding: 24px 0;
     position: sticky;
-    top: 0;
+    top: -1px;
     z-index: 2;
+    .anchor {
+      cursor: pointer;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 14px;
+      margin-left: auto;
+      opacity: 0;
+    }
+  }
+  &.is-stuck {
+    box-shadow: 0 5px 5px -5px #CCC;
+    .anchor {
+      opacity: 1;
+    }
   }
 }
 
@@ -91,6 +105,18 @@ body.index {
     .spinner-border {
       border: 0.25em solid #999;
       border-right-color: transparent;
+    }
+  }
+  .feedback-link {
+    font-size: 14px;
+    .icon-warning {
+      background-image: url('~@/assets/icons/icon-warning.svg');
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      display: inline-block;
+      height: 14px;
+      vertical-align: middle;
+      width: 14px;
     }
   }
   p.small {

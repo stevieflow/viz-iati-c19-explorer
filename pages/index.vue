@@ -11,6 +11,9 @@
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
+          <div class="text-center pt-2">
+            <a href="#" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -24,7 +27,7 @@
       <b-container>
         <hr class="my-4">
 
-        <b-row>
+        <b-row ref="filters">
           <b-col cols="7">
             <b-form-group label="Filter:">
               <b-form-radio-group
@@ -145,7 +148,8 @@
         <hr class="mt-4 mb-0">
 
         <h2 class="header-sticky">
-          <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          <div><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b></div>
+          <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
         </h2>
         <h2 class="header">
           Key Figures
@@ -357,12 +361,12 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       fullData: [],
-      orgNames: [],
       filteredData: [],
       filterParams: {},
+      reportingOrgsIndex: [],
       lastUpdatedDate: '',
       skippedTransactions: 0,
-      isProd: true
+      loaded: false
     }
   },
   head () {
@@ -377,11 +381,15 @@ export default {
     tooltips () {
       return this.$store.state.tooltips
     },
+    isProd () {
+      return this.$store.state.isProd
+    },
     reportingOrgs () {
-      const orgList = this.orgNames.map((item) => {
+      let orgList = [...new Set(this.fullData.map(item => item['#org+id']))]
+      orgList = orgList.map((item) => {
         const org = {}
-        org.value = item['#org+id+reporting']
-        org.text = item['#org+name+reporting']
+        org.value = item
+        org.text = this.getOrgName(item)
         return org
       })
       return this.populateSelect(orgList, 'All publishing organizations')
@@ -487,11 +495,11 @@ export default {
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
-    axios.get(orgDataPath)
+    const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(dataPath)
       .then((response) => {
-        this.orgNames = response.data.data
-        this.$store.commit('setOrgNames', response.data.data)
+        this.reportingOrgsIndex = response.data.data
+        this.$store.commit('setReportingOrgsIndex', response.data.data)
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
@@ -517,14 +525,18 @@ export default {
         })
       })
   },
+  updated () {
+    // do this once
+    if (!this.loaded) {
+      this.createStickyHeader()
+      this.loaded = true
+    }
+  },
   destroyed () {
     this.toggleBodyClass('removeClass', 'index')
   },
   methods: {
     async loadData () {
-      if (process.client) {
-        this.isProd = !!(window.location.host.includes('ocha-dap'))
-      }
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
@@ -662,11 +674,11 @@ export default {
       return { values: ratios, labels }
     },
     getOrgName (id) {
-      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      const org = this.reportingOrgsIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     },
     getOrgID (name) {
-      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      const org = this.reportingOrgsIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
     },
     getCumulativeSeries (data) {
@@ -717,6 +729,19 @@ export default {
       } else {
         el.classList.remove(className)
       }
+    },
+    createStickyHeader () {
+      const el = document.getElementsByClassName('header-sticky')[0]
+      const observer = new IntersectionObserver(
+        ([e]) => e.target.classList.toggle('is-stuck', e.intersectionRatio < 1),
+        { threshold: [1] }
+      )
+      observer.observe(el)
+    },
+    scrollTo (refName) {
+      const element = this.$refs[refName]
+      const top = element.offsetTop
+      window.scrollTo(0, top)
     }
   }
 }

@@ -29,15 +29,15 @@ export default {
   components: {
     SankeyChart
   },
-  props: ['items'],
+  props: ['items', 'params'],
   data () {
     return {
       maximumVisibleItems: 10
     }
   },
   computed: {
-    orgNames () {
-      return this.$store.state.orgNames
+    reportingOrgsIndex () {
+      return this.$store.state.reportingOrgsIndex
     },
     chartData () {
       const trimName = (value) => {
@@ -67,6 +67,7 @@ export default {
       const items = [...this.items].sort((a, b) =>
         a['#value+total'] > b['#value+total'] ? -1 : 1
       ).slice(0, this.maximumVisibleItems)
+
       const nodes = items.reduce((summary, item) => {
         const provider = getProvider(item, item['#x_transaction_direction'])
         const receiver = getReceiver(item, item['#x_transaction_direction'])
@@ -89,16 +90,43 @@ export default {
           value: Math.round(item['#value+total'])
         }
       })
+
+      // const test = [...this.items].sort((a, b) =>
+      //   a['#value+total'] > b['#value+total'] ? -1 : 1
+      // ).reduce((acc, item) => {
+      //   const match = acc.find(a => a['#org+name+provider'] === item['#org+name+provider'])
+      //   if (!match) {
+      //     acc.push(item)
+      //   } else {
+      //     match['#value+total'] += item['#value+total']
+      //   }
+      //   return acc
+      // }, []).slice(0, this.maximumVisibleItems)
+
+      // console.log(test)
+
+      // const test = (this.params.humanitarian === 'off' || this.params.strict === 'off')
+      //   ? links.reduce((acc, link) => {
+      //     const match = acc.find(a => a.target === link.target)
+      //     if (!match) {
+      //       acc.push(link)
+      //     } else {
+      //       match.value += link.value
+      //     }
+      //     return acc
+      //   }, [])
+      //   : links
       const out = {
         nodes,
         links
       }
+      console.log(out)
       return out
     }
   },
   methods: {
     getOrgName (id) {
-      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      const org = this.reportingOrgsIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     }
   }
