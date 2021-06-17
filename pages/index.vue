@@ -12,7 +12,7 @@
             Download All Data
           </b-button>
           <div class="text-center pt-2">
-            <a href="#" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
           </div>
         </b-col>
       </b-row>
@@ -261,12 +261,20 @@
           </b-col>
         </b-row>
 
-        <h2 class="header">
+        <h2 class="header mb-4">
           Commitments and Spending Over Time
         </h2>
 
+        <b-form-select
+          v-model="timeseriesSelect"
+          class="form-select pl-2 pr-4 ml-3 mt-0 mb-4 w-auto"
+          size="sm"
+          :options="timeseriesSelectOptions"
+        />
+
         <TimeseriesChart
           :timeseries-chart-data="timeseriesData"
+          :chart-type="timeseriesSelect"
         />
       </b-container>
     </template>
@@ -319,6 +327,12 @@ export default {
           { text: 'By Recipient Country', value: '#country' },
           { text: 'By Publishing Org', value: '#org+id' }
         ]
+      ],
+      timeseriesSelect: 'Cumulative and Monthly Commitments/Spending',
+      timeseriesSelectOptions: [
+        'Cumulative and Monthly Commitments/Spending',
+        'Cumulative Commitments/Spending',
+        'Monthly Commitments/Spending'
       ],
       quickFilters: [
         [

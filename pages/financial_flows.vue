@@ -12,7 +12,7 @@
             Download All Data
           </b-button>
           <div class="text-center pt-2">
-            <a href="#" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
           </div>
         </b-col>
       </b-row>
