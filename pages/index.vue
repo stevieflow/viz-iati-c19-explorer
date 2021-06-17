@@ -586,6 +586,7 @@ export default {
     querySetup (dimension) {
       this.selectedFilterDimension = dimension
       this.selectedFilter = this.filterParams[dimension]
+      this.selectedFilterLabel = this.getOrgName(this.selectedFilter)
       const filterArray = this.keyFigureFilter[this.getFilterID(dimension)]
       this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
     },
