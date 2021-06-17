@@ -156,7 +156,7 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      reportingOrgsIndex: [],
+      orgNameIndex: [],
       lastUpdatedDate: ''
     }
   },
@@ -200,8 +200,8 @@ export default {
     const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
     axios.get(dataPath)
       .then((response) => {
-        this.reportingOrgsIndex = response.data.data
-        this.$store.commit('setReportingOrgsIndex', response.data.data)
+        this.orgNameIndex = response.data.data
+        this.$store.commit('setorgNameIndex', response.data.data)
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
@@ -319,11 +319,11 @@ export default {
       return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
     getOrgName (id) {
-      const org = this.reportingOrgsIndex.filter(org => org['#org+id+reporting'] === id)
+      const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     },
     getOrgID (name) {
-      const org = this.reportingOrgsIndex.filter(org => org['#org+name+reporting'] === name)
+      const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
     }
   }
