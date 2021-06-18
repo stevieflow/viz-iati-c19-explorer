@@ -190,13 +190,13 @@
                 </div>
 
                 <div class="scroll-list-container">
-                  <div class="scroll-list">
-                    <b-table borderless small class="summary-table mr-5 mt-3 mb-0" :fields="tableFields" :items="commitmentsTable">
+                  <div class="scroll-list mt-3">
+                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
                       <template #cell(color)="data">
                         <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
@@ -235,13 +235,13 @@
                 </div>
 
                 <div class="scroll-list-container">
-                  <div class="scroll-list">
-                    <b-table borderless small class="summary-table mr-5 mt-3 mb-0" :fields="tableFields" :items="spendingTable">
+                  <div class="scroll-list mt-3">
+                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
                       <template #cell(color)="data">
                         <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
