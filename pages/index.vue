@@ -198,6 +198,9 @@
                       <template #cell(item)="data">
                         <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
                       </template>
+                      <template #cell(value)="data">
+                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
+                      </template>
                     </b-table>
                   </div>
                   <div class="scroll-list-overlay" />
@@ -238,7 +241,10 @@
                         <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                      </template>
+                      <template #cell(value)="data">
+                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
                       </template>
                     </b-table>
                   </div>
@@ -812,9 +818,10 @@ export default {
   }
   .scroll-list {
     height: 168px;
+    max-width: 273px;
     overflow-y: scroll;
-    position: relative;
     .list-breakdown {
+      color: #888;
       padding-left: 10px;
     }
   }
