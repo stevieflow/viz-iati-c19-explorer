@@ -96,6 +96,10 @@ body.index {
   }
 }
 
+.small {
+  font-size: 12px;
+}
+
 .iati-viz {
   .custom-loader {
     left: 50%;
@@ -145,6 +149,7 @@ body.index {
     border: 1px solid #CCC;
     color: #000;
     font-family: 'Gotham Bold', sans-serif;
+    font-size: 15px;
   }
   .btn-group {
     border-radius: 9px;

@@ -68,7 +68,8 @@
             :y="(node.y1 + node.y0) / 2"
             :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
             dy="0.35em">
-            {{ node.name }}
+            {{ truncate(node.name) }}
+            <title>{{ node.name }}</title>
           </text>
         </g>
         <g font-family="sans-serif" font-size="12">
@@ -201,6 +202,12 @@ export default {
     this.onResize()
   },
   methods: {
+    truncate (str) {
+      if (str.length > 50) {
+        str = str.substr(0, 50) + '...'
+      }
+      return str
+    },
     mouseoverLink (index) {
       this.selectedLink = index
     },

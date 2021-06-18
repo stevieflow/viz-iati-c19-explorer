@@ -45,9 +45,6 @@ export default {
         const redactionStrings = ['USAID redacted this field in accordance with the Principled Exceptions outlined in the Office of Management and Budget Bulletin 12-01.',
           'USAID redacted this field in accordance with the exceptions outlined in the Foreign Aid Transparency and Accountability Act of 2016.']
         if (redactionStrings.includes(value)) { return 'Redacted' }
-        if (value.length > 50) {
-          return value.substr(0, 50) + '...'
-        }
         return value
       }
       const getProvider = (item, transactionType) => {

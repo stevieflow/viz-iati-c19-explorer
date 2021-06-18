@@ -152,8 +152,19 @@
           <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
         </h2>
         <h2 class="header">
-          Key Figures
+          Commitments and Spending Ranking
         </h2>
+
+        <b-row>
+          <b-col>
+            <b-form-select
+              v-model="selectedRankingFilter"
+              class="form-select px-2 ml-3 mb-3"
+              :options="rankingFilter[getFilterID(selectedFilterDimension)]"
+            />
+          </b-col>
+          <b-col />
+        </b-row>
 
         <b-row>
           <b-col>
@@ -177,33 +188,24 @@
                 <div class="key-figure-num">
                   {{ totalCommitments }}
                 </div>
-                <b-form-select
-                  v-model="selectedCommitmentFilter"
-                  class="form-select px-2 my-3"
-                  size="sm"
-                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
-                />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
-                  <template #cell(color)="data">
-                    <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
-                  </template>
-                  <template #cell(item)="data">
-                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
-                  </template>
-                  <template #custom-foot>
-                    <tr>
-                      <td colspan="2 pt-3">
-                        <span class="small text-muted">
-                          {{ lastUpdatedDate }} | IATI
-                        </span>
-                      </td>
-                      <td colspan="pt-3">
-                        (USD)
-                      </td>
-                    </tr>
-                  </template>
-                </b-table>
+                <div class="scroll-list-container">
+                  <div class="scroll-list">
+                    <b-table borderless small class="summary-table mr-5 mt-3 mb-0" :fields="tableFields" :items="commitmentsTable">
+                      <template #cell(color)="data">
+                        <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
+                      </template>
+                      <template #cell(item)="data">
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                      </template>
+                    </b-table>
+                  </div>
+                  <div class="scroll-list-overlay" />
+                </div>
+                <div class="scroll-list-footer mt-2">
+                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
+                  <span>(USD)</span>
+                </div>
               </div>
             </div>
           </b-col>
@@ -228,49 +230,43 @@
                 <div class="key-figure-num">
                   {{ totalSpending }}
                 </div>
-                <b-form-select
-                  id="spendingSelect"
-                  v-model="selectedSpendingFilter"
-                  class="form-select px-2 my-3"
-                  size="sm"
-                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
-                />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
-                  <template #cell(color)="data">
-                    <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
-                  </template>
-                  <template #cell(item)="data">
-                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
-                  </template>
-                  <template #custom-foot>
-                    <tr>
-                      <td colspan="2 pt-3">
-                        <span class="small text-muted">
-                          {{ lastUpdatedDate }} | IATI
-                        </span>
-                      </td>
-                      <td colspan="pt-3">
-                        (USD)
-                      </td>
-                    </tr>
-                  </template>
-                </b-table>
+                <div class="scroll-list-container">
+                  <div class="scroll-list">
+                    <b-table borderless small class="summary-table mr-5 mt-3 mb-0" :fields="tableFields" :items="spendingTable">
+                      <template #cell(color)="data">
+                        <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
+                      </template>
+                      <template #cell(item)="data">
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
+                      </template>
+                    </b-table>
+                  </div>
+                  <div class="scroll-list-overlay" />
+                </div>
+                <div class="scroll-list-footer mt-2">
+                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
+                  <span>(USD)</span>
+                </div>
               </div>
             </div>
           </b-col>
         </b-row>
 
-        <h2 class="header mb-4">
+        <h2 class="header">
           Commitments and Spending Over Time
         </h2>
 
-        <b-form-select
-          v-model="timeseriesSelect"
-          class="form-select pl-2 pr-4 ml-3 mt-0 mb-4 w-auto"
-          size="sm"
-          :options="timeseriesSelectOptions"
-        />
+        <b-row>
+          <b-col>
+            <b-form-select
+              v-model="timeseriesSelect"
+              class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"
+              :options="timeseriesSelectOptions"
+            />
+          </b-col>
+          <b-col />
+        </b-row>
 
         <TimeseriesChart
           :timeseries-chart-data="timeseriesData"
@@ -312,9 +308,8 @@ export default {
         { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
-      selectedCommitmentFilter: '#country',
-      selectedSpendingFilter: '#country',
-      keyFigureFilter: [
+      selectedRankingFilter: '#country',
+      rankingFilter: [
         [
           { text: 'By Recipient Country', value: '#country' },
           { text: 'By Sector', value: '#sector' }
@@ -435,10 +430,10 @@ export default {
       return this.filteredData.filter(item => item['#x_transaction_type'] === 'spending')
     },
     commitmentsRanked () {
-      return this.getRankedList(this.commitments, this.selectedCommitmentFilter)
+      return this.getRankedList(this.commitments)
     },
     spendingRanked () {
-      return this.getRankedList(this.spending, this.selectedSpendingFilter)
+      return this.getRankedList(this.spending)
     },
     activityCount () {
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
@@ -601,8 +596,8 @@ export default {
       this.selectedFilterDimension = dimension
       this.selectedFilter = this.filterParams[dimension]
       this.selectedFilterLabel = this.getOrgName(this.selectedFilter)
-      const filterArray = this.keyFigureFilter[this.getFilterID(dimension)]
-      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+      const filterArray = this.rankingFilter[this.getFilterID(dimension)]
+      this.selectedRankingFilter = filterArray[0].value
     },
     numberFormatter (value) {
       if (value === 0) { return '0' }
@@ -611,8 +606,8 @@ export default {
         : ''
     },
     onFilterOptionSelect (selected) {
-      const filterArray = this.keyFigureFilter[this.getFilterID(selected)]
-      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+      const filterArray = this.rankingFilter[this.getFilterID(selected)]
+      this.selectedRankingFilter = filterArray[0].value
 
       this.resetParams()
       this.setDefaultFilterLabel(selected)
@@ -678,7 +673,8 @@ export default {
         b.value - a.value
       )
     },
-    populateDonut (data, ranked) {
+    populateDonut (data, rankedData) {
+      const ranked = (rankedData.length > 6) ? rankedData.slice(0, 6) : rankedData
       const total = this.getTotal(data)
       const ratios = ranked.reduce((list, item) => {
         const ratio = Number(((item[1] / total) * 100).toFixed(1))
@@ -708,9 +704,10 @@ export default {
       const result = data.map(item => Number(item[this.tagPattern]))
       return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
-    getRankedList (data, dimension) {
+    getRankedList (data) {
+      const dimension = this.selectedRankingFilter
       const total = this.getTotal(data)
-      const ranked = Object.entries(data.reduce((list, item) => {
+      const ranked = Object.entries(data.reduce((list, item, index) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
           const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
@@ -719,13 +716,12 @@ export default {
         return list
       }, {})).sort((a, b) =>
         b[1] - a[1]
-      ).slice(0, 5)
-
-      // calculate and append 'Other' value if sum < 100
-      const sum = ranked.reduce((total, amount) => {
+      )
+      // calculate sum of top 5 and append 'Other' value if sum < 100
+      const sum = ranked.slice(0, 5).reduce((total, amount) => {
         return total + amount[1]
       }, 0)
-      if (sum < total) { ranked.push(['Other or unspecified', total - sum]) }
+      if (sum < total) { ranked.splice(5, 0, ['Other or unspecified', total - sum]) }
       return ranked
     },
     getFilterID () {
@@ -802,6 +798,7 @@ export default {
       padding: 0 8px 0 0;
       vertical-align: middle;
       &:last-child {
+        padding-right: 0;
         text-align: right;
       }
     }
@@ -809,6 +806,31 @@ export default {
   .color-key {
     height: 12px;
     width: 12px;
+  }
+  .scroll-list-container {
+    position: relative;
+  }
+  .scroll-list {
+    height: 168px;
+    overflow-y: scroll;
+    position: relative;
+    .list-breakdown {
+      padding-left: 10px;
+    }
+  }
+  .scroll-list-overlay {
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+    bottom: 0;
+    height: 30px;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+  }
+  .scroll-list-footer {
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
   }
   .quick-filter-list {
     font-size: 14px;
