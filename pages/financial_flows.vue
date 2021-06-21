@@ -302,7 +302,24 @@ export default {
       if (params['strict'] === 'on') {
         result = result.filter(item => item['#indicator+bool+strict'] === 1)
       }
+      if (params['humanitarian'] === 'off' || params['strict'] === 'off') {
+        result = this.aggregateFlows(result)
+      }
       return result
+    },
+    aggregateFlows (data) {
+      const aggregated = data.reduce((acc, item) => {
+        const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
+        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
+
+        if (!match) {
+          acc.push(item)
+        } else {
+          match['#value+total'] += item['#value+total']
+        }
+        return acc
+      }, [])
+      return aggregated
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {

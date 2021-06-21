@@ -88,36 +88,10 @@ export default {
         }
       })
 
-      // const test = [...this.items].sort((a, b) =>
-      //   a['#value+total'] > b['#value+total'] ? -1 : 1
-      // ).reduce((acc, item) => {
-      //   const match = acc.find(a => a['#org+name+provider'] === item['#org+name+provider'])
-      //   if (!match) {
-      //     acc.push(item)
-      //   } else {
-      //     match['#value+total'] += item['#value+total']
-      //   }
-      //   return acc
-      // }, []).slice(0, this.maximumVisibleItems)
-
-      // console.log(test)
-
-      // const test = (this.params.humanitarian === 'off' || this.params.strict === 'off')
-      //   ? links.reduce((acc, link) => {
-      //     const match = acc.find(a => a.target === link.target)
-      //     if (!match) {
-      //       acc.push(link)
-      //     } else {
-      //       match.value += link.value
-      //     }
-      //     return acc
-      //   }, [])
-      //   : links
       const out = {
         nodes,
         links
       }
-      console.log(out)
       return out
     }
   },
