@@ -4,7 +4,6 @@
       <b-row>
         <b-col cols="3">
           <ul class="jump-nav">
-            <li><a href="#about">About this Tool</a></li>
             <li><a href="#methodology">Methodology Notes</a></li>
             <li><a href="#developers">Technical Details / Resources for Developers</a></li>
             <li><a href="#tos">Terms of Service / Privacy Notice</a></li>
@@ -56,9 +55,9 @@
                   <ul>
                     <li>Activities and transactions — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv">transactions.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json">transactions.json</a></li>
                     <li>Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json">flows.json</a></li>
-                    <li><a href="https://github.com/OCHA-DAP/viz-iati-c19-explorer">Data visualization front end</a> (in Vue.js)</li>
                   </ul>
                 </li>
+                <li><a href="https://github.com/OCHA-DAP/viz-iati-c19-explorer">Data visualization front end</a> (in Vue.js)</li>
               </ul>
             </p>
           </section>
@@ -114,7 +113,7 @@
 }
 .faq {
   &.about-faq {
-    padding: 0;
+    padding: 0 !important;
     .accordion {
       border: 0;
     }
