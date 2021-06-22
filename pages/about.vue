@@ -40,7 +40,7 @@ Everything that we have developed is shared as open source software.
 
 For more information, view our GitHub repositories:
 * <a href="https://github.com/ocha-dap/hdx-scraper-iati-viz" target="_blank">Data processing scripts</a>
-* <a href="https://github.com/OCHA-DAP/covid19-data/tree/gh-pages" target="_blank">Prepared data (automatically updated every 24 hours)</a>
+* Prepared data (automatically updated every 24 hours)
   * Activities and transactions — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" target="_blank">transactions.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json" target="_blank">transactions.json</a>
   * Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json" target="_blank">flows.json</a>
 * <a href="https://github.com/OCHA-DAP/viz-iati-c19-explorer" target="_blank">Data visualization front end</a> (in Vue.js)
