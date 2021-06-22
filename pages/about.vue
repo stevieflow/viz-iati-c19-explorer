@@ -33,10 +33,12 @@
 
             <p>In building this tool, we have been guided by the goal of “holding up a mirror to IATI data”. In other words, we have tried to minimize any alterations or transformations of the raw data as it has been shared by IATI publishers. That said, some transformations and inferences are necessary in order to make sense of incomplete or incorrect data and avoid duplication. The sections below provide a detailed explanation of our methodology.</p>
 
-            <VueFaqAccordion
-              class="about-faq"
-              :items="faqs"
-            />
+            <client-only>
+              <VueFaqAccordion
+                class="about-faq"
+                :items="faqs"
+              />
+            </client-only>
           </section>
 
           <section id="developers" class="mb-5">
