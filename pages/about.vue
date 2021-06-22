@@ -36,7 +36,7 @@ Coming soon.
 
 ### Technical Details / Resources for Developers
 
-Everything that we have developed is shared as open source software.
+Everything that we have developed is shared as open source software. Data is extracted from <a href="https://d-portal.org/" target="_blank">d-portal.org</a> and transformed every 24 hours.
 
 For more information, view our GitHub repositories:
 * <a href="https://github.com/ocha-dap/hdx-scraper-iati-viz" target="_blank">Data processing scripts</a>
