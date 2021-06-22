@@ -36,11 +36,13 @@ Coming soon.
 
 ### Technical Details / Resources for Developers
 
-Everything that we have developed is shared as open source software. The <nuxt-link :to="{name: 'index'}" no-prefetch>Commitments and Spending</nuxt-link> and <nuxt-link :to="{name: 'financial_flows'}" no-prefetch>Financial Flows</nuxt-link> tabs were built using <a href="https://vuejs.org/" target="_blank">Vue.js</a> and are hosted as a static site on <a href="https://github.com/" target="_blank">GitHub</a>. Data is extracted from <a href="http://d-portal.org/" target="_blank">d-portal.org</a>, reprocessed, and condensed every night using scripts written in <a href="https://www.python.org/" target="_blank">Python</a> and run on <a href="https://travis-ci.org/" target="_blank">Travis</a>.
+Everything that we have developed is shared as open source software.
 
-For more information, view our GitHub repositories for the:
-* <a href="https://github.com/OCHA-DAP/covid19-data" target="_blank">Data processing scripts</a> (in Python)
-* <a href="https://github.com/OCHA-DAP/covid19-data/tree/gh-pages" target="_blank">Reprocessed data</a> (automatically generated every 24 hours)
+For more information, view our GitHub repositories:
+* <a href="https://github.com/ocha-dap/hdx-scraper-iati-viz" target="_blank">Data processing scripts</a>
+* <a href="https://github.com/OCHA-DAP/covid19-data/tree/gh-pages" target="_blank">Prepared data (automatically updated every 24 hours)</a>
+  * Activities and transactions — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" target="_blank">transactions.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json" target="_blank">transactions.json</a>
+  * Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json" target="_blank">flows.json</a>
 * <a href="https://github.com/OCHA-DAP/viz-iati-c19-explorer" target="_blank">Data visualization front end</a> (in Vue.js)
 
 ---
