@@ -11,6 +11,9 @@
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
+          <div class="text-center pt-2">
+            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -108,10 +111,10 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">financial flows</span><span v-else>financial flow</span> involving <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
-        <SankeyChart :items="filteredData" />
+        <SankeyChart :items="filteredData" :params="filterParams" />
       </b-container>
     </template>
   </div>
@@ -151,11 +154,10 @@ export default {
         { label: 'Yes', value: 'on' }
       ],
       fullData: [],
-      orgNames: [],
       filteredData: [],
       filterParams: {},
-      lastUpdatedDate: '',
-      isProd: true
+      orgNameIndex: [],
+      lastUpdatedDate: ''
     }
   },
   head () {
@@ -170,11 +172,15 @@ export default {
     tooltips () {
       return this.$store.state.tooltips
     },
+    isProd () {
+      return this.$store.state.isProd
+    },
     reportingOrgs () {
-      const orgList = this.orgNames.map((item) => {
+      let orgList = [...new Set(this.fullData.map(item => item['#org+id+reporting']))]
+      orgList = orgList.map((item) => {
         const org = {}
-        org.value = item['#org+id+reporting']
-        org.text = item['#org+name+reporting']
+        org.value = item
+        org.text = this.getOrgName(item)
         return org
       })
       return this.populateSelect(orgList, 'All reporting organizations')
@@ -191,11 +197,11 @@ export default {
     }
     this.filterParams['#org+id+reporting'] = this.selectedFilter
 
-    const orgDataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
-    axios.get(orgDataPath)
+    const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(dataPath)
       .then((response) => {
-        this.orgNames = response.data.data
-        this.$store.commit('setOrgNames', response.data.data)
+        this.orgNameIndex = response.data.data
+        this.$store.commit('setorgNameIndex', response.data.data)
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
@@ -215,9 +221,6 @@ export default {
   },
   methods: {
     async loadData () {
-      if (process.client) {
-        this.isProd = !!(window.location.host.includes('ocha-dap'))
-      }
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
@@ -299,7 +302,24 @@ export default {
       if (params['strict'] === 'on') {
         result = result.filter(item => item['#indicator+bool+strict'] === 1)
       }
+      if (params['humanitarian'] === 'off' || params['strict'] === 'off') {
+        result = this.aggregateFlows(result)
+      }
       return result
+    },
+    aggregateFlows (data) {
+      const aggregated = data.reduce((acc, item) => {
+        const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
+        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
+
+        if (!match) {
+          acc.push(item)
+        } else {
+          match['#value+total'] += item['#value+total']
+        }
+        return acc
+      }, [])
+      return aggregated
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
@@ -316,11 +336,11 @@ export default {
       return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
     getOrgName (id) {
-      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     },
     getOrgID (name) {
-      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
     }
   }

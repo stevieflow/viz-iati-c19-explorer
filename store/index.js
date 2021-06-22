@@ -12,7 +12,7 @@ export const state = () => ({
   activityUsedCodelists: {
     countriesRegions: [],
     sectors: [],
-    reportingOrgs: [],
+    orgNameIndex: [],
     reportingOrgNames: {},
     reportingOrgTypes: {}
   },
@@ -27,7 +27,8 @@ export const state = () => ({
     developed: []
   },
   tooltips: {},
-  orgNames: []
+  orgNameIndex: [],
+  isProd: true
 })
 
 export const mutations = {
@@ -70,8 +71,11 @@ export const mutations = {
       return summary
     }, {})
   },
-  setOrgNames (state, orgNames) {
-    state.orgNames = orgNames
+  setorgNameIndex (state, orgNameIndex) {
+    state.orgNameIndex = orgNameIndex
+  },
+  setProd (state, isProd) {
+    state.isProd = isProd
   }
 }
 

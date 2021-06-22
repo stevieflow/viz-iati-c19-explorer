@@ -18,7 +18,8 @@ export default {
     TimeseriesChart
   },
   props: [
-    'timeseriesChartData'
+    'timeseriesChartData',
+    'chartType'
   ],
   data () {
     return {
@@ -40,44 +41,25 @@ export default {
               id: 'y-axis-left',
               scaleLabel: {
                 display: true,
-                labelString: 'Monthly Commitments/Spending (USD)'
+                labelString: this.chartType + ' (USD)'
               },
               gridLines: {
-                color: '#000',
-                drawOnChartArea: false
+                color: '#EEE',
+                drawBorder: false,
+                drawOnChartArea: true,
+                drawTicks: false
               },
               ticks: {
                 beginAtZero: true,
                 fontColor: '#333',
                 fontFamily: 'Source Sans Pro',
                 fontSize: 11,
-                // max: 100000000000,
+                padding: 10,
                 callback (value, index, values) {
-                  return numeral(value).format('$0a').toUpperCase()
+                  return numeral(value).format('$0.0a').toUpperCase()
                 }
               },
               position: 'left'
-            },
-            {
-              id: 'y-axis-right',
-              scaleLabel: {
-                display: true,
-                labelString: 'Cumulative Commitments/Spending (USD)'
-              },
-              gridLines: {
-                color: '#000',
-                drawOnChartArea: false
-              },
-              ticks: {
-                beginAtZero: true,
-                fontColor: '#333',
-                fontFamily: 'Source Sans Pro',
-                fontSize: 11,
-                callback (value, index, values) {
-                  return numeral(value).format('$0a').toUpperCase()
-                }
-              },
-              position: 'right'
             }
           ],
           xAxes: [{
@@ -86,12 +68,13 @@ export default {
             gridLines: {
               color: '#000',
               drawOnChartArea: false,
-              offsetGridLines: false
+              drawTicks: false
             },
             ticks: {
               fontColor: '#333',
               fontFamily: 'Source Sans Pro',
-              fontSize: 11
+              fontSize: 11,
+              padding: 10
             }
           }]
         },
@@ -114,8 +97,9 @@ export default {
         const d = new Date(dateStr[0], dateStr[1] - 1)
         return this.months[d.getMonth()] + ' ' + d.getFullYear()
       })
-      return {
-        datasets: [
+      const data = []
+      if (this.chartType.includes('Cumulative')) {
+        data.push(
           {
             type: 'line',
             borderColor: '#007CE1',
@@ -127,7 +111,7 @@ export default {
             pointBackgroundColor: '#FFF',
             pointRadius: 4,
             tension: 0,
-            yAxisID: 'y-axis-right'
+            yAxisID: 'y-axis-left'
           },
           {
             type: 'line',
@@ -140,8 +124,12 @@ export default {
             pointBackgroundColor: '#FFF',
             pointRadius: 4,
             tension: 0,
-            yAxisID: 'y-axis-right'
-          },
+            yAxisID: 'y-axis-left'
+          }
+        )
+      }
+      if (this.chartType.includes('Monthly')) {
+        data.push(
           {
             label: 'Commitments',
             backgroundColor: '#007CE1',
@@ -154,7 +142,10 @@ export default {
             data: this.timeseriesChartData.monthly.spending,
             yAxisID: 'y-axis-left'
           }
-        ],
+        )
+      }
+      return {
+        datasets: data,
         labels: dates
       }
     },
@@ -162,8 +153,14 @@ export default {
       const htmlLegend = []
       for (let i = 0; i < this.chartData.datasets.length; i++) {
         const item = this.chartData.datasets[i]
-        if (i === 0) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
-        if (i === 2) { htmlLegend.push('</div><div class="mr-4"><h6 class="d-inline">Monthly: </h6>') }
+        if (this.chartData.datasets.length > 2) {
+          if (i === 0) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
+          if (i === 2) { htmlLegend.push('</div><div class="mr-4"><h6 class="d-inline">Monthly: </h6>') }
+        } else {
+          if (i === 0 && this.chartType.includes('Cumulative')) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
+          if (i === 0 && this.chartType.includes('Monthly')) { htmlLegend.push('<div><h6 class="d-inline">Monthly: </h6>') }
+        }
+
         if (item.type === 'line') {
           htmlLegend.push('<div class="key key-circle mr-1 ml-2" style="border-color:' + item.borderColor + '">' + '</div>' + item.label)
         } else {

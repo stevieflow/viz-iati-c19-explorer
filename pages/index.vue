@@ -11,6 +11,9 @@
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
+          <div class="text-center pt-2">
+            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -24,7 +27,7 @@
       <b-container>
         <hr class="my-4">
 
-        <b-row>
+        <b-row ref="filters">
           <b-col cols="7">
             <b-form-group label="Filter:">
               <b-form-radio-group
@@ -145,11 +148,23 @@
         <hr class="mt-4 mb-0">
 
         <h2 class="header-sticky">
-          <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          <div><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b></div>
+          <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
         </h2>
         <h2 class="header">
-          Key Figures
+          Commitments and Spending Ranking
         </h2>
+
+        <b-row>
+          <b-col>
+            <b-form-select
+              v-model="selectedRankingFilter"
+              class="form-select px-2 ml-3 mb-3"
+              :options="rankingFilter[getFilterID(selectedFilterDimension)]"
+            />
+          </b-col>
+          <b-col />
+        </b-row>
 
         <b-row>
           <b-col>
@@ -173,33 +188,27 @@
                 <div class="key-figure-num">
                   {{ totalCommitments }}
                 </div>
-                <b-form-select
-                  v-model="selectedCommitmentFilter"
-                  class="form-select px-2 my-3"
-                  size="sm"
-                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
-                />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
-                  <template #cell(color)="data">
-                    <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
-                  </template>
-                  <template #cell(item)="data">
-                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
-                  </template>
-                  <template #custom-foot>
-                    <tr>
-                      <td colspan="2 pt-3">
-                        <span class="small text-muted">
-                          {{ lastUpdatedDate }} | IATI
-                        </span>
-                      </td>
-                      <td colspan="pt-3">
-                        (USD)
-                      </td>
-                    </tr>
-                  </template>
-                </b-table>
+                <div class="scroll-list-container">
+                  <div class="scroll-list mt-3">
+                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
+                      <template #cell(color)="data">
+                        <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
+                      </template>
+                      <template #cell(item)="data">
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                      </template>
+                      <template #cell(value)="data">
+                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
+                      </template>
+                    </b-table>
+                  </div>
+                  <div class="scroll-list-overlay" />
+                </div>
+                <div class="scroll-list-footer mt-2">
+                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
+                  <span>(USD)</span>
+                </div>
               </div>
             </div>
           </b-col>
@@ -224,34 +233,27 @@
                 <div class="key-figure-num">
                   {{ totalSpending }}
                 </div>
-                <b-form-select
-                  id="spendingSelect"
-                  v-model="selectedSpendingFilter"
-                  class="form-select px-2 my-3"
-                  size="sm"
-                  :options="keyFigureFilter[getFilterID(selectedFilterDimension)]"
-                />
 
-                <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
-                  <template #cell(color)="data">
-                    <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
-                  </template>
-                  <template #cell(item)="data">
-                    <abbr :title="data.item.item">{{ data.item.item | truncate(20, '...') }}</abbr>
-                  </template>
-                  <template #custom-foot>
-                    <tr>
-                      <td colspan="2 pt-3">
-                        <span class="small text-muted">
-                          {{ lastUpdatedDate }} | IATI
-                        </span>
-                      </td>
-                      <td colspan="pt-3">
-                        (USD)
-                      </td>
-                    </tr>
-                  </template>
-                </b-table>
+                <div class="scroll-list-container">
+                  <div class="scroll-list mt-3">
+                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
+                      <template #cell(color)="data">
+                        <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
+                      </template>
+                      <template #cell(item)="data">
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                      </template>
+                      <template #cell(value)="data">
+                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
+                      </template>
+                    </b-table>
+                  </div>
+                  <div class="scroll-list-overlay" />
+                </div>
+                <div class="scroll-list-footer mt-2">
+                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
+                  <span>(USD)</span>
+                </div>
               </div>
             </div>
           </b-col>
@@ -261,8 +263,20 @@
           Commitments and Spending Over Time
         </h2>
 
+        <b-row>
+          <b-col>
+            <b-form-select
+              v-model="timeseriesSelect"
+              class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"
+              :options="timeseriesSelectOptions"
+            />
+          </b-col>
+          <b-col />
+        </b-row>
+
         <TimeseriesChart
           :timeseries-chart-data="timeseriesData"
+          :chart-type="timeseriesSelect"
         />
       </b-container>
     </template>
@@ -300,9 +314,8 @@ export default {
         { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
-      selectedCommitmentFilter: '#country',
-      selectedSpendingFilter: '#country',
-      keyFigureFilter: [
+      selectedRankingFilter: '#country',
+      rankingFilter: [
         [
           { text: 'By Recipient Country', value: '#country' },
           { text: 'By Sector', value: '#sector' }
@@ -315,6 +328,12 @@ export default {
           { text: 'By Recipient Country', value: '#country' },
           { text: 'By Publishing Org', value: '#org+id' }
         ]
+      ],
+      timeseriesSelect: 'Cumulative and Monthly Commitments/Spending',
+      timeseriesSelectOptions: [
+        'Cumulative and Monthly Commitments/Spending',
+        'Cumulative Commitments/Spending',
+        'Monthly Commitments/Spending'
       ],
       quickFilters: [
         [
@@ -357,12 +376,12 @@ export default {
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       fullData: [],
-      orgNames: [],
       filteredData: [],
       filterParams: {},
+      orgNameIndex: [],
       lastUpdatedDate: '',
       skippedTransactions: 0,
-      isProd: true
+      loaded: false
     }
   },
   head () {
@@ -377,11 +396,15 @@ export default {
     tooltips () {
       return this.$store.state.tooltips
     },
+    isProd () {
+      return this.$store.state.isProd
+    },
     reportingOrgs () {
-      const orgList = this.orgNames.map((item) => {
+      let orgList = [...new Set(this.fullData.map(item => item['#org+id']))]
+      orgList = orgList.map((item) => {
         const org = {}
-        org.value = item['#org+id+reporting']
-        org.text = item['#org+name+reporting']
+        org.value = item
+        org.text = this.getOrgName(item)
         return org
       })
       return this.populateSelect(orgList, 'All publishing organizations')
@@ -413,10 +436,10 @@ export default {
       return this.filteredData.filter(item => item['#x_transaction_type'] === 'spending')
     },
     commitmentsRanked () {
-      return this.getRankedList(this.commitments, this.selectedCommitmentFilter)
+      return this.getRankedList(this.commitments)
     },
     spendingRanked () {
-      return this.getRankedList(this.spending, this.selectedSpendingFilter)
+      return this.getRankedList(this.spending)
     },
     activityCount () {
       const activities = [...new Set(this.filteredData.map(item => item['#activity+code']))]
@@ -487,11 +510,11 @@ export default {
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    const orgDataPath = 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
-    axios.get(orgDataPath)
+    const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    axios.get(dataPath)
       .then((response) => {
-        this.orgNames = response.data.data
-        this.$store.commit('setOrgNames', response.data.data)
+        this.orgNameIndex = response.data.data
+        this.$store.commit('setorgNameIndex', response.data.data)
 
         this.$nextTick(() => {
           if ('org' in this.$route.query) {
@@ -517,14 +540,18 @@ export default {
         })
       })
   },
+  updated () {
+    // do this once
+    if (!this.loaded) {
+      this.createStickyHeader()
+      this.loaded = true
+    }
+  },
   destroyed () {
     this.toggleBodyClass('removeClass', 'index')
   },
   methods: {
     async loadData () {
-      if (process.client) {
-        this.isProd = !!(window.location.host.includes('ocha-dap'))
-      }
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
@@ -574,8 +601,9 @@ export default {
     querySetup (dimension) {
       this.selectedFilterDimension = dimension
       this.selectedFilter = this.filterParams[dimension]
-      const filterArray = this.keyFigureFilter[this.getFilterID(dimension)]
-      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+      this.selectedFilterLabel = this.getOrgName(this.selectedFilter)
+      const filterArray = this.rankingFilter[this.getFilterID(dimension)]
+      this.selectedRankingFilter = filterArray[0].value
     },
     numberFormatter (value) {
       if (value === 0) { return '0' }
@@ -584,8 +612,8 @@ export default {
         : ''
     },
     onFilterOptionSelect (selected) {
-      const filterArray = this.keyFigureFilter[this.getFilterID(selected)]
-      this.selectedCommitmentFilter = this.selectedSpendingFilter = filterArray[0].value
+      const filterArray = this.rankingFilter[this.getFilterID(selected)]
+      this.selectedRankingFilter = filterArray[0].value
 
       this.resetParams()
       this.setDefaultFilterLabel(selected)
@@ -651,7 +679,8 @@ export default {
         b.value - a.value
       )
     },
-    populateDonut (data, ranked) {
+    populateDonut (data, rankedData) {
+      const ranked = (rankedData.length > 6) ? rankedData.slice(0, 6) : rankedData
       const total = this.getTotal(data)
       const ratios = ranked.reduce((list, item) => {
         const ratio = Number(((item[1] / total) * 100).toFixed(1))
@@ -662,11 +691,11 @@ export default {
       return { values: ratios, labels }
     },
     getOrgName (id) {
-      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     },
     getOrgID (name) {
-      const org = this.orgNames.filter(org => org['#org+name+reporting'] === name)
+      const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
     },
     getCumulativeSeries (data) {
@@ -681,23 +710,24 @@ export default {
       const result = data.map(item => Number(item[this.tagPattern]))
       return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
-    getRankedList (data, dimension) {
+    getRankedList (data) {
+      const dimension = this.selectedRankingFilter
       const total = this.getTotal(data)
-      const ranked = Object.entries(data.reduce((list, item) => {
+      const ranked = Object.entries(data.reduce((list, item, index) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
-          list[item[dimension]] = list[item[dimension]] + value || value
+          const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
+          list[key] = list[key] + value || value
         }
         return list
       }, {})).sort((a, b) =>
         b[1] - a[1]
-      ).slice(0, 5)
-
-      // calculate and append 'Other' value if sum < 100
-      const sum = ranked.reduce((total, amount) => {
+      )
+      // calculate sum of top 5 and append 'Other' value if sum < 100
+      const sum = ranked.slice(0, 5).reduce((total, amount) => {
         return total + amount[1]
       }, 0)
-      if (sum < total) { ranked.push(['Other or unspecified', total - sum]) }
+      if (sum < total) { ranked.splice(5, 0, ['Other or unspecified', total - sum]) }
       return ranked
     },
     getFilterID () {
@@ -717,6 +747,19 @@ export default {
       } else {
         el.classList.remove(className)
       }
+    },
+    createStickyHeader () {
+      const el = document.getElementsByClassName('header-sticky')[0]
+      const observer = new IntersectionObserver(
+        ([e]) => e.target.classList.toggle('is-stuck', e.intersectionRatio < 1),
+        { threshold: [1] }
+      )
+      observer.observe(el)
+    },
+    scrollTo (refName) {
+      const element = this.$refs[refName]
+      const top = element.offsetTop
+      window.scrollTo(0, top)
     }
   }
 }
@@ -761,6 +804,7 @@ export default {
       padding: 0 8px 0 0;
       vertical-align: middle;
       &:last-child {
+        padding-right: 0;
         text-align: right;
       }
     }
@@ -768,6 +812,32 @@ export default {
   .color-key {
     height: 12px;
     width: 12px;
+  }
+  .scroll-list-container {
+    position: relative;
+  }
+  .scroll-list {
+    height: 168px;
+    max-width: 273px;
+    overflow-y: scroll;
+    .list-breakdown {
+      color: #888;
+      padding-left: 10px;
+    }
+  }
+  .scroll-list-overlay {
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+    bottom: 0;
+    height: 30px;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+  }
+  .scroll-list-footer {
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
   }
   .quick-filter-list {
     font-size: 14px;

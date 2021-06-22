@@ -29,15 +29,15 @@ export default {
   components: {
     SankeyChart
   },
-  props: ['items'],
+  props: ['items', 'params'],
   data () {
     return {
       maximumVisibleItems: 10
     }
   },
   computed: {
-    orgNames () {
-      return this.$store.state.orgNames
+    orgNameIndex () {
+      return this.$store.state.orgNameIndex
     },
     chartData () {
       const trimName = (value) => {
@@ -45,9 +45,6 @@ export default {
         const redactionStrings = ['USAID redacted this field in accordance with the Principled Exceptions outlined in the Office of Management and Budget Bulletin 12-01.',
           'USAID redacted this field in accordance with the exceptions outlined in the Foreign Aid Transparency and Accountability Act of 2016.']
         if (redactionStrings.includes(value)) { return 'Redacted' }
-        if (value.length > 50) {
-          return value.substr(0, 50) + '...'
-        }
         return value
       }
       const getProvider = (item, transactionType) => {
@@ -67,6 +64,7 @@ export default {
       const items = [...this.items].sort((a, b) =>
         a['#value+total'] > b['#value+total'] ? -1 : 1
       ).slice(0, this.maximumVisibleItems)
+
       const nodes = items.reduce((summary, item) => {
         const provider = getProvider(item, item['#x_transaction_direction'])
         const receiver = getReceiver(item, item['#x_transaction_direction'])
@@ -89,6 +87,7 @@ export default {
           value: Math.round(item['#value+total'])
         }
       })
+
       const out = {
         nodes,
         links
@@ -98,7 +97,7 @@ export default {
   },
   methods: {
     getOrgName (id) {
-      const org = this.orgNames.filter(org => org['#org+id+reporting'] === id)
+      const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
       return org[0]['#org+name+reporting']
     }
   }
