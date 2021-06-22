@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="about">
     <b-container>
       <b-row>
         <b-col cols="3">
@@ -85,10 +85,12 @@
 </template>
 
 <style lang='scss'>
-h2 {
-  font-family: 'Gotham-Bold', sans-serif;
-  font-size: 18px;
-  color: #007CE0;
+.about {
+  h2 {
+    font-family: 'Gotham-Bold', sans-serif;
+    font-size: 18px;
+    color: #007CE0;
+  }
 }
 .jump-nav {
   list-style: none;
