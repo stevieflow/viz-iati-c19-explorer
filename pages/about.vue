@@ -4,10 +4,26 @@
       <b-row>
         <b-col cols="3">
           <ul class="jump-nav">
-            <li><a href="#methodology">Methodology Notes</a></li>
-            <li><a href="#developers">Technical Details / Resources for Developers</a></li>
-            <li><a href="#tos">Terms of Service / Privacy Notice</a></li>
-            <li><a href="#contact">Get in Touch</a></li>
+            <li>
+              <nuxt-link :to="{ name: 'about', hash: '#methodology' }">
+                Methodology Notes
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link :to="{ name: 'about', hash: '#developers' }">
+                Technical Details / Resources for Developers
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link :to="{ name: 'about', hash: '#tos' }">
+                Terms of Service / Privacy Notice
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link :to="{ name: 'about', hash: '#contact' }">
+                Get in Touch
+              </nuxt-link>
+            </li>
           </ul>
         </b-col>
         <b-col cols="9">
