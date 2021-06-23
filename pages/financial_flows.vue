@@ -111,7 +111,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > 10">Top flows of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
@@ -135,8 +135,8 @@ export default {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+id+reporting',
-      selectedFilter: 'us-gov-1',
-      selectedFilterLabel: 'United States Agency for International Development (USAID)',
+      selectedFilter: '*',
+      selectedFilterLabel: 'all reporting organizations',
       quickFilters: [
         { name: 'Asian Development Bank', id: 'xm-dac-46004' },
         { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
@@ -153,6 +153,7 @@ export default {
         { label: 'No', value: 'off' },
         { label: 'Yes', value: 'on' }
       ],
+      activityCount: 0,
       fullData: [],
       filteredData: [],
       filterParams: {},
@@ -184,9 +185,6 @@ export default {
         return org
       })
       return this.populateSelect(orgList, 'All reporting organizations')
-    },
-    activityCount () {
-      return this.filteredData.length
     }
   },
   mounted () {
@@ -256,30 +254,6 @@ export default {
     updateRouter () {
       this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
     },
-    numberFormatter (value) {
-      if (value === 0) { return '0' }
-      return value
-        ? numeral(value).format('0,0')
-        : ''
-    },
-    onSelect (value) {
-      this.selectedFilter = value
-      this.filterParams[this.selectedFilterDimension] = value
-      if (value !== '*') {
-        this.selectedFilterLabel = this.getOrgName(value)
-      } else {
-        this.selectedFilterLabel = 'all reporting organizations'
-      }
-      this.updateFilteredData()
-    },
-    onToggle (event) {
-      this.filterParams[event.target.parentElement.id] = event.target.value
-      this.updateFilteredData()
-    },
-    onQuickFilter (event) {
-      event.preventDefault()
-      this.onSelect(event.target.id)
-    },
     updateFilteredData () {
       this.filteredData = this.filterData()
       this.updateRouter()
@@ -301,6 +275,10 @@ export default {
       if (params['humanitarian'] === 'off' || params['strict'] === 'off') {
         result = this.aggregateFlows(result)
       }
+
+      // get total count before partioning data into incoming/outgoing
+      this.activityCount = result.length
+      result = this.partitionData(result)
       return result
     },
     aggregateFlows (data) {
@@ -316,6 +294,38 @@ export default {
         return acc
       }, [])
       return aggregated
+    },
+    partitionData (data) {
+      let [incoming, outgoing] = data.reduce((result, element) => {
+        result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
+        return result
+      }, [[], []])
+      incoming = this.formatData(incoming)
+      outgoing = this.formatData(outgoing)
+      return incoming.concat(outgoing)
+    },
+    formatData (array) {
+      return array.sort((a, b) =>
+        a['#value+total'] > b['#value+total'] ? -1 : 1
+      ).slice(0, 10)
+    },
+    onSelect (value) {
+      this.selectedFilter = value
+      this.filterParams[this.selectedFilterDimension] = value
+      if (value !== '*') {
+        this.selectedFilterLabel = this.getOrgName(value)
+      } else {
+        this.selectedFilterLabel = 'all reporting organizations'
+      }
+      this.updateFilteredData()
+    },
+    onToggle (event) {
+      this.filterParams[event.target.parentElement.id] = event.target.value
+      this.updateFilteredData()
+    },
+    onQuickFilter (event) {
+      event.preventDefault()
+      this.onSelect(event.target.id)
     },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
@@ -338,6 +348,12 @@ export default {
     getOrgID (name) {
       const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
+    },
+    numberFormatter (value) {
+      if (value === 0) { return '0' }
+      return value
+        ? numeral(value).format('0,0')
+        : ''
     }
   }
 }

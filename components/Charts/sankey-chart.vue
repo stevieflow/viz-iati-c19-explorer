@@ -165,7 +165,7 @@ export default {
       width: 10,
       height: 10,
       selectedLink: null,
-      colors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#EFF2AA', '#C6E69B', '#AEEAE6']
+      colors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#C6E69B', '#AEEAE6', '#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799']
     }
   },
   computed: {
