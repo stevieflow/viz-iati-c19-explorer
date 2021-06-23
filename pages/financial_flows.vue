@@ -191,7 +191,6 @@ export default {
   },
   mounted () {
     this.filterParams = {
-      transaction_type: 'spending',
       humanitarian: 'off',
       strict: 'off'
     }
@@ -292,9 +291,6 @@ export default {
 
       if (params[filterDimension] && params[filterDimension] !== '*') {
         result = result.filter(item => item[filterDimension].includes(params[filterDimension]))
-      }
-      if (params['transaction_type'] === 'spending') {
-        result = result.filter(item => item['#x_transaction_type'] === 'spending')
       }
       if (params['humanitarian'] === 'on') {
         result = result.filter(item => item['#indicator+bool+humanitarian'] === 1)

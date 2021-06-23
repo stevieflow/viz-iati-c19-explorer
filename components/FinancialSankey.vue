@@ -9,7 +9,7 @@
     </template>
     <template v-else>
       <b-alert show class="text-muted text-center" variant="warning">
-        No activities published so far for this organisation.
+        No flows match the filters you've chosen
       </b-alert>
     </template>
   </div>
