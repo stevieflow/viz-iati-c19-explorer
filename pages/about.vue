@@ -104,7 +104,7 @@
 <style lang='scss'>
 .about {
   h2 {
-    font-family: 'Gotham-Bold', sans-serif;
+    font-family: 'Gotham Bold', sans-serif;
     font-size: 18px;
     color: #007CE0;
   }
@@ -119,7 +119,7 @@
   a {
     color: #333;
     letter-spacing: 0.01em;
-    font-family: 'Gotham-Book', sans-serif;
+    font-family: 'Gotham Book', sans-serif;
     font-size: 14px;
     line-height: 18px;
     padding: 0;

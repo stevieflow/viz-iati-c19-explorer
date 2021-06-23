@@ -2,7 +2,7 @@
   <div>
     <b-container>
       <b-row>
-        <b-col cols="9">
+        <b-col cols="12" lg="9">
           <p class="overview-description">
             The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country, or sector.
           </p>
@@ -28,7 +28,7 @@
         <hr class="my-4">
 
         <b-row ref="filters">
-          <b-col cols="7">
+          <b-col cols="12" lg="7">
             <b-form-group label="Filter:">
               <b-form-radio-group
                 id="filterGroup"
@@ -146,24 +146,30 @@
         </b-row>
 
         <hr class="mt-4 mb-0">
+      </b-container>
 
-        <h2 class="header-sticky">
-          <div><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b></div>
+      <div class="header-sticky">
+        <div class="container">
+          <h2>
+            <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          </h2>
           <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
-        </h2>
+        </div>
+      </div>
+
+      <b-container>
         <h2 class="header">
           Commitments and Spending Ranking
         </h2>
 
         <b-row>
-          <b-col>
+          <b-col cols="12">
             <b-form-select
               v-model="selectedRankingFilter"
               class="form-select px-2 ml-3 mb-3"
               :options="rankingFilter[getFilterID(selectedFilterDimension)]"
             />
           </b-col>
-          <b-col />
         </b-row>
 
         <b-row>
