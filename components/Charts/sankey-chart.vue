@@ -4,6 +4,9 @@
       <b-badge variant="dark">
         Funded by
       </b-badge>
+      <b-badge v-if="maxNodeDepth>1" class="badge-center" variant="dark">
+        Reported by
+      </b-badge>
       <b-badge variant="dark">
         Implemented by
       </b-badge>
@@ -119,10 +122,13 @@
     </div>
   </div>
 </template>
-<style>
+<style lang='scss'>
 .badges {
   display: flex;
   justify-content: space-between;
+  .badge-center {
+    margin-left: 24px;
+  }
 }
 #sankeyChart {
   width: 100%;
