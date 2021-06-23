@@ -135,8 +135,8 @@ export default {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+id+reporting',
-      selectedFilter: 'us-gov-1',
-      selectedFilterLabel: 'United States Agency for International Development (USAID)',
+      selectedFilter: '*',
+      selectedFilterLabel: 'all reporting organizations',
       quickFilters: [
         { name: 'Asian Development Bank', id: 'xm-dac-46004' },
         { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
