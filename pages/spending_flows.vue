@@ -252,7 +252,7 @@ export default {
       return _query
     },
     updateRouter () {
-      this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
+      this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
