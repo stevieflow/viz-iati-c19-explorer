@@ -2,13 +2,13 @@
   <div>
     <div class="badges">
       <b-badge variant="dark">
-        Funded by
+        Provider Org
       </b-badge>
-      <b-badge v-if="maxNodeDepth>1" class="badge-center" variant="dark">
-        Reported by
+      <b-badge v-if="maxNodeDepth>1" variant="dark">
+        Reporting Org
       </b-badge>
       <b-badge variant="dark">
-        Implemented by
+        Receiver Org
       </b-badge>
     </div>
     <div id="sankeyChart" ref="sankeyChart">
@@ -126,9 +126,6 @@
 .badges {
   display: flex;
   justify-content: space-between;
-  .badge-center {
-    margin-left: 24px;
-  }
 }
 #sankeyChart {
   width: 100%;

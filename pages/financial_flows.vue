@@ -11,7 +11,7 @@
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
-          <div class="text-center pt-2">
+          <div class="text-center pt-2 mb-4">
             <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
           </div>
         </b-col>
@@ -111,7 +111,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top flows of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
