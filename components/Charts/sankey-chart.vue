@@ -2,10 +2,13 @@
   <div>
     <div class="badges">
       <b-badge variant="dark">
-        Funded by
+        Provider Org
+      </b-badge>
+      <b-badge v-if="maxNodeDepth>1" variant="dark">
+        Reporting Org
       </b-badge>
       <b-badge variant="dark">
-        Implemented by
+        Receiver Org
       </b-badge>
     </div>
     <div id="sankeyChart" ref="sankeyChart">
@@ -119,7 +122,7 @@
     </div>
   </div>
 </template>
-<style>
+<style lang='scss'>
 .badges {
   display: flex;
   justify-content: space-between;

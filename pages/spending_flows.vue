@@ -11,7 +11,7 @@
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
-          <div class="text-center pt-2">
+          <div class="text-center pt-2 mb-4">
             <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
           </div>
         </b-col>
@@ -27,7 +27,7 @@
       v-if="!isBusy">
       <b-container>
         <h2 class="header">
-          Financial Flows
+          Spending Flows
         </h2>
         <b-row>
           <b-col cols="7">
@@ -111,7 +111,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top flows of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">spending flows</span><span v-else>spending flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
@@ -163,7 +163,7 @@ export default {
   },
   head () {
     return {
-      title: config.head.title + ': Financial Flows'
+      title: config.head.title + ': Spending Flows'
     }
   },
   computed: {
@@ -252,7 +252,7 @@ export default {
       return _query
     },
     updateRouter () {
-      this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
+      this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
