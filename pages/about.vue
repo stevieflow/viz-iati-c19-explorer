@@ -191,7 +191,7 @@ export default {
           value: 'Coming soon'
         },
         {
-          title: 'Additional notes on the Financial Flows tab',
+          title: 'Additional notes on the Spending Flows tab',
           value: 'Coming soon'
         }
       ]

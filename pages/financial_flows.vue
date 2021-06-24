@@ -27,7 +27,7 @@
       v-if="!isBusy">
       <b-container>
         <h2 class="header">
-          Financial Flows
+          Spending Flows
         </h2>
         <b-row>
           <b-col cols="7">
@@ -111,7 +111,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">spending flows</span><span v-else>spending flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
@@ -163,7 +163,7 @@ export default {
   },
   head () {
     return {
-      title: config.head.title + ': Financial Flows'
+      title: config.head.title + ': Spending Flows'
     }
   },
   computed: {
