@@ -135,8 +135,8 @@ export default {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+id+reporting',
-      selectedFilter: '*',
-      selectedFilterLabel: 'all reporting organizations',
+      selectedFilter: 'xm-dac-41121',
+      selectedFilterLabel: 'United Nations High Commissioner for Refugees (UNHCR)',
       quickFilters: [
         { name: 'Asian Development Bank', id: 'xm-dac-46004' },
         { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
@@ -219,8 +219,8 @@ export default {
   },
   methods: {
     async loadData () {
-      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
+      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : filePath + '/unhcr-commitments_unhcr-reporter.json'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
@@ -253,7 +253,7 @@ export default {
       return _query
     },
     updateRouter () {
-      this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
+      this.$router.push({ name: 'commitments_flows_unhcr', query: this.urlQuery() })
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
