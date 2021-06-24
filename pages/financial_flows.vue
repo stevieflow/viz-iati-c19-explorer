@@ -2,12 +2,12 @@
   <div>
     <b-container>
       <b-row>
-        <b-col cols="9">
+        <b-col cols="12" lg="9">
           <p class="mb-4">
             The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
           </p>
         </b-col>
-        <b-col>
+        <b-col class="mb-4">
           <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
             Download All Data
           </b-button>
@@ -30,7 +30,7 @@
           Financial Flows
         </h2>
         <b-row>
-          <b-col cols="7">
+          <b-col cols="12" lg="7">
             <h3>Reporting organization:</h3>
             <v-select
               :value="selectedFilter"
@@ -375,6 +375,9 @@ export default {
     }
   }
   .filter-select {
+    .vs__selected-options {
+      flex-wrap: initial;
+    }
     .vs__dropdown-toggle {
       padding: 14px;
     }

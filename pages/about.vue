@@ -2,7 +2,7 @@
   <div class="about">
     <b-container>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="3" class="d-none d-lg-block d-xl-none">
           <ul class="jump-nav">
             <li>
               <nuxt-link :to="{ name: 'about', hash: '#methodology' }">
@@ -26,7 +26,7 @@
             </li>
           </ul>
         </b-col>
-        <b-col cols="9">
+        <b-col cols="12" lg="9">
           <section id="about" class="mb-5">
             <h2>About this Tool</h2>
 

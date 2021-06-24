@@ -17,7 +17,7 @@
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
-            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-auto nav-about" no-prefetch>
+            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch>
               About this Tool
             </b-nav-item>
           </b-navbar-nav>
@@ -67,6 +67,27 @@
 }
 sup {
   font-size: 11px;
+}
+
+@media only screen and (max-width: 992px) {
+  .navbar-nav {
+    text-align: center;
+  }
+  .navbar-collapse {
+    margin-bottom: 20px;
+  }
+  .navbar-iati {
+    box-shadow: none;
+    margin: 0;
+    padding: 10px;
+  }
+  .navbar-toggler {
+    border: none;
+    padding-right: 0;
+    position: absolute;
+    right: 0;
+    top: -66px;
+  }
 }
 </style>
 

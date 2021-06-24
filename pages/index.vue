@@ -179,7 +179,7 @@
                 :doughnut-chart-data="commitmentsDonut"
                 :colors="commitmentColors"
               />
-              <div class="key-figure-breakdown w-100 ml-4 mr-5">
+              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
                 <h3>
                   Total Commitments (USD)
                   <b-badge
@@ -202,7 +202,7 @@
                         <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
@@ -224,7 +224,7 @@
                 :doughnut-chart-data="spendingDonut"
                 :colors="spendingColors"
               />
-              <div class="key-figure-breakdown w-100 ml-4 mr-5">
+              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
                 <h3>
                   Total Spending (USD)
                   <b-badge
@@ -247,7 +247,7 @@
                         <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
@@ -270,7 +270,7 @@
         </h2>
 
         <b-row>
-          <b-col>
+          <b-col cols="12">
             <b-form-select
               v-model="timeseriesSelect"
               class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"

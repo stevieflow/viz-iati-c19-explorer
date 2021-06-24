@@ -212,10 +212,17 @@ body.index {
       margin-bottom: 20px;
     }
     .key-figure-container {
+      align-items: center;
       flex-flow: column;
     }
     .key-figure-breakdown {
-      width: auto !important;
+      width: auto;
+    }
+    .doughnut-chart {
+      margin-bottom: 30px;
+    }
+    .timeseries-legend {
+      flex-direction: column;
     }
   }
 }
