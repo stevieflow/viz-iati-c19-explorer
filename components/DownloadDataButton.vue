@@ -77,7 +77,7 @@ export default {
 
       // aggregate the data
       params['filter04'] = 'count'
-      params['count-tags04'] = 'org+id,org+name,org+type,sector,country,x_transaction_type'
+      params['count-tags04'] = 'org+id,org+name,org+type,sector,country,activity+code,x_transaction_type'
 
       params['count-header04-01'] = 'Net money (USD)'
       params['count-type04-01'] = 'sum'
