@@ -184,7 +184,6 @@ export default {
         org.text = this.getOrgName(item)
         return org
       })
-      console.log(orgList)
       return this.populateSelect(orgList, 'All reporting organizations')
     }
   },
