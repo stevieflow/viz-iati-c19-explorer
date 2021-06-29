@@ -8,12 +8,11 @@
           </p>
         </b-col>
         <b-col>
-          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
-            Download All Data
-          </b-button>
-          <div class="text-center pt-2 mb-4">
-            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
-          </div>
+          <DownloadDataButton
+            type="flows"
+            :filter-params="filterParams"
+            :selected-filter-dimension="selectedFilterDimension"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -26,7 +25,7 @@
     <template
       v-if="!isBusy">
       <b-container>
-        <h2 class="header">
+        <h2 class="header mt-3">
           Spending Flows
         </h2>
         <b-row>
@@ -127,9 +126,11 @@ import csvtojson from 'csvtojson'
 import numeral from 'numeral'
 import config from '../nuxt.config'
 import SankeyChart from '~/components/FinancialSankey.vue'
+import DownloadDataButton from '~/components/DownloadDataButton'
 export default {
   components: {
-    SankeyChart
+    SankeyChart,
+    DownloadDataButton
   },
   data () {
     return {
@@ -157,8 +158,7 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      orgNameIndex: [],
-      lastUpdatedDate: ''
+      orgNameIndex: []
     }
   },
   head () {
@@ -229,11 +229,6 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
-          // const metadata = response.data.metadata
-          // const dateRun = new Date(metadata['#date+run'])
-          // const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
-          // this.lastUpdatedDate = date
-
           this.fullData = response.data.data
           this.updateFilteredData()
         })
@@ -343,7 +338,7 @@ export default {
     },
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
-      return org[0]['#org+name+reporting']
+      return (org[0] !== undefined) ? org[0]['#org+name+reporting'] : ''
     },
     getOrgID (name) {
       const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
@@ -363,18 +358,6 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
-  }
-  .download-button {
-    border-color: #000;
-    color: #000;
-    font-family: 'Gotham Bold', sans-serif;
-    font-size: 14px;
-    padding: 13px 16px;
-    &:hover {
-      background-color: #000;
-      border-color: #000;
-      color: #FFF;
-    }
   }
   .quick-filter-list {
     font-size: 14px;

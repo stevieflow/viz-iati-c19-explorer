@@ -97,7 +97,7 @@ export default {
   methods: {
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
-      return org[0]['#org+name+reporting']
+      return (org[0] !== undefined) ? org[0]['#org+name+reporting'] : ''
     }
   }
 }

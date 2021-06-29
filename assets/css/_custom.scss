@@ -180,4 +180,54 @@ body.index {
   .vs__clear {
     display: none;
   }
+  .download-button {
+    .btn {
+      &.btn-outline-dark {
+        border-color: #000;
+        border-radius: 9px;
+        color: #000;
+        font-family: 'Gotham Bold', sans-serif;
+        font-size: 14px;
+        padding: 13px 16px;
+        text-align: left;
+        &:hover {
+          background-color: #000;
+          border-color: #000;
+          color: #FFF;
+        }
+        &:not(:disabled):not(.disabled):active,
+        &:not(:disabled):not(.disabled).active {
+          background-color: #000;
+          border-color: #000;
+        }
+        &:focus,
+        &.focus {
+          box-shadow: none;
+        }
+      }
+    }
+    &.show > .btn-outline-dark.dropdown-toggle {
+      background-color: #000;
+      color: #FFF;
+    }
+  }
+  .dropdown-item:hover {
+    background-color: #007BFF;
+    color: #FFF;
+  }
+  .dropdown-toggle {
+    &:after {
+      border: none;
+      content: url('~@/assets/icons/icon-download.svg');
+      position: absolute;
+      right: 20px;
+      transform: translateY(-50%);
+      top: 60%;
+    }
+    &:hover {
+      &:after {
+        content: url('~@/assets/icons/icon-download-white.svg');
+      }
+    }
+  }
 }
