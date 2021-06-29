@@ -8,11 +8,12 @@
           </p>
         </b-col>
         <b-col>
-          <DownloadDataButton
-            type="flows"
-            :filter-params="filterParams"
-            :selected-filter-dimension="selectedFilterDimension"
-          />
+          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
+            Download All Data
+          </b-button>
+          <div class="text-center pt-2 mb-4">
+            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -25,7 +26,7 @@
     <template
       v-if="!isBusy">
       <b-container>
-        <h2 class="header mt-3">
+        <h2 class="header">
           Spending Flows
         </h2>
         <b-row>
@@ -126,18 +127,16 @@ import csvtojson from 'csvtojson'
 import numeral from 'numeral'
 import config from '../nuxt.config'
 import SankeyChart from '~/components/FinancialSankey.vue'
-import DownloadDataButton from '~/components/DownloadDataButton'
 export default {
   components: {
-    SankeyChart,
-    DownloadDataButton
+    SankeyChart
   },
   data () {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+id+reporting',
-      selectedFilter: '*',
-      selectedFilterLabel: 'all reporting organizations',
+      selectedFilter: 'xm-dac-41121',
+      selectedFilterLabel: 'United Nations High Commissioner for Refugees (UNHCR)',
       quickFilters: [
         { name: 'Asian Development Bank', id: 'xm-dac-46004' },
         { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
@@ -158,7 +157,8 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      orgNameIndex: []
+      orgNameIndex: [],
+      lastUpdatedDate: ''
     }
   },
   head () {
@@ -219,7 +219,7 @@ export default {
   },
   methods: {
     async loadData () {
-      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
+      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : '/unhcr-spending_unhcr-reporter.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
@@ -230,6 +230,11 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
+          // const metadata = response.data.metadata
+          // const dateRun = new Date(metadata['#date+run'])
+          // const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
+          // this.lastUpdatedDate = date
+
           this.fullData = response.data.data
           this.updateFilteredData()
         })
@@ -248,7 +253,7 @@ export default {
       return _query
     },
     updateRouter () {
-      this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
+      this.$router.push({ name: 'spending_flows_unhcr', query: this.urlQuery() })
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
@@ -292,14 +297,13 @@ export default {
       return aggregated
     },
     partitionData (data) {
-      // let [incoming, outgoing] = data.reduce((result, element) => {
-      //   result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
-      //   return result
-      // }, [[], []])
-      // incoming = this.formatData(incoming)
-      // outgoing = this.formatData(outgoing)
-      // return incoming.concat(outgoing)
-      return data
+      let [incoming, outgoing] = data.reduce((result, element) => {
+        result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
+        return result
+      }, [[], []])
+      incoming = this.formatData(incoming)
+      outgoing = this.formatData(outgoing)
+      return incoming.concat(outgoing)
     },
     formatData (array) {
       return array.sort((a, b) =>
@@ -360,6 +364,18 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
+  }
+  .download-button {
+    border-color: #000;
+    color: #000;
+    font-family: 'Gotham Bold', sans-serif;
+    font-size: 14px;
+    padding: 13px 16px;
+    &:hover {
+      background-color: #000;
+      border-color: #000;
+      color: #FFF;
+    }
   }
   .quick-filter-list {
     font-size: 14px;
