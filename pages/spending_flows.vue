@@ -292,14 +292,13 @@ export default {
       return aggregated
     },
     partitionData (data) {
-      // let [incoming, outgoing] = data.reduce((result, element) => {
-      //   result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
-      //   return result
-      // }, [[], []])
-      // incoming = this.formatData(incoming)
-      // outgoing = this.formatData(outgoing)
-      // return incoming.concat(outgoing)
-      return data
+      let [incoming, outgoing] = data.reduce((result, element) => {
+        result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
+        return result
+      }, [[], []])
+      incoming = this.formatData(incoming)
+      outgoing = this.formatData(outgoing)
+      return incoming.concat(outgoing)
     },
     formatData (array) {
       return array.sort((a, b) =>
@@ -340,7 +339,7 @@ export default {
     },
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
-      return org[0]['#org+name+reporting']
+      return (org[0] !== undefined) ? org[0]['#org+name+reporting'] : ''
     },
     getOrgID (name) {
       const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
