@@ -617,6 +617,7 @@ export default {
       this.updateFilteredData()
     },
     onSelect (value) {
+      console.log('on select')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') {

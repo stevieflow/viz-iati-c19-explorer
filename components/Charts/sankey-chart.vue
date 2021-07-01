@@ -27,8 +27,8 @@
             v-bind="nodes"
             :key="node.index"
             :x="node.x0"
-            :y="node.y0"
-            :height="Math.max(node.y1-node.y0, 0)"
+            :y="isNaN(node.y0) ? 0 : node.y0"
+            :height="isNaN(node.y1) || isNaN(node.y0) ? 0 : Math.max(node.y1 - node.y0, 0)"
             :width="node.x1-node.x0"
             :fill="node.name=='» (unspecified org)' ? 'url(#diagonalHatch)': color(node)"
             class="node" />
@@ -68,7 +68,7 @@
             v-bind="nodes"
             :key="node.index"
             :x="node.x0 < width / 2 ? node.x1 + 6 : node.x0 - 6"
-            :y="(node.y1 + node.y0) / 2"
+            :y="isNaN(node.y1) || isNaN(node.y1) ? 0 : (node.y1 + node.y0) / 2"
             :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
             dy="0.35em">
             {{ truncate(node.name) }}
@@ -110,7 +110,7 @@
             </text> -->
             <text
               :x="labelXPosition(link)"
-              :y="labelYPosition(link)"
+              :y="isNaN(link.y0) || isNaN(link.y1) ? 0 : labelYPosition(link)"
               :width="link.width"
               dy="0.35em"
               :text-anchor="labelAnchor(link)">
