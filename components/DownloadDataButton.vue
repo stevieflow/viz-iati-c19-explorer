@@ -37,7 +37,11 @@ export default {
   methods: {
     downloadData () {
       const param = (this.filterParams[this.selectedFilterDimension] === '*') ? null : this.filterParams[this.selectedFilterDimension]
-      const dimension = this.selectedFilterDimension.split('#')[1]
+      let dimension = this.selectedFilterDimension.split('#')[1]
+
+      // normalize dimension for flows when dimension is org+id+reporting
+      if (this.type === 'flows' && dimension.includes('org')) { dimension = 'org+id' }
+
       const humanitarian = this.filterParams.humanitarian !== 'off'
       const strict = this.filterParams.strict !== 'off'
       const url = this.proxyLink(param, dimension, humanitarian, strict)

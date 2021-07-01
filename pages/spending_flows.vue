@@ -254,12 +254,12 @@ export default {
       this.updateRouter()
     },
     filterData () {
-      let result = this.fullData
+      let result = this.fullData.map(i => ({ ...i }))
       const params = this.filterParams
       const filterDimension = this.selectedFilterDimension
 
       if (params[filterDimension] && params[filterDimension] !== '*') {
-        result = result.filter(item => item[filterDimension].includes(params[filterDimension]))
+        result = result.filter(item => item[filterDimension] === params[filterDimension])
       }
       if (params['humanitarian'] === 'on') {
         result = result.filter(item => item['#indicator+bool+humanitarian'] === 1)
@@ -331,10 +331,6 @@ export default {
       )
       selectList.unshift({ value: '*', text: defaultValue })
       return selectList
-    },
-    getTotal (data) {
-      const result = data.map(item => Number(item['#value+total']))
-      return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
     },
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
