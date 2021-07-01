@@ -2,10 +2,13 @@
   <div>
     <div class="badges">
       <b-badge variant="dark">
-        Funded by
+        Provider Org
+      </b-badge>
+      <b-badge v-if="maxNodeDepth>1" variant="dark">
+        Reporting Org
       </b-badge>
       <b-badge variant="dark">
-        Implemented by
+        Receiver Org
       </b-badge>
     </div>
     <div id="sankeyChart" ref="sankeyChart">
@@ -24,8 +27,8 @@
             v-bind="nodes"
             :key="node.index"
             :x="node.x0"
-            :y="node.y0"
-            :height="Math.max(node.y1-node.y0, 0)"
+            :y="isNaN(node.y0) ? 0 : node.y0"
+            :height="isNaN(node.y1) || isNaN(node.y0) ? 0 : Math.max(node.y1 - node.y0, 0)"
             :width="node.x1-node.x0"
             :fill="node.name=='» (unspecified org)' ? 'url(#diagonalHatch)': color(node)"
             class="node" />
@@ -65,7 +68,7 @@
             v-bind="nodes"
             :key="node.index"
             :x="node.x0 < width / 2 ? node.x1 + 6 : node.x0 - 6"
-            :y="(node.y1 + node.y0) / 2"
+            :y="isNaN(node.y1) || isNaN(node.y1) ? 0 : (node.y1 + node.y0) / 2"
             :text-anchor="node.x0 < width / 2 ? 'start' : 'end'"
             dy="0.35em">
             {{ truncate(node.name) }}
@@ -107,7 +110,7 @@
             </text> -->
             <text
               :x="labelXPosition(link)"
-              :y="labelYPosition(link)"
+              :y="isNaN(link.y0) || isNaN(link.y1) ? 0 : labelYPosition(link)"
               :width="link.width"
               dy="0.35em"
               :text-anchor="labelAnchor(link)">
@@ -119,7 +122,7 @@
     </div>
   </div>
 </template>
-<style>
+<style lang='scss'>
 .badges {
   display: flex;
   justify-content: space-between;
@@ -165,7 +168,7 @@ export default {
       width: 10,
       height: 10,
       selectedLink: null,
-      colors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#EFF2AA', '#C6E69B', '#AEEAE6']
+      colors: ['#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799', '#C6E69B', '#AEEAE6', '#418FDE', '#E56A54', '#ECA154', '#E2E868', '#A4D65E', '#71DBD4', '#9063CD', '#D3BC8D', '#82B5E9', '#EFA497', '#F4C799']
     }
   },
   computed: {

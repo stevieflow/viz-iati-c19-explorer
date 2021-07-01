@@ -12,8 +12,8 @@
             <b-nav-item :to="{name: 'index'}" exact-active-class="active" class="nav-index" no-prefetch>
               Commitments and Spending
             </b-nav-item>
-            <b-nav-item :to="{name: 'financial_flows'}" active-class="active" class="nav-flows" no-prefetch>
-              Financial Flows
+            <b-nav-item :to="{name: 'spending_flows'}" active-class="active" class="nav-flows" no-prefetch>
+              Spending Flows
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
@@ -23,8 +23,8 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
+      <nuxt />
     </b-container>
-    <nuxt />
   </div>
 </template>
 

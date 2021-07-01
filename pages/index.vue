@@ -8,12 +8,11 @@
           </p>
         </b-col>
         <b-col>
-          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv" block class="download-button" variant="outline-dark">
-            Download All Data
-          </b-button>
-          <div class="text-center pt-2">
-            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
-          </div>
+          <DownloadDataButton
+            type="transactions"
+            :filter-params="filterParams"
+            :selected-filter-dimension="selectedFilterDimension"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -163,7 +162,7 @@
         </h2>
 
         <b-row>
-          <b-col cols="12">
+          <b-col cols="12" lg="6">
             <b-form-select
               v-model="selectedRankingFilter"
               class="form-select px-2 ml-3 mb-3"
@@ -270,7 +269,7 @@
         </h2>
 
         <b-row>
-          <b-col cols="12">
+          <b-col cols="12" lg="6">
             <b-form-select
               v-model="timeseriesSelect"
               class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"
@@ -296,10 +295,12 @@ import numeral from 'numeral'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
+import DownloadDataButton from '~/components/DownloadDataButton'
 export default {
   components: {
     DoughnutChart,
-    TimeseriesChart
+    TimeseriesChart,
+    DownloadDataButton
   },
   filters: {
     truncate (text, length, suffix) {
@@ -547,11 +548,7 @@ export default {
       })
   },
   updated () {
-    // do this once
-    if (!this.loaded) {
-      this.createStickyHeader()
-      this.loaded = true
-    }
+    this.createStickyHeader()
   },
   destroyed () {
     this.toggleBodyClass('removeClass', 'index')
@@ -626,6 +623,7 @@ export default {
       this.updateFilteredData()
     },
     onSelect (value) {
+      console.log('on select')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') {
@@ -756,11 +754,14 @@ export default {
     },
     createStickyHeader () {
       const el = document.getElementsByClassName('header-sticky')[0]
-      const observer = new IntersectionObserver(
-        ([e]) => e.target.classList.toggle('is-stuck', e.intersectionRatio < 1),
-        { threshold: [1] }
-      )
-      observer.observe(el)
+      if (!this.loaded && el !== undefined) {
+        this.loaded = true
+        const observer = new IntersectionObserver(
+          ([e]) => e.target.classList.toggle('is-stuck', e.intersectionRatio < 1),
+          { threshold: [1] }
+        )
+        observer.observe(el)
+      }
     },
     scrollTo (refName) {
       const element = this.$refs[refName]
@@ -775,18 +776,6 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
-  }
-  .download-button {
-    border-color: #000;
-    color: #000;
-    font-family: 'Gotham Bold', sans-serif;
-    font-size: 14px;
-    padding: 13px 16px;
-    &:hover {
-      background-color: #000;
-      border-color: #000;
-      color: #FFF;
-    }
   }
   .key-figure-container {
     border-bottom: 1px solid #CCC;

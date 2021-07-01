@@ -7,13 +7,12 @@
             The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
           </p>
         </b-col>
-        <b-col class="mb-4">
-          <b-button href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" block class="download-button" variant="outline-dark">
-            Download All Data
-          </b-button>
-          <div class="text-center pt-2">
-            <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
-          </div>
+        <b-col>
+          <DownloadDataButton
+            type="flows"
+            :filter-params="filterParams"
+            :selected-filter-dimension="selectedFilterDimension"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -26,8 +25,8 @@
     <template
       v-if="!isBusy">
       <b-container>
-        <h2 class="header">
-          Financial Flows
+        <h2 class="header mt-3">
+          Spending Flows
         </h2>
         <b-row>
           <b-col cols="12" lg="7">
@@ -111,7 +110,7 @@
         <hr class="my-4">
 
         <h2 class="my-4">
-          <span v-if="activityCount > 10">Top <b>10</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">financial flows</span><span v-else>financial flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">spending flows</span><span v-else>spending flow</span> reported by <b>{{ selectedFilterLabel }}</b>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
@@ -127,16 +126,18 @@ import csvtojson from 'csvtojson'
 import numeral from 'numeral'
 import config from '../nuxt.config'
 import SankeyChart from '~/components/FinancialSankey.vue'
+import DownloadDataButton from '~/components/DownloadDataButton'
 export default {
   components: {
-    SankeyChart
+    SankeyChart,
+    DownloadDataButton
   },
   data () {
     return {
       title: config.head.title,
       selectedFilterDimension: '#org+id+reporting',
-      selectedFilter: 'us-gov-1',
-      selectedFilterLabel: 'United States Agency for International Development (USAID)',
+      selectedFilter: '*',
+      selectedFilterLabel: 'all reporting organizations',
       quickFilters: [
         { name: 'Asian Development Bank', id: 'xm-dac-46004' },
         { name: 'Inter-American Development Bank', id: 'xi-iati-iadb' },
@@ -153,16 +154,16 @@ export default {
         { label: 'No', value: 'off' },
         { label: 'Yes', value: 'on' }
       ],
+      activityCount: 0,
       fullData: [],
       filteredData: [],
       filterParams: {},
-      orgNameIndex: [],
-      lastUpdatedDate: ''
+      orgNameIndex: []
     }
   },
   head () {
     return {
-      title: config.head.title + ': Financial Flows'
+      title: config.head.title + ': Spending Flows'
     }
   },
   computed: {
@@ -184,9 +185,6 @@ export default {
         return org
       })
       return this.populateSelect(orgList, 'All reporting organizations')
-    },
-    activityCount () {
-      return this.filteredData.length
     }
   },
   mounted () {
@@ -231,11 +229,6 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
-          // const metadata = response.data.metadata
-          // const dateRun = new Date(metadata['#date+run'])
-          // const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
-          // this.lastUpdatedDate = date
-
           this.fullData = response.data.data
           this.updateFilteredData()
         })
@@ -254,13 +247,62 @@ export default {
       return _query
     },
     updateRouter () {
-      this.$router.push({ name: 'financial_flows', query: this.urlQuery() })
+      this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
     },
-    numberFormatter (value) {
-      if (value === 0) { return '0' }
-      return value
-        ? numeral(value).format('0,0')
-        : ''
+    updateFilteredData () {
+      this.filteredData = this.filterData()
+      this.updateRouter()
+    },
+    filterData () {
+      let result = this.fullData.map(i => ({ ...i }))
+      const params = this.filterParams
+      const filterDimension = this.selectedFilterDimension
+
+      if (params[filterDimension] && params[filterDimension] !== '*') {
+        result = result.filter(item => item[filterDimension] === params[filterDimension])
+      }
+      if (params['humanitarian'] === 'on') {
+        result = result.filter(item => item['#indicator+bool+humanitarian'] === 1)
+      }
+      if (params['strict'] === 'on') {
+        result = result.filter(item => item['#indicator+bool+strict'] === 1)
+      }
+      if (params['humanitarian'] === 'off' || params['strict'] === 'off') {
+        result = this.aggregateFlows(result)
+      }
+
+      // get total count before partioning data into incoming/outgoing
+      this.activityCount = result.length
+      result = this.partitionData(result)
+      return result
+    },
+    aggregateFlows (data) {
+      const aggregated = data.reduce((acc, item) => {
+        const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
+        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
+
+        if (!match) {
+          acc.push(item)
+        } else {
+          match['#value+total'] += item['#value+total']
+        }
+        return acc
+      }, [])
+      return aggregated
+    },
+    partitionData (data) {
+      let [incoming, outgoing] = data.reduce((result, element) => {
+        result[element['#x_transaction_direction'] === 'incoming' ? 0 : 1].push(element)
+        return result
+      }, [[], []])
+      incoming = this.formatData(incoming)
+      outgoing = this.formatData(outgoing)
+      return incoming.concat(outgoing)
+    },
+    formatData (array) {
+      return array.sort((a, b) =>
+        a['#value+total'] > b['#value+total'] ? -1 : 1
+      ).slice(0, 10)
     },
     onSelect (value) {
       this.selectedFilter = value
@@ -280,43 +322,6 @@ export default {
       event.preventDefault()
       this.onSelect(event.target.id)
     },
-    updateFilteredData () {
-      this.filteredData = this.filterData()
-      this.updateRouter()
-    },
-    filterData () {
-      let result = this.fullData
-      const params = this.filterParams
-      const filterDimension = this.selectedFilterDimension
-
-      if (params[filterDimension] && params[filterDimension] !== '*') {
-        result = result.filter(item => item[filterDimension].includes(params[filterDimension]))
-      }
-      if (params['humanitarian'] === 'on') {
-        result = result.filter(item => item['#indicator+bool+humanitarian'] === 1)
-      }
-      if (params['strict'] === 'on') {
-        result = result.filter(item => item['#indicator+bool+strict'] === 1)
-      }
-      if (params['humanitarian'] === 'off' || params['strict'] === 'off') {
-        result = this.aggregateFlows(result)
-      }
-      return result
-    },
-    aggregateFlows (data) {
-      const aggregated = data.reduce((acc, item) => {
-        const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
-        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
-
-        if (!match) {
-          acc.push(item)
-        } else {
-          match['#value+total'] += item['#value+total']
-        }
-        return acc
-      }, [])
-      return aggregated
-    },
     populateSelect (data, defaultValue) {
       const selectList = data.reduce((itemList, item) => {
         itemList.push({ value: item.value, text: item.text })
@@ -327,17 +332,19 @@ export default {
       selectList.unshift({ value: '*', text: defaultValue })
       return selectList
     },
-    getTotal (data) {
-      const result = data.map(item => Number(item['#value+total']))
-      return (result.length > 0) ? result.reduce((total, value) => total + value) : 0
-    },
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
-      return org[0]['#org+name+reporting']
+      return (org[0] !== undefined) ? org[0]['#org+name+reporting'] : ''
     },
     getOrgID (name) {
       const org = this.orgNameIndex.filter(org => org['#org+name+reporting'] === name)
       return org[0]['#org+id+reporting']
+    },
+    numberFormatter (value) {
+      if (value === 0) { return '0' }
+      return value
+        ? numeral(value).format('0,0')
+        : ''
     }
   }
 }
@@ -347,18 +354,6 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
-  }
-  .download-button {
-    border-color: #000;
-    color: #000;
-    font-family: 'Gotham Bold', sans-serif;
-    font-size: 14px;
-    padding: 13px 16px;
-    &:hover {
-      background-color: #000;
-      border-color: #000;
-      color: #FFF;
-    }
   }
   .quick-filter-list {
     font-size: 14px;
@@ -375,9 +370,6 @@ export default {
     }
   }
   .filter-select {
-    .vs__selected-options {
-      flex-wrap: initial;
-    }
     .vs__dropdown-toggle {
       padding: 14px;
     }

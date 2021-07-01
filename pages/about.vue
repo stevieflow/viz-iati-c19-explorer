@@ -47,14 +47,111 @@
               Methodology Notes
             </h2>
 
-            <p>In building this tool, we have been guided by the goal of “holding up a mirror to IATI data”. In other words, we have tried to minimize any alterations or transformations of the raw data as it has been shared by IATI publishers. That said, some transformations and inferences are necessary in order to make sense of incomplete or incorrect data and avoid duplication. The sections below provide a detailed explanation of our methodology.</p>
+            <p>A guiding principle for developing this tool has been to ‘hold up a mirror’ to IATI data. We present financial information as reported, without attempting any reconciliation among different publishing organisations or verification of those numbers from other sources.</p>
 
-            <client-only>
-              <VueFaqAccordion
-                class="about-faq"
-                :items="faqs"
-              />
-            </client-only>
+            <p>We apply the rules described below to determine which IATI transactions and activities are relevant to the global COVID-19 pandemic, and how we should aggregate them.</p>
+
+            <div class="accordion" role="tablist">
+              <b-card no-body>
+                <b-card-header header-tag="header" role="tab">
+                  <b-button v-b-toggle.accordion-1 block squared>
+                    General methodology notes
+                  </b-button>
+                </b-card-header>
+                <b-collapse id="accordion-1" accordion="faq-accordion" role="tabpanel">
+                  <b-card-body>
+                    <b-card-text>
+                      <h3>Source data</h3>
+                      <p>We update our IATI source data from the <a href="https://d-portal.org/" target="_blank">D-Portal</a> service every 24 hours (<a href="https://github.com/OCHA-DAP/hdx-scraper-iati-viz/blob/main/config/project_configuration.yml" target="_blank">query</a>). We focus primarily on the IATI transaction level (where the financial data is), but pull default metadata from the parent activity when needed.</p>
+
+                      <h3>Exclusions</h3>
+                      <p>We do not make individual judgements about the accuracy of the financial amounts reported, only about whether the IATI is correctly formed and usable. We exclude IATI activities when they meet any of the following criteria:</p>
+                      <ul>
+                        <li>reporting organisation is a secondary reporter</li>
+                        <li>reporting organisation is unspecified</li>
+                        <li>reporting organisation is in a blocklist we maintain of those that share malformed IATI data</li>
+                        <li>the activity lists related child activities</li>
+                      </ul>
+                      <p>We exclude any financial transactions that have a value of 0, or are not of types 1 (Incoming Funding), 2 (Outgoing Commitment), 3 (Disbursement), 4 (Expenditure), or 11 (Incoming Commitment) in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank">IATI Transaction Type code list</a>. We also exclude all outgoing financial transactions (types 3 or 4) dated before 2020-01-01, since they are too early to be relevant to the pandemic.</p>
+
+                      <h3>Currency conversion</h3>
+                      <p>Unless they are already denominated in US dollars (USD), we convert all transaction values to USD before performing any other operations. We use the historical exchange rate from the value date in the IATI transaction.</p>
+
+                      <h3>“Strict” and “loose” relevance to the COVID-19 pandemic</h3>
+                      <p>When a transaction or its activity conforms to the <a href="https://iatistandard.org/en/news/updated-covid-19-guidance-iati-publishers/" target="_blank">IATI COVID-19 Guidance for IATI Publishers</a> or uses the new OECD-DAC sector code "12264", we consider it loosely relevant if the only indication is the string “COVID-19” in the activity-level description (or a similar string like “COVID” or “CORONAVIRUS”), or strictly relevant in other cases. We make the distinction because the string “COVID-19” is likely to appear in a long description for activities that are not primarily focused on the COVID-19 pandemic, so we are less confident in that activity’s relevance.</p>
+
+                      <h3>Spending</h3>
+                      <p>We do not make a distinction between disbursement and expense transactions, but treat both as “spending” for the sake of this tool.</p>
+                    </b-card-text>
+                  </b-card-body>
+                </b-collapse>
+              </b-card>
+
+              <b-card no-body>
+                <b-card-header header-tag="header" role="tab">
+                  <b-button v-b-toggle.accordion-2 block squared>
+                    Additional notes for the Commitments and Spending tab
+                  </b-button>
+                </b-card-header>
+                <b-collapse id="accordion-2" accordion="faq-accordion" role="tabpanel">
+                  <b-card-body>
+                    <b-card-text>
+                      <h3>Allocation of spending by sector and recipient country</h3>
+
+                      <p>If an activity lists multiple sectors and/or recipient countries, we divide each transaction by the percentages given for both. We use the sectors and recipient countries for the transaction if provided, and otherwise default to those for the transaction\'s activity. For example, if a transaction with a value of $1,000,000 was assigned 30% to Senegal and 70% to Mali, and 50% to Health and 50% to education, we would split it into four virtual transactions:</p>
+                      <ol>
+                        <li>Senegal, Health: $150,000 (15%)</li>
+                        <li>Senegal, Education: $150,000 (15%)</li>
+                        <li>Mali, Health: $350,000 (35%)</li>
+                        <li>Mali, Education: $350,000 (35%)</li>
+                      </ol>
+                      <p>We use OECD DAC3 and DAC5 purpose codes for our sectors, but roll them up one further level to DAC groups. See <a href="https://github.com/davidmegginson/c19-iati-data/blob/main/data/dac3-sector-map.json" target="_blank">data/dac3-sector-map.json</a> for the mappings.</p>
+
+                      <h3>Deduplication of commitments and spending</h3>
+                      <p>To avoid duplicate counting, we calculate a "net" value for new commitments and spending in each activity, as well as a "total" value for all commitments and spending. To come up with a net value, we take the following steps on relevant transactions:</p>
+                      <ol>
+                        <li>Start with the higher of the sum of all incoming commitments (type 11) or the sum of all incoming funding (type 1) as incoming money: if negative, use 0. We do not filter transactions by date for this step (but we do for all the others).</li>
+                        <li>Add the values of all outgoing commitments (type 2) to get total commitments.</li>
+                        <li>Subtract the incoming money from total commitments to get net (new) commitments (but replace a negative result with zero).</li>
+                        <li>Add the values of all disbursements (type 3) and expenditures (type 4) to get total spending.</li>
+                        <li>Subtract the incoming money from total spending to get net (new) spending (but replace a negative result with zero).</li>
+                      </ol>
+
+                      <h3>Total vs net money in the visualisation</h3>
+                      <p>When we are filtering the data to just a single organisation, we display total commitments and total spending, because there is (or should be) no risk of duplicate counting; in every other situation, where we are potentially counting money reported by more than one organisation, we use net commitments and net spending, calculated as described above.</p>
+
+                      <h3>Humanitarian flags</h3>
+                      <p>If an activity is flagged positively as humanitarian, we use this to flag subsequent transactions.  When a transaction contains the humanitarian flag, we use this to override the activity level setting.</p>
+                    </b-card-text>
+                  </b-card-body>
+                </b-collapse>
+              </b-card>
+
+              <b-card no-body>
+                <b-card-header header-tag="header" role="tab">
+                  <b-button v-b-toggle.accordion-3 block squared>
+                    Additional notes for the Spending Flows tab
+                  </b-button>
+                </b-card-header>
+                <b-collapse id="accordion-3" accordion="faq-accordion" role="tabpanel">
+                  <b-card-body>
+                    <b-card-text>
+                      <h3>Monetary values for spending flows</h3>
+                      <p>All values in the flows tab represent spending (disbursements and expenditures), not commitments. Because the flows tab is usually filtered by a single organisation, we report the total (not net) amounts for the organisation.</p>
+
+                      <h3>Partner-organisation defaults</h3>
+                      <p>If a transaction does not report a provider or receiver organisation (as appropriate), we default to the activity’s participating organisation with a “funding” role for an incoming transaction, or with an “implementing” role for an outgoing transaction.</p>
+
+                      <h3>Internal transactions</h3>
+                      <p>We ignore all transactions within the same organisation, when it is possible to detect them.</p>
+
+                      <h3>Aggregation of flows</h3>
+                      <p>We aggregate transactions with the same metadata (organisations, sector, recipient country, strictness, and humanitarian status) so that there is just one row for each combination.</p>
+                    </b-card-text>
+                  </b-card-body>
+                </b-collapse>
+              </b-card>
+            </div>
           </section>
 
           <section id="developers" class="mb-5">
@@ -93,7 +190,7 @@
               Get in Touch
             </h2>
 
-            <p>If you have any further questions or comments, please get in touch with us at <a href="mailto:centrehumdata@un.org">centrehumdata@un.org</a>.</p>
+            <p>If you have any further questions or comments, please get in touch with us at <a href="mailto:hdx@un.org">hdx@un.org</a>.</p>
           </section>
         </b-col>
       </b-row>
@@ -107,6 +204,12 @@
     font-family: 'Gotham Bold', sans-serif;
     font-size: 18px;
     color: #007CE0;
+  }
+  h3 {
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
   }
 }
 .jump-nav {
@@ -129,32 +232,45 @@
     }
   }
 }
-.faq {
-  &.about-faq {
-    padding: 0 !important;
-    .accordion {
-      border: 0;
+.accordion {
+  .card {
+    border: none;
+    border-bottom: 1px solid #CCC;
+    border-radius: 0;
+    &:hover {
+      background-color: #EDF6FD;
     }
-    .accordion__item {
+    &:not(:last-of-type) {
       border-bottom: 1px solid #CCC;
-      &:hover {
-        background-color: #EDF6FD;
-      }
     }
-    .accordion__title {
+  }
+  .card-body {
+    padding-top: 5px;
+  }
+  .card-header {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    .btn-secondary {
+      background-color: transparent;
+      border: none;
       color: #000;
-      font-family: 'Source Sans Pro', sans-serif;
       font-weight: 400;
       font-size: 18px;
       letter-spacing: 0.01em;
       line-height: 24px;
       padding: 27px 10px;
-      &:hover {
-        color: #000;
+      text-align: left;
+      transition: none;
+      &:focus {
+        box-shadow: none;
       }
-    }
-    .accordion__toggle-button {
-      display: none;
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        color: #000;
+        background-color: transparent;
+        border: none;
+      }
     }
   }
 }
@@ -168,34 +284,11 @@ blockquote {
 }
 </style>
 <script>
-import VueFaqAccordion from 'vue-faq-accordion'
 import config from '../nuxt.config'
 export default {
-  components: {
-    VueFaqAccordion
-  },
+  components: {},
   data () {
-    return {
-      title: config.head.title,
-      faqs: [
-        {
-          title: 'How we obtain the data used in this visualization',
-          value: 'Coming soon'
-        },
-        {
-          title: 'How we transform the data used in this visualization',
-          value: 'Coming soon'
-        },
-        {
-          title: 'Additional notes on the Commitments and Spending tab',
-          value: 'Coming soon'
-        },
-        {
-          title: 'Additional notes on the Financial Flows tab',
-          value: 'Coming soon'
-        }
-      ]
-    }
+    return {}
   },
   head () {
     return {

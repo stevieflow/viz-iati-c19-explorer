@@ -63,8 +63,7 @@ export default {
       }
       const items = [...this.items].sort((a, b) =>
         a['#value+total'] > b['#value+total'] ? -1 : 1
-      ).slice(0, this.maximumVisibleItems)
-
+      )
       const nodes = items.reduce((summary, item) => {
         const provider = getProvider(item, item['#x_transaction_direction'])
         const receiver = getReceiver(item, item['#x_transaction_direction'])
@@ -98,7 +97,7 @@ export default {
   methods: {
     getOrgName (id) {
       const org = this.orgNameIndex.filter(org => org['#org+id+reporting'] === id)
-      return org[0]['#org+name+reporting']
+      return (org[0] !== undefined) ? org[0]['#org+name+reporting'] : ''
     }
   }
 }
