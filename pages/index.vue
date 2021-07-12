@@ -48,7 +48,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type organization name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <v-select
               v-if="selectedFilterDimension==='#country'"
@@ -59,7 +68,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type country name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <v-select
               v-if="selectedFilterDimension==='#sector'"
@@ -70,7 +88,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type sector name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <div class="quick-filter-list">
               Quick filters:
@@ -482,14 +509,14 @@ export default {
       const monthlyCommitments = Object.values(this.commitments.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
         val = (val < 0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        acc[item['#date+month']] = acc[item['#date+month']] + val || val
         return acc
       }, []))
 
       const monthlySpending = Object.values(this.spending.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
         val = (val < 0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        acc[item['#date+month']] = acc[item['#date+month']] + val || val
         return acc
       }, []))
 
@@ -623,7 +650,7 @@ export default {
       this.updateFilteredData()
     },
     onSelect (value) {
-      console.log('on select')
+      console.log('help')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') {
@@ -632,6 +659,10 @@ export default {
         this.setDefaultFilterLabel(this.selectedFilterDimension)
       }
       this.updateFilteredData()
+    },
+    onFocus (event, value) {
+      console.log('focus!', this)
+      console.log(event, value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
@@ -850,15 +881,37 @@ export default {
   }
   .filter-select {
     .vs__dropdown-toggle {
+      max-height: 58px;
       padding: 14px;
     }
     .vs__open-indicator {
       cursor: pointer;
       fill: #000;
     }
+    .vs__selected-options {
+      min-height: 28px;
+    }
     .vs__search,
     .vs__selected {
       font-family: 'Gotham Bold', sans-serif;
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    .vs__search {
+      opacity: 0;
+    }
+  }
+  .vs--single.vs--open {
+    .vs__selected {
+      opacity: 0;
+    }
+    .vs__search {
+      opacity: 1;
+      &::placeholder {
+        color: #999;
+      }
     }
   }
   .col-form-label {

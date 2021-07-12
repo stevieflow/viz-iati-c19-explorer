@@ -128,8 +128,8 @@
   justify-content: space-between;
 }
 #sankeyChart {
-  width: 100%;
   height: 400px;
+  width: 100%;
 }
 .node rect {
   cursor: move;

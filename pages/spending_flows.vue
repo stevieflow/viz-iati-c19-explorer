@@ -279,7 +279,7 @@ export default {
     aggregateFlows (data) {
       const aggregated = data.reduce((acc, item) => {
         const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
-        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
+        const match = acc.find(a => a[pattern] !== '' && a['#org+id+reporting'] === item['#org+id+reporting'] && a[pattern] === item[pattern])
 
         if (!match) {
           acc.push(item)
