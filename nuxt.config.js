@@ -1,7 +1,7 @@
 const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER'
   ? {
       router: {
-        base: '/iati-c19-explorer/'
+        base: '/visualization/iati-c19-explorer/'
       }
     }
   : {}
