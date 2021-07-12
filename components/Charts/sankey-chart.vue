@@ -84,30 +84,6 @@
             class="linkText"
             @mouseover="mouseoverLink(link.index)"
             @mouseleave="mouseleaveLink(link.index)">
-            <!-- <text
-              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-              :y="(link.y1 + link.y0) / 2"
-              :width="link.width"
-              dy="0.35em"
-              text-anchor="middle">
-              From {{ link.source.name }}<br />
-            </text>
-            <text
-              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-              :y="((link.y1 + link.y0) / 2)+15"
-              :width="link.width"
-              dy="0.35em"
-              text-anchor="middle">
-              To {{ link.target.name }}<br />
-            </text>
-            <text
-              :x="link.source.x1+(link.target.x0-link.source.x1)/2"
-              :y="((link.y1 + link.y0) / 2)+30"
-              :width="link.width"
-              dy="0.35em"
-              text-anchor="middle">
-              USD {{ numberFormatter(link.value) }}<br />
-            </text> -->
             <text
               :x="labelXPosition(link)"
               :y="isNaN(link.y0) || isNaN(link.y1) ? 0 : labelYPosition(link)"
@@ -237,7 +213,11 @@ export default {
       if (this.maxNodeDepth < 2) {
         return (link.y1 + link.y0) / 2
       } else {
-        return link.source.x1 > this.width / 2 ? link.y0 : link.y1
+        const isRight = link.source.x1 > this.width / 2
+        let yPos = isRight ? link.y0 : link.y1
+        // dont overlap with org name
+        yPos = (Math.abs(yPos - this.height / 2) < 15 && isRight) ? yPos - 15 : yPos
+        return yPos
       }
     },
     labelAnchor (link) {
