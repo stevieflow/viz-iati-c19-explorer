@@ -39,7 +39,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type organization name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <div class="quick-filter-list">
               Quick filters:
