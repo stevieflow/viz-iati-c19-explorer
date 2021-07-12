@@ -865,55 +865,6 @@ export default {
     font-size: 14px;
     justify-content: space-between;
   }
-  .quick-filter-list {
-    font-size: 14px;
-    line-height: 18px;
-    li {
-      &::after {
-        content: " | ";
-      }
-      &:last-child {
-        &::after {
-          content: "";
-        }
-      }
-    }
-  }
-  .filter-select {
-    .vs__dropdown-toggle {
-      max-height: 58px;
-      padding: 14px;
-    }
-    .vs__open-indicator {
-      cursor: pointer;
-      fill: #000;
-    }
-    .vs__selected-options {
-      min-height: 28px;
-    }
-    .vs__search,
-    .vs__selected {
-      font-family: 'Gotham Bold', sans-serif;
-      opacity: 1;
-      position: absolute;
-      top: 0;
-      width: 100%;
-    }
-    .vs__search {
-      opacity: 0;
-    }
-  }
-  .vs--single.vs--open {
-    .vs__selected {
-      opacity: 0;
-    }
-    .vs__search {
-      opacity: 1;
-      &::placeholder {
-        color: #999;
-      }
-    }
-  }
   .col-form-label {
     font-weight: bold;
   }

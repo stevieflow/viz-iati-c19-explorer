@@ -364,31 +364,4 @@ export default {
     text-decoration: none;
     cursor: auto;
   }
-  .quick-filter-list {
-    font-size: 14px;
-    line-height: 18px;
-    li {
-      &::after {
-        content: " | ";
-      }
-      &:last-child {
-        &::after {
-          content: "";
-        }
-      }
-    }
-  }
-  .filter-select {
-    .vs__dropdown-toggle {
-      padding: 14px;
-    }
-    .vs__open-indicator {
-      cursor: pointer;
-      fill: #000;
-    }
-    .vs__search,
-    .vs__selected {
-      font-family: 'Gotham Bold', sans-serif;
-    }
-  }
 </style>
