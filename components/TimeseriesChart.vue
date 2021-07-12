@@ -155,7 +155,7 @@ export default {
         const item = this.chartData.datasets[i]
         if (this.chartData.datasets.length > 2) {
           if (i === 0) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
-          if (i === 2) { htmlLegend.push('</div><div class="mr-4"><h6 class="d-inline">Monthly: </h6>') }
+          if (i === 2) { htmlLegend.push('</div><div class="mr-lg-4"><h6 class="d-inline">Monthly: </h6>') }
         } else {
           if (i === 0 && this.chartType.includes('Cumulative')) { htmlLegend.push('<div><h6 class="d-inline">Cumulative: </h6>') }
           if (i === 0 && this.chartType.includes('Monthly')) { htmlLegend.push('<div><h6 class="d-inline">Monthly: </h6>') }

@@ -2,7 +2,7 @@
   <div>
     <b-container>
       <b-row>
-        <b-col cols="9">
+        <b-col cols="12" lg="9">
           <p class="mb-4">
             The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
           </p>
@@ -29,7 +29,7 @@
           Spending Flows
         </h2>
         <b-row>
-          <b-col cols="7">
+          <b-col cols="12" lg="7">
             <h3>Reporting organization:</h3>
             <v-select
               :value="selectedFilter"
@@ -39,7 +39,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type organization name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <div class="quick-filter-list">
               Quick filters:
@@ -219,7 +228,7 @@ export default {
   methods: {
     async loadData () {
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
-      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
+      const filePath = ''// (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
@@ -279,7 +288,7 @@ export default {
     aggregateFlows (data) {
       const aggregated = data.reduce((acc, item) => {
         const pattern = (item['#x_transaction_direction'] === 'incoming') ? '#org+name+provider' : '#org+name+receiver'
-        const match = acc.find(a => a[pattern] !== '' && a[pattern] === item[pattern])
+        const match = acc.find(a => a[pattern] !== '' && a['#org+id+reporting'] === item['#org+id+reporting'] && a[pattern] === item[pattern])
 
         if (!match) {
           acc.push(item)
@@ -354,32 +363,5 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
-  }
-  .quick-filter-list {
-    font-size: 14px;
-    line-height: 18px;
-    li {
-      &::after {
-        content: " | ";
-      }
-      &:last-child {
-        &::after {
-          content: "";
-        }
-      }
-    }
-  }
-  .filter-select {
-    .vs__dropdown-toggle {
-      padding: 14px;
-    }
-    .vs__open-indicator {
-      cursor: pointer;
-      fill: #000;
-    }
-    .vs__search,
-    .vs__selected {
-      font-family: 'Gotham Bold', sans-serif;
-    }
   }
 </style>

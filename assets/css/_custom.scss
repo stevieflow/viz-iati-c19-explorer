@@ -41,35 +41,16 @@ h2 {
   font-size: 22px;
   line-height: 26px;
   &.header {
+    align-items: center;
     background-color: #EDF6FD;
     border-bottom: 1px solid #CCC;
+    display: flex;
     font-family: 'Gotham Bold', sans-serif;
     font-size: 15px;
     height: 52px;
-    line-height: 52px;
+    line-height: 19px;
     margin-bottom: 32px;
     padding: 0 20px;
-  }
-  &.header-sticky {
-    background-color: #FFF;
-    display: flex;
-    padding: 24px 0;
-    position: sticky;
-    top: -1px;
-    z-index: 2;
-    .anchor {
-      cursor: pointer;
-      font-family: 'Source Sans Pro', sans-serif;
-      font-size: 14px;
-      margin-left: auto;
-      opacity: 0;
-    }
-  }
-  &.is-stuck {
-    box-shadow: 0 5px 5px -5px #CCC;
-    .anchor {
-      opacity: 1;
-    }
   }
 }
 
@@ -84,6 +65,33 @@ h6 {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
   font-size: 13px;
   font-weight: 600;
+}
+
+.header-sticky {    
+  background-color: #FFF;
+  position: sticky;
+  top: -1px;
+  z-index: 2;
+  .container {
+    align-items: center;
+    display: flex;
+  }
+  h2 {
+    padding: 24px 0;
+  }
+  .anchor {
+    cursor: pointer;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14px;
+    margin-left: auto;
+    display: none;
+  }
+  &.is-stuck {
+    box-shadow: 0 5px 5px -5px #CCC;
+    .anchor {
+      display: block;
+    }
+  }
 }
 
 //get around exact active matching for index page with query params and force index tab to be active
@@ -228,6 +236,92 @@ body.index {
       &:after {
         content: url('~@/assets/icons/icon-download-white.svg');
       }
+    }
+  }
+  .quick-filter-list {
+    font-size: 14px;
+    line-height: 18px;
+    li {
+      &::after {
+        content: " | ";
+      }
+      &:last-child {
+        &::after {
+          content: "";
+        }
+      }
+    }
+  }
+  .filter-select {
+    .vs__dropdown-toggle {
+      max-height: 58px;
+      padding: 14px;
+    }
+    .vs__open-indicator {
+      cursor: pointer;
+      fill: #000;
+    }
+    .vs__selected-options {
+      min-height: 28px;
+    }
+    .vs__search,
+    .vs__selected {
+      font-family: 'Gotham Bold', sans-serif;
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    .vs__search {
+      opacity: 0;
+    }
+  }
+  .vs--single.vs--open {
+    .vs__selected {
+      opacity: 0;
+    }
+    .vs__search {
+      opacity: 1;
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .header-sticky {
+    h2 {
+      padding-bottom: 0;
+    }
+    .container {
+      align-items: flex-start;
+      flex-flow: column;
+      padding-bottom: 10px;
+      .anchor {
+        margin-left: 0;
+      }
+    }
+  }
+  .iati-viz {
+    .form-select {
+      width: 90%;
+    }
+    .quick-filter-list {
+      margin-bottom: 20px;
+    }
+    .key-figure-container {
+      align-items: center;
+      flex-flow: column;
+    }
+    .key-figure-breakdown {
+      width: auto;
+    }
+    .doughnut-chart {
+      margin-bottom: 30px;
+    }
+    .timeseries-legend {
+      flex-direction: column;
     }
   }
 }
