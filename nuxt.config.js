@@ -90,7 +90,7 @@ export default {
         moment: 'moment'
       }
     }
-  },
+  }
   // dev: process.env.NODE_ENV !== 'production',
   // ...routerBase
 }
