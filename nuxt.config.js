@@ -1,10 +1,10 @@
-// const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER'
-//   ? {
-//       router: {
-//         base: '/viz-iati-c19-explorer/'
-//       }
-//     }
-//   : {}
+const routerBase = process.env.DEPLOY_ENV === 'WITH_SUBFOLDER'
+  ? {
+      router: {
+        base: '/iati-c19-explorer/'
+      }
+    }
+  : {}
 export default {
   /*
   ** Headers of the page
@@ -90,7 +90,7 @@ export default {
         moment: 'moment'
       }
     }
-  }
-  // dev: process.env.NODE_ENV !== 'production',
-  // ...routerBase
+  },
+  dev: process.env.NODE_ENV !== 'production',
+  ...routerBase
 }
