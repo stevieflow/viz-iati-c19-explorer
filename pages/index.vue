@@ -650,7 +650,6 @@ export default {
       this.updateFilteredData()
     },
     onSelect (value) {
-      console.log('help')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') {
@@ -659,10 +658,6 @@ export default {
         this.setDefaultFilterLabel(this.selectedFilterDimension)
       }
       this.updateFilteredData()
-    },
-    onFocus (event, value) {
-      console.log('focus!', this)
-      console.log(event, value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
