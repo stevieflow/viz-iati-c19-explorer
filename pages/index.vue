@@ -2,7 +2,7 @@
   <div>
     <b-container>
       <b-row>
-        <b-col cols="9">
+        <b-col cols="12" lg="9">
           <p class="overview-description">
             The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country, or sector.
           </p>
@@ -27,7 +27,7 @@
         <hr class="my-4">
 
         <b-row ref="filters">
-          <b-col cols="7">
+          <b-col cols="12" lg="7">
             <b-form-group label="Filter:">
               <b-form-radio-group
                 id="filterGroup"
@@ -48,7 +48,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type organization name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <v-select
               v-if="selectedFilterDimension==='#country'"
@@ -59,7 +68,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type country name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <v-select
               v-if="selectedFilterDimension==='#sector'"
@@ -70,7 +88,16 @@
               :get-option-label="option => option.text"
               :reduce="option => option.value"
               @input="onSelect"
-            />
+            >
+              <template #search="{ attributes, events }">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  placeholder="Type sector name here"
+                  v-on="events"
+                >
+              </template>
+            </v-select>
 
             <div class="quick-filter-list">
               Quick filters:
@@ -145,24 +172,30 @@
         </b-row>
 
         <hr class="mt-4 mb-0">
+      </b-container>
 
-        <h2 class="header-sticky">
-          <div><b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b></div>
+      <div class="header-sticky">
+        <div class="container">
+          <h2>
+            <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          </h2>
           <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
-        </h2>
+        </div>
+      </div>
+
+      <b-container>
         <h2 class="header">
           Commitments and Spending Ranking
         </h2>
 
         <b-row>
-          <b-col>
+          <b-col cols="12" lg="6">
             <b-form-select
               v-model="selectedRankingFilter"
               class="form-select px-2 ml-3 mb-3"
               :options="rankingFilter[getFilterID(selectedFilterDimension)]"
             />
           </b-col>
-          <b-col />
         </b-row>
 
         <b-row>
@@ -172,7 +205,7 @@
                 :doughnut-chart-data="commitmentsDonut"
                 :colors="commitmentColors"
               />
-              <div class="key-figure-breakdown w-100 ml-4 mr-5">
+              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
                 <h3>
                   Total Commitments (USD)
                   <b-badge
@@ -195,7 +228,7 @@
                         <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
@@ -217,7 +250,7 @@
                 :doughnut-chart-data="spendingDonut"
                 :colors="spendingColors"
               />
-              <div class="key-figure-breakdown w-100 ml-4 mr-5">
+              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
                 <h3>
                   Total Spending (USD)
                   <b-badge
@@ -240,7 +273,7 @@
                         <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
                       </template>
                       <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(18, '...') }}</abbr>
+                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
                       </template>
                       <template #cell(value)="data">
                         <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
@@ -263,7 +296,7 @@
         </h2>
 
         <b-row>
-          <b-col>
+          <b-col cols="12" lg="6">
             <b-form-select
               v-model="timeseriesSelect"
               class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"
@@ -476,14 +509,14 @@ export default {
       const monthlyCommitments = Object.values(this.commitments.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
         val = (val < 0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        acc[item['#date+month']] = acc[item['#date+month']] + val || val
         return acc
       }, []))
 
       const monthlySpending = Object.values(this.spending.reduce((acc, item) => {
         let val = Number(item[ref.tagPattern])
         val = (val < 0) ? 0 : val
-        acc[item['#date+month']] = acc[item['#date+month']] + val || 0
+        acc[item['#date+month']] = acc[item['#date+month']] + val || val
         return acc
       }, []))
 
@@ -550,7 +583,7 @@ export default {
   methods: {
     async loadData () {
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
-      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
+      const filePath = ''// (config.dev) ? '' : '/viz-iati-c19-explorer/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
@@ -617,7 +650,6 @@ export default {
       this.updateFilteredData()
     },
     onSelect (value) {
-      console.log('on select')
       this.selectedFilter = value
       this.filterParams[this.selectedFilterDimension] = value
       if (value !== '*') {
@@ -827,33 +859,6 @@ export default {
     display: flex;
     font-size: 14px;
     justify-content: space-between;
-  }
-  .quick-filter-list {
-    font-size: 14px;
-    line-height: 18px;
-    li {
-      &::after {
-        content: " | ";
-      }
-      &:last-child {
-        &::after {
-          content: "";
-        }
-      }
-    }
-  }
-  .filter-select {
-    .vs__dropdown-toggle {
-      padding: 14px;
-    }
-    .vs__open-indicator {
-      cursor: pointer;
-      fill: #000;
-    }
-    .vs__search,
-    .vs__selected {
-      font-family: 'Gotham Bold', sans-serif;
-    }
   }
   .col-form-label {
     font-weight: bold;

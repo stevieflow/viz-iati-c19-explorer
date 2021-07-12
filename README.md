@@ -1,8 +1,8 @@
 # Covid-19 visualisation
 
-A simple visualisation using published FTS and IATI data on Covid-19.
+A simple visualisation using published IATI data on Covid-19.
 
-Data is generated nightly by the [OCHA-DAP/covid19-data](https://github.com/OCHA-DAP/covid19-data) repository.
+Data is generated nightly by the [OCHA-DAP/hdx-scraper-iati-viz](https://github.com/ocha-dap/hdx-scraper-iati-viz) repository.
 
 ## Build Setup
 
@@ -19,6 +19,9 @@ $ npm run start
 
 # generate static project
 $ npm run generate
+
+# deploy the project
+$ npm run gen-subfolder && npm run deploy
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
@@ -38,30 +41,15 @@ You can manage linting rules in `.eslintrc.js`. I disabled a few rules but you m
 
 ## Overview
 
-There are four "tabs" in the visualisation: Contributions; Activities; Flows; About. Each of these tabs is accessible from the top navigation bar. The navigation bar is found in `default.vue`.
+There are three "tabs" in the visualisation: Commmitments/Spending; Spending Flows; About. Each of these tabs is accessible from the top navigation bar. The navigation bar is found in `default.vue`.
 
-### Contributions (`pages/index.vue`)
+### Commmitments/Spending (`pages/index.vue`)
 
-The Contributions tab contains data from UNOCHA's FTS, and displays **components** in the following order:
-* `SummaryPanes/HRP.vue`: a "thermometer" at the top (currently, showing the % of the COVID-19 HRP funded to date).
-* `SummaryPanes/Controls/Contributions.vue`: a set of controls for determining what information gets displayed both in the Summary pane and in the list of contributions.
-* `SummaryPanes/Contributions.vue`: a Summary pane containing a chart or table for the currently filtered information.
-* `ActivityTable.vue`: a table containing the list of contributions.
 
-### Activities (`pages/activities.vue`)
 
-The Activities tab contains data from IATI, and displays **components** in the following order:
-* `SummaryPanes/Controls/IATI.vue`: a set of controls for determining what information gets displayed both in the Summary pane and in the list of activities.
-* `SummaryPanes/IATI.vue`: a Summary pane containing a chart or table for the currently filtered information.
-* `ActivityTable.vue`: a table containing the list of IATI activities.
+### Spending Flows (`pages/spending_flows.vue`)
 
-### Flows (`pages/flows.vue`)
 
-The Flows tab contains data from IATI, and displays the following information (which could potentially be stored in separate components, but currently is just in the one file, because these elements are not re-used elsewhere).
-* A summary table displaying commitments, disbursements and expenditure for all organisations in the selected **organisation type**.
-* A Sankey chart (using the `Sankey.vue` component) for the selected **organisation**.
-* A table containing the total disbursements and expenditures from the selected organisation to its implementing partners.
-* A table containing incoming funds from the selected organisation's funders to this organisation.
 
 ### About (`pages/about.vue`)
 
@@ -71,7 +59,6 @@ The About tab contains a description and background of the visualisation. It des
 
 Tooltips can be used throughout the site to provide more information where required.
 
-* Currently, they are only enabled in `activities.vue`.
 * Tooltips should be saved as a CSV file, with a unique `key` column and a `tooltip` column. You might want to namespace the `key` column (e.g. prefix all existing tooltips with `activities_table__`)
 * Tooltips are loaded when `activities.vue` loads and stored in the Vuex store. This means they are available to all other parts of the visualisation through `this.$store.state.tooltips` - for the example below, the value of this is assigned to the computed property `tooltips`.
 * You can add a tooltip wherever you want using something like the following code:
@@ -85,5 +72,5 @@ Tooltips can be used throughout the site to provide more information where requi
 </b-badge>
 ```
 
-Tooltips are currently only loaded when `activities.vue` is loaded. You could easily make them load for other tabs too by adding relevant functionality within the `loadData()` method of each tab. Alternatively, you could consider moving this retrieval to the Vuex store and call it from within the [nuxtServerInit](https://nuxtjs.org/docs/2.x/directory-structure/store#the-nuxtserverinit-action) action, though this is a bit fiddly.
+You can easily load tooltips in any tab by adding relevant functionality within the `loadData()` method of each tab. Alternatively, you could consider moving this retrieval to the Vuex store and call it from within the [nuxtServerInit](https://nuxtjs.org/docs/2.x/directory-structure/store#the-nuxtserverinit-action) action, though this is a bit fiddly.
 
