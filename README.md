@@ -19,9 +19,6 @@ $ npm run start
 
 # generate static project
 $ npm run generate
-
-# deploy the project
-$ npm run gen-subfolder && npm run deploy
 ```
 
 For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
