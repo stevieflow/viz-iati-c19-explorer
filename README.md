@@ -26,7 +26,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 ## Generate a Github Pages static site and push to Github
 
 ```bash
-$ npm run generate
+$ npm run gen-subfolder
 $ npm run deploy
 ```
 
