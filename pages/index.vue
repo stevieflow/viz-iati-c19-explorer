@@ -31,7 +31,7 @@
             <b-form-group label="Filter:">
               <b-form-radio-group
                 id="filterGroup"
-                v-model="selectedFilterDimension"
+                v-model="initFilterOption"
                 :options="filterOptions"
                 name="filterOptionGroup"
                 stacked
@@ -340,7 +340,8 @@ export default {
   },
   data () {
     return {
-      selectedFilterDimension: '#org+id',
+      initFilterOption: '#org+id',
+      selectedFilterDimension: '',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
@@ -642,6 +643,7 @@ export default {
         : ''
     },
     onFilterOptionSelect (selected) {
+      this.selectedFilterDimension = selected
       const filterArray = this.rankingFilter[this.getFilterID(selected)]
       this.selectedRankingFilter = filterArray[0].value
 
