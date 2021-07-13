@@ -1,6 +1,6 @@
-# Covid-19 visualisation
+# Covid-19 visualization
 
-A simple visualisation using published IATI data on Covid-19.
+A simple visualization using published IATI data on Covid-19.
 
 Data is generated nightly by the [OCHA-DAP/hdx-scraper-iati-viz](https://github.com/ocha-dap/hdx-scraper-iati-viz) repository.
 
@@ -26,7 +26,7 @@ For detailed explanation on how things work, checkout [Nuxt.js docs](https://nux
 ## Generate a Github Pages static site and push to Github
 
 ```bash
-$ npm run generate
+$ npm run gen-subfolder
 $ npm run deploy
 ```
 
@@ -38,26 +38,29 @@ You can manage linting rules in `.eslintrc.js`. I disabled a few rules but you m
 
 ## Overview
 
-There are three "tabs" in the visualisation: Commmitments/Spending; Spending Flows; About. Each of these tabs is accessible from the top navigation bar. The navigation bar is found in `default.vue`.
+There are three "tabs" in the visualization: Commmitments/Spending; Spending Flows; About. Each of these tabs is accessible from the top navigation bar. The navigation bar is found in `default.vue`.
 
 ### Commmitments/Spending (`pages/index.vue`)
 
-
+The Commmitments/Spending tab contains data from IATI, and displays **components** in the following order:
+* `Charts/DoughnutChart.vue`: a doughnut chart showing a side by side percentage breakdown of the top five categories by Commitments on the left and Spending on the right.
+* `Charts/TimeseriesChart.vue`: a combination bar and line chart that shows monthly and cumulative Commitments and Spending totals by month.
 
 ### Spending Flows (`pages/spending_flows.vue`)
 
-
+The Spending Flows tab contains data from IATI and displays the financial flows by reporting organization
+* A Sankey chart (using the `Charts/FinancialSankey.vue` component) for the selected **organization**.
 
 ### About (`pages/about.vue`)
 
-The About tab contains a description and background of the visualisation. It describes data sources and provides some high-level technical details.
+The About tab contains a description and background of the visualization. It describes data sources and provides some high-level technical details.
 
 ## Tooltips
 
 Tooltips can be used throughout the site to provide more information where required.
 
 * Tooltips should be saved as a CSV file, with a unique `key` column and a `tooltip` column. You might want to namespace the `key` column (e.g. prefix all existing tooltips with `activities_table__`)
-* Tooltips are loaded when `activities.vue` loads and stored in the Vuex store. This means they are available to all other parts of the visualisation through `this.$store.state.tooltips` - for the example below, the value of this is assigned to the computed property `tooltips`.
+* Tooltips are loaded when `activities.vue` loads and stored in the Vuex store. This means they are available to all other parts of the visualization through `this.$store.state.tooltips` - for the example below, the value of this is assigned to the computed property `tooltips`.
 * You can add a tooltip wherever you want using something like the following code:
 ```
 <b-badge
