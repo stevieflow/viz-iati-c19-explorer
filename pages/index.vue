@@ -341,7 +341,7 @@ export default {
   data () {
     return {
       initFilterOption: '#org+id',
-      selectedFilterDimension: '',
+      selectedFilterDimension: '#org+id',
       selectedFilter: '*',
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
