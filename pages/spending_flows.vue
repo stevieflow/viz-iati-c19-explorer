@@ -378,7 +378,7 @@ export default {
     },
     scrollTo (refName) {
       const element = this.$refs[refName]
-      const top = element.offsetTop
+      const top = element.offsetTop - 100
       window.scrollTo(0, top)
     }
   }
