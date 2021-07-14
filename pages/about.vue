@@ -42,7 +42,7 @@
             </p>
 
             <p>
-              A guiding principle for developing this tool has been to ‘hold up a mirror’ to IATI data. The tool presents financial information as reported, without attempting any reconciliation among different publishing organisations or verification of those numbers from other sources. In other words, the key data reported here is as received and published by respective publishing organisations.
+              A guiding principle for developing this tool has been to ‘hold up a mirror’ to IATI data. The tool presents financial information as reported, without attempting any reconciliation among different publishing organizations or verification of those numbers from other sources. In other words, the key data reported here is as received and published by respective publishing organizations.
             </p>
           </section>
 
@@ -69,9 +69,9 @@
                       <h3>Exclusions</h3>
                       <p>As stated above, this tool does not make individual judgements about the accuracy of the financial amounts reported, only about whether the IATI data is correctly formed and usable. As such, IATI activities are excluded when they meet any of the following criteria:</p>
                       <ul>
-                        <li>reporting organisation is a secondary reporter</li>
-                        <li>reporting organisation is unspecified</li>
-                        <li>reporting organisation is in a <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQxyJ0Y658cIIN1NpbHl4Ah1bZjNnWao7oawdLkl4T_5GC4BF-KMFnzKuzupU-w2Js1_Zy-VmaFJdIW/pub?gid=1705733671&single=true&output=csv" target="_blank">blocklist</a> maintained by The Centre for Humanitarian Data (those that have been discovered to share malformed IATI data)</li>
+                        <li>reporting organization is a secondary reporter</li>
+                        <li>reporting organization is unspecified</li>
+                        <li>reporting organization is in a <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQxyJ0Y658cIIN1NpbHl4Ah1bZjNnWao7oawdLkl4T_5GC4BF-KMFnzKuzupU-w2Js1_Zy-VmaFJdIW/pub?gid=1705733671&single=true&output=csv" target="_blank">blocklist</a> maintained by The Centre for Humanitarian Data (those that have been discovered to share malformed IATI data)</li>
                         <li>the activity lists related child activities</li>
                       </ul>
                       <p>The tool also excludes any financial transactions that have a value of 0, or are not of types 1 (Incoming Funding), 2 (Outgoing Commitment), 3 (Disbursement), 4 (Expenditure), or 11 (Incoming Commitment) in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank">IATI Transaction Type code list</a>. It also excludes all outgoing financial transactions (types 3 or 4) dated before 2020-01-01, since they are too early to be relevant to the pandemic.</p>
@@ -133,7 +133,7 @@
                       <p>The tool utilizes OECD DAC3 and DAC5 purpose codes for sectors, but these are rolled up one further level to DAC groups. See <a href="https://github.com/davidmegginson/c19-iati-data/blob/main/data/dac3-sector-map.json" target="_blank">data/dac3-sector-map.json</a> for the mappings.</p>
 
                       <h3>Deduplication of commitments and spending</h3>
-                      <p>Since each publishing organisation publishes its own activities and transactions to the IATI ecosystem, there is a risk of duplicate counting when adding up commitments or spending across multiple organisations. Consider the following example:</p>
+                      <p>Since each publishing organization publishes its own activities and transactions to the IATI ecosystem, there is a risk of duplicate counting when adding up commitments or spending across multiple organizations. Consider the following example:</p>
 
                       <ul>
                         <li>Org A gives a grant of $100,000 to Org B</li>
@@ -141,15 +141,15 @@
                         <li>Org C spends $25,000 of its grant from Org B for expenses.</li>
                       </ul>
 
-                      <p>Simply adding up all the different IATI activity reports would suggest that there is $175,000 in total spending, but in fact, $75,000 was the same money reported multiple times. To derive meaningful totals from IATI activities reported by different organisations, the tool applies a process called <b>deduplication</b>:</p>
+                      <p>Simply adding up all the different IATI activity reports would suggest that there is $175,000 in total spending, but in fact, $75,000 was the same money reported multiple times. To derive meaningful totals from IATI activities reported by different organizations, the tool applies a process called <b>deduplication</b>:</p>
 
                       <ol>
                         <li>Add up the incoming money that the publisher has reported for the activity, separately for both incoming commitments and actual funding. Whichever is larger represents the <i>existing funding</i> for the activity.</li>
-                        <li>Add up all the outgoing commitments (money promised to other organisations) and then subtract the existing funding to get the <i>net new commitments</i>.</li>
+                        <li>Add up all the outgoing commitments (money promised to other organizations) and then subtract the existing funding to get the <i>net new commitments</i>.</li>
                         <li>Add up all the outgoing disbursements and expenditures (money actually spent) and then subtract the existing funding to get the <i>net new spending</i>.</li>
                       </ol>
 
-                      <p>(Negative values are replaced with zero). Whenever the tool aggregates commitments or spending from <b>more than one organisation</b>, it uses this deduplication process to minimize the risk of duplicate counting. Here’s how the process would apply to the previous example:</p>
+                      <p>(Negative values are replaced with zero). Whenever the tool aggregates commitments or spending from <b>more than one organization</b>, it uses this deduplication process to minimize the risk of duplicate counting. Here’s how the process would apply to the previous example:</p>
 
                       <ul>
                         <li>Org A’s activity reports no incoming commitments or funding, and $100,000 outgoing commitments and spending, so it has $0 existing funding, and $100,000 net new commitments and spending.</li>
@@ -159,12 +159,12 @@
 
                       <p>Now the three activities add up to $100,000 + $0 + $0 = $100,000 spending, which is an accurate representation of the total new money commitment to the COVID-19 response.</p>
 
-                      <p><b>Note:</b> This procedure relies on IATI publishing organisations reporting their incoming funding and commitments correctly. As with any other reporting error, when they do not do so, the totals will be wrong, but the tool will still be “holding up a mirror” to what the IATI data claims to be true.</p>
+                      <p><b>Note:</b> This procedure relies on IATI publishing organizations reporting their incoming funding and commitments correctly. As with any other reporting error, when they do not do so, the totals will be wrong, but the tool will still be “holding up a mirror” to what the IATI data claims to be true.</p>
 
                       <h3>Total vs net money in the tool</h3>
-                      <p>When filtering the data to just a single organisation, the tool displays <i>total commitments</i> and <i>total spending</i>, because there is (or should be) no risk of duplicate counting. All of the outgoing commitments and spending that the organisation reports are counted.</p>
+                      <p>When filtering the data to just a single organization, the tool displays <i>total commitments</i> and <i>total spending</i>, because there is (or should be) no risk of duplicate counting. All of the outgoing commitments and spending that the organization reports are counted.</p>
 
-                      <p>When filtering the data to a single sector or recipient country (and, thus, potentially including multiple organisations), the tool displays the <i>net commitments</i> with the <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">Deduplication of commitments and spending</a> procedure applied, to avoid the risk of double counting.</p>
+                      <p>When filtering the data to a single sector or recipient country (and, thus, potentially including multiple organizations), the tool displays the <i>net commitments</i> with the <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">Deduplication of commitments and spending</a> procedure applied, to avoid the risk of double counting.</p>
 
                       <h3>Humanitarian flags</h3>
                       <p>If an activity is flagged positively as humanitarian, the tool flags all transactions within it as humanitarian.  When an activity is not flagged positively as humanitarian, but a transaction within that activity does contain the humanitarian flag, the tool uses the transaction level flag for that transaction only.</p>
@@ -183,7 +183,7 @@
                   <b-card-body>
                     <b-card-text>
                       <h3>Aggregation of flows</h3>
-                      <p>This tab shows the total of all spending flowing between organisations, across multiple activities and transactions. Example:</p>
+                      <p>This tab shows the total of all spending flowing between organizations, across multiple activities and transactions. Example:</p>
 
                       <ul>
                         <li>In activity 001, Org A reports a disbursement of $25,000 to Org B.</li>
@@ -195,29 +195,29 @@
                       <p>When a transaction is of type Expenditure, the tool aggregates these in a similar way and labels it as "Direct expenditure".</p>
 
                       <h3>Monetary values for financial flows</h3>
-                      <p>In its current iteration, the flows tab shows only actual spending, not commitments.  For example, if Org A commits $100,000 to an activity reported by Org B, but has not yet disbursed any of the money, the $100,000 will not appear in the flows diagram. Only when the money is actually spent (either through a disbursement to another organisation, or as payment for operating expenses) does it appear in the diagram.</p>
+                      <p>In its current iteration, the flows tab shows only actual spending, not commitments.  For example, if Org A commits $100,000 to an activity reported by Org B, but has not yet disbursed any of the money, the $100,000 will not appear in the flows diagram. Only when the money is actually spent (either through a disbursement to another organization, or as payment for operating expenses) does it appear in the diagram.</p>
 
-                      <p>The values in the diagram are always total values, without <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">deduplication</a>, because a flow always represents one organisation’s perspective.</p>
+                      <p>The values in the diagram are always total values, without <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">deduplication</a>, because a flow always represents one organization’s perspective.</p>
 
-                      <h3>Partner-organisation defaults</h3>
-                      <p>In addition to the reporting organisation, an IATI activity lists other organisations involved in the activity:</p>
+                      <h3>Partner-organization defaults</h3>
+                      <p>In addition to the reporting organization, an IATI activity lists other organizations involved in the activity:</p>
 
                       <ul>
-                        <li><b>participating organisation</b> — another organisation involved at the activity level, for example, as a funding or implementing partner.</li>
-                        <li><b>provider organisation</b> — the organisation providing money in an incoming transaction.</li>
-                        <li><b>receiver organisation</b> — the organisation receiving money in an outgoing transaction.</li>
+                        <li><b>participating organization</b> — another organization involved at the activity level, for example, as a funding or implementing partner.</li>
+                        <li><b>provider organization</b> — the organization providing money in an incoming transaction.</li>
+                        <li><b>receiver organization</b> — the organization receiving money in an outgoing transaction.</li>
                       </ul>
 
-                      <p>An activity-level participating organisation with a role of “funding” serves as the default provider of funds in any incoming transactions that does not specify a provider org.  A participating organisation with a role of “implementing” serves as the default receiver of funds in any outgoing transaction that does not specify a receiver org.</p>
+                      <p>An activity-level participating organization with a role of “funding” serves as the default provider of funds in any incoming transactions that does not specify a provider org.  A participating organization with a role of “implementing” serves as the default receiver of funds in any outgoing transaction that does not specify a receiver org.</p>
 
                       <p>Since many IATI publishers do not list provider and receiver orgs at the transaction level, this approach allows the tool to capture many flows that would otherwise be missed.</p>
 
-                      <p>For example, if an IATI activity reported by Org A lists Org B as the implementing partner, then publishes an outgoing (disbursement) transaction with no receiver organisation specified, the tool will assume that Org B is the receiver organisation for the transaction, and generate a flow between the two.</p>
+                      <p>For example, if an IATI activity reported by Org A lists Org B as the implementing partner, then publishes an outgoing (disbursement) transaction with no receiver organization specified, the tool will assume that Org B is the receiver organization for the transaction, and generate a flow between the two.</p>
 
                       <p>Where it is not possible to identify the provider or recipient of a transaction, the tool labels these as “unspecified organization” and aggregates in the same manner.</p>
 
                       <h3>Internal transactions</h3>
-                      <p>This tool excludes all transactions within the same organisation, when it is possible to detect them. For example, if an organization reallocates funds internally and if this is possible to detect in the data, that transaction is excluded from the tool.</p>
+                      <p>This tool excludes all transactions within the same organization, when it is possible to detect them. For example, if an organization reallocates funds internally and if this is possible to detect in the data, that transaction is excluded from the tool.</p>
                     </b-card-text>
                   </b-card-body>
                 </b-collapse>

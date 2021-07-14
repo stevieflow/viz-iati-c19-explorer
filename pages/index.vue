@@ -23,9 +23,20 @@
       </div>
     </template>
     <template v-if="!isBusy">
-      <b-container>
-        <hr class="my-4">
+      <hr class="mt-4 mb-0">
 
+      <div class="header-sticky">
+        <div class="container">
+          <h2>
+            <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+          </h2>
+          <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
+        </div>
+      </div>
+
+      <hr class="mt-0 mb-4">
+
+      <b-container>
         <b-row ref="filters">
           <b-col cols="12" lg="7">
             <b-form-group label="Filter:">
@@ -162,26 +173,11 @@
                 </b-button-group>
               </b-col>
             </b-row>
-            <hr class="my-3">
-            <p class="small text-muted">
-              Data automatically extracted and updated from the <a href="https://d-portal.org/" target="_blank">d-portal API</a> every 24 hours. During the <a href="https://github.com/OCHA-DAP/covid19-data/actions" target="_blank">latest update</a>, {{ skippedTransactions }} transactions were excluded from consideration. Learn more on the <NuxtLink to="/about">
-                About this Tool
-              </NuxtLink> tab.
-            </p>
           </b-col>
         </b-row>
 
         <hr class="mt-4 mb-0">
       </b-container>
-
-      <div class="header-sticky">
-        <div class="container">
-          <h2>
-            <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
-          </h2>
-          <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
-        </div>
-      </div>
 
       <b-container>
         <h2 class="header">

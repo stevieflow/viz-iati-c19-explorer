@@ -22,12 +22,21 @@
         <strong>Loading...</strong>
       </div>
     </template>
-    <template
-      v-if="!isBusy">
+    <template v-if="!isBusy">
+      <hr class="mt-4 mb-0">
+
+      <div class="header-sticky">
+        <div class="container">
+          <h2>
+            <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">spending flows</span><span v-else>spending flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+          </h2>
+          <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
+        </div>
+      </div>
+
+      <hr class="mt-0 mb-4">
+
       <b-container>
-        <h2 class="header mt-3">
-          Spending Flows
-        </h2>
         <b-row>
           <b-col cols="12" lg="7">
             <h3>Reporting organization:</h3>
@@ -50,7 +59,7 @@
               </template>
             </v-select>
 
-            <div class="quick-filter-list">
+            <div class="quick-filter-list mb-3">
               Quick filters:
               <ul class="horizontal-list d-inline">
                 <li v-for="filter in quickFilters" :key="filter.id">
@@ -116,10 +125,8 @@
           </b-col>
         </b-row>
 
-        <hr class="my-4">
-
-        <h2 class="my-4">
-          <span v-if="activityCount > filteredData.length">Top <b>{{ filteredData.length }}</b> of </span><b>{{ numberFormatter(activityCount) }}</b> <span v-if="filteredData.length > 1 || filteredData.length===0">spending flows</span><span v-else>spending flow</span> reported by <b>{{ selectedFilterLabel }}</b>
+        <h2 class="header mt-3">
+          Spending Flows
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
@@ -195,6 +202,9 @@ export default {
       })
       return this.populateSelect(orgList, 'All reporting organizations')
     }
+  },
+  updated () {
+    this.createStickyHeader()
   },
   mounted () {
     this.filterParams = {
@@ -354,6 +364,22 @@ export default {
       return value
         ? numeral(value).format('0,0')
         : ''
+    },
+    createStickyHeader () {
+      const el = document.getElementsByClassName('header-sticky')[0]
+      if (!this.loaded && el !== undefined) {
+        this.loaded = true
+        const observer = new IntersectionObserver(
+          ([e]) => e.target.classList.toggle('is-stuck', e.intersectionRatio < 1),
+          { threshold: [1] }
+        )
+        observer.observe(el)
+      }
+    },
+    scrollTo (refName) {
+      const element = this.$refs[refName]
+      const top = element.offsetTop
+      window.scrollTo(0, top)
     }
   }
 }
