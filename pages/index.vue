@@ -214,29 +214,14 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  {{ totalCommitments }}
+                  {{ currencyFormatter(totalCommitments) }}
                 </div>
 
-                <div class="scroll-list-container">
-                  <div class="scroll-list mt-3">
-                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
-                      <template #cell(color)="data">
-                        <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
-                      </template>
-                      <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
-                      </template>
-                      <template #cell(value)="data">
-                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
-                      </template>
-                    </b-table>
-                  </div>
-                  <div class="scroll-list-overlay" />
-                </div>
-                <div class="scroll-list-footer mt-2">
-                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
-                  <span>(USD)</span>
-                </div>
+                <RankedList
+                  :items="commitmentsTable"
+                  :colors="commitmentColors"
+                  :last-updated-date="lastUpdatedDate"
+                />
               </div>
             </div>
           </b-col>
@@ -259,29 +244,14 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  {{ totalSpending }}
+                  {{ currencyFormatter(totalSpending) }}
                 </div>
 
-                <div class="scroll-list-container">
-                  <div class="scroll-list mt-3">
-                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
-                      <template #cell(color)="data">
-                        <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
-                      </template>
-                      <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
-                      </template>
-                      <template #cell(value)="data">
-                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
-                      </template>
-                    </b-table>
-                  </div>
-                  <div class="scroll-list-overlay" />
-                </div>
-                <div class="scroll-list-footer mt-2">
-                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
-                  <span>(USD)</span>
-                </div>
+                <RankedList
+                  :items="spendingTable"
+                  :colors="spendingColors"
+                  :last-updated-date="lastUpdatedDate"
+                />
               </div>
             </div>
           </b-col>
@@ -319,20 +289,13 @@ import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
 import DownloadDataButton from '~/components/DownloadDataButton'
+import RankedList from '~/components/RankedList'
 export default {
   components: {
     DoughnutChart,
     TimeseriesChart,
-    DownloadDataButton
-  },
-  filters: {
-    truncate (text, length, suffix) {
-      if (text.length > length) {
-        return text.substring(0, length) + suffix
-      } else {
-        return text
-      }
-    }
+    DownloadDataButton,
+    RankedList
   },
   data () {
     return {
@@ -397,11 +360,6 @@ export default {
       humanitarianToggleOptions: [
         { label: 'No', value: 'off' },
         { label: 'Yes', value: 'on' }
-      ],
-      tableFields: [
-        { key: 'color', label: 'Color' },
-        'item',
-        'value'
       ],
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
@@ -477,12 +435,10 @@ export default {
       return activities.length
     },
     totalCommitments () {
-      const sum = this.getTotal(this.commitments)
-      return numeral(sum).format('$0.0a')
+      return this.getTotal(this.commitments)
     },
     totalSpending () {
-      const sum = this.getTotal(this.spending)
-      return numeral(sum).format('$0.0a')
+      return this.getTotal(this.spending)
     },
     tagPattern () {
       return (this.selectedFilterDimension === '#org+id' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
@@ -494,10 +450,10 @@ export default {
       return this.populateList(this.spendingRanked)
     },
     commitmentsDonut () {
-      return this.populateDonut(this.commitments, this.commitmentsRanked)
+      return this.populateDonut(this.totalCommitments, this.commitmentsRanked)
     },
     spendingDonut () {
-      return this.populateDonut(this.spending, this.spendingRanked)
+      return this.populateDonut(this.totalSpending, this.spendingRanked)
     },
     timeseriesData () {
       const ref = this
@@ -638,6 +594,9 @@ export default {
         ? numeral(value).format('0,0')
         : ''
     },
+    currencyFormatter (value) {
+      return numeral(value).format('$0.0a')
+    },
     onFilterOptionSelect (selected) {
       this.selectedFilterDimension = selected
       const filterArray = this.rankingFilter[this.getFilterID(selected)]
@@ -707,9 +666,13 @@ export default {
         b.value - a.value
       )
     },
-    populateDonut (data, rankedData) {
-      const ranked = (rankedData.length > 6) ? rankedData.slice(0, 6) : rankedData
-      const total = this.getTotal(data)
+    populateDonut (total, rankedData) {
+      const ranked = (rankedData.length > 5) ? rankedData.slice(0, 5) : rankedData
+      // calculate sum of top 5 and append 'Other' value if sum < 100
+      const sum = ranked.reduce((total, amount) => {
+        return total + amount[1]
+      }, 0)
+      if (sum < total) { ranked.push(['Other or unspecified', total - sum]) }
       const ratios = ranked.reduce((list, item) => {
         const ratio = Number(((item[1] / total) * 100).toFixed(1))
         list.push(ratio)
@@ -740,7 +703,6 @@ export default {
     },
     getRankedList (data) {
       const dimension = this.selectedRankingFilter
-      const total = this.getTotal(data)
       const ranked = Object.entries(data.reduce((list, item, index) => {
         if (!item[dimension].includes('Unspecified')) {
           const value = Number(item[this.tagPattern])
@@ -751,11 +713,6 @@ export default {
       }, {})).sort((a, b) =>
         b[1] - a[1]
       )
-      // calculate sum of top 5 and append 'Other' value if sum < 100
-      const sum = ranked.slice(0, 5).reduce((total, amount) => {
-        return total + amount[1]
-      }, 0)
-      if (sum < total) { ranked.splice(5, 0, ['Other or unspecified', total - sum]) }
       return ranked
     },
     getFilterID () {
@@ -836,7 +793,7 @@ export default {
     position: relative;
   }
   .scroll-list {
-    height: 168px;
+    height: 170px;
     max-width: 273px;
     overflow-y: scroll;
     .list-breakdown {
