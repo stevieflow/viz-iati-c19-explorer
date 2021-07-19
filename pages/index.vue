@@ -448,7 +448,7 @@ export default {
         country.text = item
         return country
       })
-      return this.populateSelect(countryList, 'All recipient countries or regions')
+      return this.populateSelect(countryList, 'All recipient countries and regions')
     },
     sectors () {
       let sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
