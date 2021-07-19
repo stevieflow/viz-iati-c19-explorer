@@ -108,7 +108,7 @@ export default {
         isProd = !!(window.location.host.includes('ocha-dap'))
         this.$store.commit('setProd', isProd)
       }
-      return (isProd) ? 'IATI COVID-19 Data Explorer <sup>ALPHA</sup>' : '*STAGE* IATI COVID-19 Data Explorer <sup>ALPHA</sup>'
+      return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
     }
   }
 }
