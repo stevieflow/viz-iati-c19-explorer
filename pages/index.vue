@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="12" lg="9">
           <p class="overview-description">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country, or sector.
+            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country or region, or sector.
           </p>
         </b-col>
         <b-col>
@@ -28,7 +28,7 @@
       <div class="header-sticky">
         <div class="container">
           <h2>
-            <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
+            Transactions from <b>{{ numberFormatter(activityCount) }}</b> <span v-if="activityCount > 1 || activityCount===0">activities</span><span v-else>activity</span> by <b>{{ selectedFilterLabel }}</b>
           </h2>
           <a class="anchor" @click="scrollTo('filters')">Customize filters</a>
         </div>
@@ -84,7 +84,7 @@
                 <input
                   class="vs__search"
                   v-bind="attributes"
-                  placeholder="Type country name here"
+                  placeholder="Type country or region name here"
                   v-on="events"
                 >
               </template>
@@ -342,13 +342,13 @@ export default {
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
         { text: 'By Publishing Organization', value: '#org+id', label: 'all publishing organizations' },
-        { text: 'By Recipient Country', value: '#country', label: 'all recipient countries' },
+        { text: 'By Recipient Country or Region', value: '#country', label: 'all recipient countries or regions' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
       selectedRankingFilter: '#country',
       rankingFilter: [
         [
-          { text: 'By Recipient Country', value: '#country' },
+          { text: 'By Recipient Country or Region', value: '#country' },
           { text: 'By Sector', value: '#sector' }
         ],
         [
@@ -356,7 +356,7 @@ export default {
           { text: 'By Sector', value: '#sector' }
         ],
         [
-          { text: 'By Recipient Country', value: '#country' },
+          { text: 'By Recipient Country or Region', value: '#country' },
           { text: 'By Publishing Org', value: '#org+id' }
         ]
       ],
@@ -448,7 +448,7 @@ export default {
         country.text = item
         return country
       })
-      return this.populateSelect(countryList, 'All recipient countries')
+      return this.populateSelect(countryList, 'All recipient countries or regions')
     },
     sectors () {
       let sectorList = [...new Set(this.fullData.map(item => item['#sector']))]

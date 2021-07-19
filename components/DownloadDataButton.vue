@@ -10,7 +10,7 @@
     </b-dropdown>
 
     <div class="text-center pt-2">
-      <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Data Explorer" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+      <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Funding Dashboard" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
     </div>
   </div>
 </template>
