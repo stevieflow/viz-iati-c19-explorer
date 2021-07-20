@@ -342,7 +342,7 @@ export default {
       selectedFilterLabel: 'all publishing organizations',
       filterOptions: [
         { text: 'By Publishing Organization', value: '#org+id', label: 'all publishing organizations' },
-        { text: 'By Recipient Country or Region', value: '#country', label: 'all recipient countries or regions' },
+        { text: 'By Recipient Country or Region', value: '#country', label: 'all recipient countries and regions' },
         { text: 'By Sector', value: '#sector', label: 'all sectors' }
       ],
       selectedRankingFilter: '#country',
@@ -448,7 +448,7 @@ export default {
         country.text = item
         return country
       })
-      return this.populateSelect(countryList, 'All recipient countries or regions')
+      return this.populateSelect(countryList, 'All recipient countries and regions')
     },
     sectors () {
       let sectorList = [...new Set(this.fullData.map(item => item['#sector']))]
@@ -626,9 +626,10 @@ export default {
       this.$router.push({ name: 'index', query: this.urlQuery() })
     },
     querySetup (dimension) {
+      this.initFilterOption = dimension
       this.selectedFilterDimension = dimension
       this.selectedFilter = this.filterParams[dimension]
-      this.selectedFilterLabel = this.getOrgName(this.selectedFilter)
+      this.selectedFilterLabel = (dimension === '#org+id') ? this.getOrgName(this.selectedFilter) : this.selectedFilter
       const filterArray = this.rankingFilter[this.getFilterID(dimension)]
       this.selectedRankingFilter = filterArray[0].value
     },
