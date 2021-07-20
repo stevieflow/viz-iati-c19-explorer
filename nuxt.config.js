@@ -27,6 +27,11 @@ export default {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap' }
     ],
     script: [
+      {
+        src: 'https://apiv2.popupsmart.com/api/Bundle/368361',
+        body: true,
+        async: true
+      }
     ],
     htmlAttrs: {
       lang: 'en'
