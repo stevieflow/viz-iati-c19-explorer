@@ -23,7 +23,7 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-      <nuxt />
+      <nuxt class="main-content" />
 
       <b-container class="footer">
         <b-row>
@@ -60,6 +60,9 @@
       }
     }
   }
+}
+.main-content {
+  min-height: 100vh;
 }
 .footer {
   padding: 80px 15px 40px;
