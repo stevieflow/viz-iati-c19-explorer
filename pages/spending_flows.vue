@@ -71,13 +71,13 @@
           <b-col>
             <b-row>
               <b-col>
-                Filter for COVID-19 related transactions
+                Filter for COVID-19 related flows
                 <b-badge
                   v-b-tooltip.hover
                   class="info-icon p-0"
                   variant="dark"
                   pill
-                  :title="tooltips['activitiesCOVID']">
+                  :title="tooltips['flowsCOVID']">
                   ?
                 </b-badge>:
               </b-col>
@@ -98,13 +98,13 @@
             <hr class="my-3">
             <b-row>
               <b-col>
-                Only show humanitarian transactions
+                Only show humanitarian flows
                 <b-badge
                   v-b-tooltip.hover
                   class="info-icon p-0"
                   variant="dark"
                   pill
-                  :title="tooltips['activitiesHumanitarian']">
+                  :title="tooltips['flowsHumanitarian']">
                   ?
                 </b-badge>:
               </b-col>

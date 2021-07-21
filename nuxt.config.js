@@ -10,14 +10,14 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: 'IATI COVID-19 Data Explorer',
+    title: 'IATI COVID-19 Funding Dashboard',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'This site allows you to explore all of the published International Aid Transparency Initiative (IATI) data that is related to the coronavirus pandemic.' },
       { name: 'twitter:card', content: 'summary' },
       { name: 'twitter:site', content: '@humdata' },
-      { name: 'twitter:title', content: 'IATI COVID-19 Data Explorer' },
+      { name: 'twitter:title', content: 'IATI COVID-19 Funding Dashboard' },
       { name: 'twitter:description', content: 'This site allows you to explore all of the published International Aid Transparency Initiative (IATI) data that is related to the coronavirus pandemic.' },
       { name: 'twitter:image', content: 'https://ocha-dap.github.io/viz-iati-c19-explorer/preview.png' },
       { name: 'twitter:image:alt', content: 'Contributions to the Covid-19 emergency.' }
@@ -27,6 +27,11 @@ export default {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap' }
     ],
     script: [
+      {
+        src: 'https://apiv2.popupsmart.com/api/Bundle/368361',
+        body: true,
+        async: true
+      }
     ],
     htmlAttrs: {
       lang: 'en'

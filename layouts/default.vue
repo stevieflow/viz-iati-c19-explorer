@@ -18,7 +18,7 @@
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
             <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch>
-              About this Tool
+              About this Dashboard
             </b-nav-item>
           </b-navbar-nav>
         </b-collapse>
@@ -105,10 +105,10 @@ export default {
     pageTitle () {
       let isProd = true
       if (process.client) {
-        isProd = !!(window.location.host.includes('ocha-dap'))
+        isProd = !!(window.location.host.includes('ocha-dap')) || !!(window.location.host.includes('humdata'))
         this.$store.commit('setProd', isProd)
       }
-      return (isProd) ? 'IATI COVID-19 Data Explorer <sup>ALPHA</sup>' : '*STAGE* IATI COVID-19 Data Explorer <sup>ALPHA</sup>'
+      return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
     }
   }
 }

@@ -28,7 +28,7 @@
         </b-col>
         <b-col cols="12" lg="9">
           <section id="about" class="mb-5">
-            <h2>About this Tool</h2>
+            <h2>About this Dashboard</h2>
 
             <p>The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian financing to help address poverty and crises. More than 1,300 organizations — bilateral and multilateral providers, international and local NGOs, civil society organizations, academia, partner country governments, and other stakeholders — publish their data using the IATI Standard.</p>
 
@@ -38,11 +38,11 @@
             </p>
 
             <p>
-              <b>This tool was created to visualize, explore and analyze all of the published IATI data that is related to the coronavirus pandemic.</b> It was developed by the <a href="https://centre.humdata.org/" target="_blank">OCHA Centre for Humanitarian Data</a> with the support of the <a href="https://www.usaid.gov/" target="_blank">United States Agency for International Development</a>, and it builds on previous work by Mark Brough at <a href="https://devinit.org/" target="_blank">Development Initiatives</a>.
+              <b>This dashboard was created to visualize, explore and analyze all of the published IATI data that is related to the coronavirus pandemic.</b> It was developed by the <a href="https://centre.humdata.org/" target="_blank">OCHA Centre for Humanitarian Data</a> with the support of the <a href="https://www.usaid.gov/" target="_blank">United States Agency for International Development</a>, and it builds on previous work by Mark Brough at <a href="https://devinit.org/" target="_blank">Development Initiatives</a>.
             </p>
 
             <p>
-              A guiding principle for developing this tool has been to ‘hold up a mirror’ to IATI data. The tool presents financial information as reported, without attempting any reconciliation among different publishing organizations or verification of those numbers from other sources. In other words, the key data reported here is as received and published by respective publishing organizations.
+              A guiding principle for developing this dashboard has been to ‘hold up a mirror’ to IATI data. The dashboard presents financial information as reported, without attempting any reconciliation among different publishing organizations or verification of those numbers from other sources. In other words, the key data reported here is as received and published by respective publishing organizations.
             </p>
           </section>
 
@@ -51,7 +51,7 @@
               Methodology Notes
             </h2>
 
-            <p>The tool applies the rules described below to determine which IATI transactions and activities are relevant to the global COVID-19 pandemic, and how to aggregate them.</p>
+            <p>The dashboard applies the rules described below to determine which IATI transactions and activities are relevant to the global COVID-19 pandemic, and how to aggregate them.</p>
 
             <div class="accordion" role="tablist">
               <b-card no-body>
@@ -64,23 +64,23 @@
                   <b-card-body>
                     <b-card-text>
                       <h3>Source data</h3>
-                      <p>The tool is updated with the IATI source data from the <a href="https://d-portal.org/" target="_blank">D-Portal</a> service every 24 hours (<a href="https://github.com/OCHA-DAP/hdx-scraper-iati-viz/blob/main/config/project_configuration.yml" target="_blank">information about the query</a>). The tool primarily focuses on the IATI transaction level (where the financial data is), but it pulls default metadata from the parent activity when needed.</p>
+                      <p>The dashboard is updated with the IATI source data from the <a href="https://d-portal.org/" target="_blank">D-Portal</a> service every 24 hours (<a href="https://github.com/OCHA-DAP/hdx-scraper-iati-viz/blob/main/config/project_configuration.yml" target="_blank">information about the query</a>). The dashboard primarily focuses on the IATI transaction level (where the financial data is), but it pulls default metadata from the parent activity when needed.</p>
 
                       <h3>Exclusions</h3>
-                      <p>As stated above, this tool does not make individual judgements about the accuracy of the financial amounts reported, only about whether the IATI data is correctly formed and usable. As such, IATI activities are excluded when they meet any of the following criteria:</p>
+                      <p>As stated above, this dashboard does not make individual judgements about the accuracy of the financial amounts reported, only about whether the IATI data is correctly formed and usable. As such, IATI activities are excluded when they meet any of the following criteria:</p>
                       <ul>
                         <li>reporting organization is a secondary reporter</li>
                         <li>reporting organization is unspecified</li>
                         <li>reporting organization is in a <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQxyJ0Y658cIIN1NpbHl4Ah1bZjNnWao7oawdLkl4T_5GC4BF-KMFnzKuzupU-w2Js1_Zy-VmaFJdIW/pub?gid=1705733671&single=true&output=csv" target="_blank">blocklist</a> maintained by The Centre for Humanitarian Data (those that have been discovered to share malformed IATI data)</li>
                         <li>the activity lists related child activities</li>
                       </ul>
-                      <p>The tool also excludes any financial transactions that have a value of 0, or are not of types 1 (Incoming Funding), 2 (Outgoing Commitment), 3 (Disbursement), 4 (Expenditure), or 11 (Incoming Commitment) in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank">IATI Transaction Type code list</a>. It also excludes all outgoing financial transactions (types 3 or 4) dated before 2020-01-01, since they are too early to be relevant to the pandemic.</p>
+                      <p>The dashboard also excludes any financial transactions that have a value of 0, or are not of types 1 (Incoming Funding), 2 (Outgoing Commitment), 3 (Disbursement), 4 (Expenditure), or 11 (Incoming Commitment) in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank">IATI Transaction Type code list</a>. It also excludes all outgoing financial transactions (types 3 or 4) dated before 2020-01-01, since they are too early to be relevant to the pandemic.</p>
 
                       <h3>Currency conversion</h3>
-                      <p>Unless they are already denominated in US dollars (USD), the tool converts all transaction values to USD before performing any other operations. The data is transformed using the historical exchange rate from the value date in the IATI transaction: the tool uses a <a href="https://codelists.codeforiati.org/ExchangeRates/" target="_blank">hybrid dataset compiled by CodeForIATI</a>, which takes OECD exchange-rate data as the primary source, and data from the Federal Reserve Bank of St Louis (FRED) as a fallback for older rates (not used in this tool).</p>
+                      <p>Unless they are already denominated in US dollars (USD), the dashboard converts all transaction values to USD before performing any other operations. The data is transformed using the historical exchange rate from the value date in the IATI transaction: the dashboard uses a <a href="https://codelists.codeforiati.org/ExchangeRates/" target="_blank">hybrid dataset compiled by CodeForIATI</a>, which takes OECD exchange-rate data as the primary source, and data from the Federal Reserve Bank of St Louis (FRED) as a fallback for older rates (not used in this dashboard).</p>
 
                       <h3>“Strict” and “loose” relevance to the COVID-19 pandemic</h3>
-                      <p>The tool makes a distinction between “loose” or “strict” relevance to the COVID-19 response: “loose” means that the tool is less certain about relevance. In line with the <a href="https://iatistandard.org/en/news/updated-covid-19-guidance-iati-publishers/" target="_blank">IATI COVID-19 Guidance for IATI Publishers</a> and later additions to the <a href="https://iatistandard.org/en/iati-standard/203/codelists/sector/" target="_blank">OECD-DAC sector codes</a>, the tool labels a transaction as <b>strictly relevant</b> if it meets any of the following criteria (all string matching is case-insensitive):</p>
+                      <p>The dashboard makes a distinction between “loose” or “strict” relevance to the COVID-19 response: “loose” means that the dashboard is less certain about relevance. In line with the <a href="https://iatistandard.org/en/news/updated-covid-19-guidance-iati-publishers/" target="_blank">IATI COVID-19 Guidance for IATI Publishers</a> and later additions to the <a href="https://iatistandard.org/en/iati-standard/203/codelists/sector/" target="_blank">OECD-DAC sector codes</a>, the dashboard labels a transaction as <b>strictly relevant</b> if it meets any of the following criteria (all string matching is case-insensitive):</p>
 
                       <ul>
                         <li>The string “COVID-19” appears in the activity title.</li>
@@ -91,17 +91,17 @@
                         <li>The free-text tag “COVID-19” appears at the activity level.</li>
                       </ul>
 
-                      <p>If none of the above applies, the tool will still label a transaction as <b>loosely relevant</b> if it meets at least one of the following criteria:</p>
+                      <p>If none of the above applies, the dashboard will still label a transaction as <b>loosely relevant</b> if it meets at least one of the following criteria:</p>
 
                       <ul>
                         <li>The string “COVID-19” appears in the activity description.</li>
                         <li>The string “COVID” or “CORONAVIRUS” appears in the activity title, or in the activity or transaction description (this is an extension to the IATI guidance).</li>
                       </ul>
 
-                      <p>The tool makes the distinction because the string “COVID-19” is likely to appear accidentally in a long description for activities that are not primarily focused on the COVID-19 pandemic, so it is less confident in that activity’s relevance if that is the only indication.</p>
+                      <p>The dashboard makes the distinction because the string “COVID-19” is likely to appear accidentally in a long description for activities that are not primarily focused on the COVID-19 pandemic, so it is less confident in that activity’s relevance if that is the only indication.</p>
 
                       <h3>Spending</h3>
-                      <p>The tool does not make a distinction between disbursement and expense transactions (types 3 or 4 in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank" />IATI Transaction Type Codelist</p>), but treat both as “spending” for the sake of this tool. “Spending” data does not include any budgetary or pledged figures.</p>
+                      <p>The dashboard does not make a distinction between disbursement and expense transactions (types 3 or 4 in the <a href="https://iatistandard.org/en/iati-standard/203/codelists/transactiontype/" target="_blank" />IATI Transaction Type Codelist</p>), but treat both as “spending” for the sake of this dashboard. “Spending” data does not include any budgetary or pledged figures.</p>
                     </b-card-text>
                   </b-card-body>
                 </b-collapse>
@@ -118,11 +118,11 @@
                     <b-card-text>
                       <h3>Allocation of spending by sector and recipient country</h3>
 
-                      <p>If an activity lists multiple sectors and/or recipient countries, the tool divides each transaction by the percentages given for both. The sectors and recipient countries for the transaction are used if provided at the transaction level, and otherwise the tool defaults to those used at the activity level.</p>
+                      <p>If an activity lists multiple sectors and/or recipient countries, the dashboard divides each transaction by the percentages given for both. The sectors and recipient countries for the transaction are used if provided at the transaction level, and otherwise the dashboard defaults to those used at the activity level.</p>
 
-                      <p>The current version of the tool does not use recipient (multi-country) regions from IATI data, because the overlap with countries would be potentially confusing.</p>
+                      <p>The current version of the dashboard does not use recipient (multi-country) regions from IATI data, because the overlap with countries would be potentially confusing.</p>
 
-                      <p>For example, if a transaction with a value of $1,000,000 was assigned 30% to Senegal and 70% to Mali, and 50% to Health and 50% to education, the tool would split it into four virtual transactions:</p>
+                      <p>For example, if a transaction with a value of $1,000,000 was assigned 30% to Senegal and 70% to Mali, and 50% to Health and 50% to education, the dashboard would split it into four virtual transactions:</p>
 
                       <ol>
                         <li>Senegal, Health: $150,000 (15%)</li>
@@ -130,7 +130,7 @@
                         <li>Mali, Health: $350,000 (35%)</li>
                         <li>Mali, Education: $350,000 (35%)</li>
                       </ol>
-                      <p>The tool utilizes OECD DAC3 and DAC5 purpose codes for sectors, but these are rolled up one further level to DAC groups. See <a href="https://github.com/davidmegginson/c19-iati-data/blob/main/data/dac3-sector-map.json" target="_blank">data/dac3-sector-map.json</a> for the mappings.</p>
+                      <p>The dashboard utilizes OECD DAC3 and DAC5 purpose codes for sectors, but these are rolled up one further level to DAC groups. See <a href="https://github.com/davidmegginson/c19-iati-data/blob/main/data/dac3-sector-map.json" target="_blank">data/dac3-sector-map.json</a> for the mappings.</p>
 
                       <h3>Deduplication of commitments and spending</h3>
                       <p>Since each publishing organization publishes its own activities and transactions to the IATI ecosystem, there is a risk of duplicate counting when adding up commitments or spending across multiple organizations. Consider the following example:</p>
@@ -141,7 +141,7 @@
                         <li>Org C spends $25,000 of its grant from Org B for expenses.</li>
                       </ul>
 
-                      <p>Simply adding up all the different IATI activity reports would suggest that there is $175,000 in total spending, but in fact, $75,000 was the same money reported multiple times. To derive meaningful totals from IATI activities reported by different organizations, the tool applies a process called <b>deduplication</b>:</p>
+                      <p>Simply adding up all the different IATI activity reports would suggest that there is $175,000 in total spending, but in fact, $75,000 was the same money reported multiple times. To derive meaningful totals from IATI activities reported by different organizations, the dashboard applies a process called <b>deduplication</b>:</p>
 
                       <ol>
                         <li>Add up the incoming money that the publisher has reported for the activity, separately for both incoming commitments and actual funding. Whichever is larger represents the <i>existing funding</i> for the activity.</li>
@@ -149,7 +149,7 @@
                         <li>Add up all the outgoing disbursements and expenditures (money actually spent) and then subtract the existing funding to get the <i>net new spending</i>.</li>
                       </ol>
 
-                      <p>(Negative values are replaced with zero). Whenever the tool aggregates commitments or spending from <b>more than one organization</b>, it uses this deduplication process to minimize the risk of duplicate counting. Here’s how the process would apply to the previous example:</p>
+                      <p>(Negative values are replaced with zero). Whenever the dashboard aggregates commitments or spending from <b>more than one organization</b>, it uses this deduplication process to minimize the risk of duplicate counting. Here’s how the process would apply to the previous example:</p>
 
                       <ul>
                         <li>Org A’s activity reports no incoming commitments or funding, and $100,000 outgoing commitments and spending, so it has $0 existing funding, and $100,000 net new commitments and spending.</li>
@@ -159,15 +159,15 @@
 
                       <p>Now the three activities add up to $100,000 + $0 + $0 = $100,000 spending, which is an accurate representation of the total new money commitment to the COVID-19 response.</p>
 
-                      <p><b>Note:</b> This procedure relies on IATI publishing organizations reporting their incoming funding and commitments correctly. As with any other reporting error, when they do not do so, the totals will be wrong, but the tool will still be “holding up a mirror” to what the IATI data claims to be true.</p>
+                      <p><b>Note:</b> This procedure relies on IATI publishing organizations reporting their incoming funding and commitments correctly. As with any other reporting error, when they do not do so, the totals will be wrong, but the dashboard will still be “holding up a mirror” to what the IATI data claims to be true.</p>
 
-                      <h3>Total vs net money in the tool</h3>
-                      <p>When filtering the data to just a single organization, the tool displays <i>total commitments</i> and <i>total spending</i>, because there is (or should be) no risk of duplicate counting. All of the outgoing commitments and spending that the organization reports are counted.</p>
+                      <h3>Total vs net money in the dashboard</h3>
+                      <p>When filtering the data to just a single organization, the dashboard displays <i>total commitments</i> and <i>total spending</i>, because there is (or should be) no risk of duplicate counting. All of the outgoing commitments and spending that the organization reports are counted.</p>
 
-                      <p>When filtering the data to a single sector or recipient country (and, thus, potentially including multiple organizations), the tool displays the <i>net commitments</i> with the <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">Deduplication of commitments and spending</a> procedure applied, to avoid the risk of double counting.</p>
+                      <p>When filtering the data to a single sector or recipient country (and, thus, potentially including multiple organizations), the dashboard displays the <i>net commitments</i> with the <a href="https://docs.google.com/document/d/1sdhfHsjTkjdIFo7cJynoYEGDWdG9O_EtATFJSbJOgLo/edit#heading=h.k46spvg49yg0" target="_blank">Deduplication of commitments and spending</a> procedure applied, to avoid the risk of double counting.</p>
 
                       <h3>Humanitarian flags</h3>
-                      <p>If an activity is flagged positively as humanitarian, the tool flags all transactions within it as humanitarian.  When an activity is not flagged positively as humanitarian, but a transaction within that activity does contain the humanitarian flag, the tool uses the transaction level flag for that transaction only.</p>
+                      <p>If an activity is flagged positively as humanitarian, the dashboard flags all transactions within it as humanitarian.  When an activity is not flagged positively as humanitarian, but a transaction within that activity does contain the humanitarian flag, the dashboard uses the transaction level flag for that transaction only.</p>
                     </b-card-text>
                   </b-card-body>
                 </b-collapse>
@@ -192,7 +192,7 @@
                       </ul>
 
                       <p>The tab will add all of these disbursements into a single flow of $150,000 from Org A to Org B.</p>
-                      <p>When a transaction is of type Expenditure, the tool aggregates these in a similar way and labels it as "Direct expenditure".</p>
+                      <p>When a transaction is of type Expenditure, the dashboard aggregates these in a similar way and labels it as "Direct expenditure".</p>
 
                       <h3>Monetary values for financial flows</h3>
                       <p>In its current iteration, the flows tab shows only actual spending, not commitments.  For example, if Org A commits $100,000 to an activity reported by Org B, but has not yet disbursed any of the money, the $100,000 will not appear in the flows diagram. Only when the money is actually spent (either through a disbursement to another organization, or as payment for operating expenses) does it appear in the diagram.</p>
@@ -210,14 +210,14 @@
 
                       <p>An activity-level participating organization with a role of “funding” serves as the default provider of funds in any incoming transactions that does not specify a provider org.  A participating organization with a role of “implementing” serves as the default receiver of funds in any outgoing transaction that does not specify a receiver org.</p>
 
-                      <p>Since many IATI publishers do not list provider and receiver orgs at the transaction level, this approach allows the tool to capture many flows that would otherwise be missed.</p>
+                      <p>Since many IATI publishers do not list provider and receiver orgs at the transaction level, this approach allows the dashboard to capture many flows that would otherwise be missed.</p>
 
-                      <p>For example, if an IATI activity reported by Org A lists Org B as the implementing partner, then publishes an outgoing (disbursement) transaction with no receiver organization specified, the tool will assume that Org B is the receiver organization for the transaction, and generate a flow between the two.</p>
+                      <p>For example, if an IATI activity reported by Org A lists Org B as the implementing partner, then publishes an outgoing (disbursement) transaction with no receiver organization specified, the dashboard will assume that Org B is the receiver organization for the transaction, and generate a flow between the two.</p>
 
-                      <p>Where it is not possible to identify the provider or recipient of a transaction, the tool labels these as “unspecified organization” and aggregates in the same manner.</p>
+                      <p>Where it is not possible to identify the provider or recipient of a transaction, the dashboard labels these as “unspecified organization” and aggregates in the same manner.</p>
 
                       <h3>Internal transactions</h3>
-                      <p>This tool excludes all transactions within the same organization, when it is possible to detect them. For example, if an organization reallocates funds internally and if this is possible to detect in the data, that transaction is excluded from the tool.</p>
+                      <p>This dashboard excludes all transactions within the same organization, when it is possible to detect them. For example, if an organization reallocates funds internally and if this is possible to detect in the data, that transaction is excluded from the dashboard.</p>
                     </b-card-text>
                   </b-card-body>
                 </b-collapse>
@@ -230,7 +230,7 @@
               Technical Details / Resources for Developers
             </h2>
 
-            <p>Everything developed for this tool is shared as open source software. Data is extracted from <a href="https://d-portal.org/" target="_blank">d-portal.org</a> and transformed every 24 hours.</p>
+            <p>Everything developed for this dashboard is shared as open source software. Data is extracted from <a href="https://d-portal.org/" target="_blank">d-portal.org</a> and transformed every 24 hours.</p>
 
             <p>
               For more information, view our GitHub repositories:
@@ -363,7 +363,7 @@ export default {
   },
   head () {
     return {
-      title: config.head.title + ': About this Tool'
+      title: config.head.title + ': About this Dashboard'
     }
   }
 }
