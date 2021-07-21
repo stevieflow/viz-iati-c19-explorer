@@ -25,6 +25,9 @@
       </b-navbar>
       <nuxt />
     </b-container>
+    <b-container class="text-right mt-5">
+      <a href="https://iatistandard.org/" target="_blank"><img src="/logo-iati.png" width="130"></a>
+    </b-container>
   </div>
 </template>
 
