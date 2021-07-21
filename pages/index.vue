@@ -705,11 +705,11 @@ export default {
     getRankedList (data) {
       const dimension = this.selectedRankingFilter
       const ranked = Object.entries(data.reduce((list, item, index) => {
-        if (!item[dimension].includes('Unspecified')) {
-          const value = Number(item[this.tagPattern])
-          const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
-          list[key] = list[key] + value || value
-        }
+        // if (!item[dimension].includes('Unspecified')) {
+        const value = Number(item[this.tagPattern])
+        const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
+        list[key] = list[key] + value || value
+        // }
         return list
       }, {})).sort((a, b) =>
         b[1] - a[1]
