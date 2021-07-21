@@ -24,20 +24,19 @@
         </b-collapse>
       </b-navbar>
       <nuxt />
-    </b-container>
-    <b-container class="text-right mt-5">
-      <a href="https://iatistandard.org/" target="_blank"><img :src="logoPath" width="130"></a>
+
+      <b-container class="footer">
+        <b-row>
+          <b-col cols="12">
+            <a href="https://iatistandard.org/" target="_blank"><img :src="logoPath" width="130"></a>
+          </b-col>
+        </b-row>
+      </b-container>
     </b-container>
   </div>
 </template>
 
 <style lang='scss'>
-.nuxt-progress {
-  background-color: #CCC;
-}
-.settings {
-  width: 300px;
-}
 .navbar-brand {
   color: #000;
   font-family: 'Gotham Bold', sans-serif;
@@ -62,14 +61,9 @@
     }
   }
 }
-.displaySummaryControls label {
-  cursor: pointer;
-}
-.number-value {
+.footer {
+  padding: 80px 15px 40px;
   text-align: right;
-}
-sup {
-  font-size: 11px;
 }
 
 @media only screen and (max-width: 992px) {
