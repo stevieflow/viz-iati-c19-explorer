@@ -26,7 +26,7 @@
       <nuxt />
     </b-container>
     <b-container class="text-right mt-5">
-      <a href="https://iatistandard.org/" target="_blank"><img src="/logo-iati.png" width="130"></a>
+      <a href="https://iatistandard.org/" target="_blank"><img :src="logoPath" width="130"></a>
     </b-container>
   </div>
 </template>
@@ -112,6 +112,10 @@ export default {
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
+    },
+    logoPath () {
+      const filePath = (config.dev) ? '/' : '/viz-iati-c19-explorer/'
+      return filePath + 'logo-iati.png'
     }
   }
 }
