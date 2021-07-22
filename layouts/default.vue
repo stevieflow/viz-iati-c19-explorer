@@ -23,18 +23,20 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-      <nuxt />
+      <nuxt class="main-content" />
+
+      <b-container class="footer">
+        <b-row>
+          <b-col cols="12">
+            <a href="https://iatistandard.org/" target="_blank"><img :src="logoPath" width="130"></a>
+          </b-col>
+        </b-row>
+      </b-container>
     </b-container>
   </div>
 </template>
 
 <style lang='scss'>
-.nuxt-progress {
-  background-color: #CCC;
-}
-.settings {
-  width: 300px;
-}
 .navbar-brand {
   color: #000;
   font-family: 'Gotham Bold', sans-serif;
@@ -59,14 +61,12 @@
     }
   }
 }
-.displaySummaryControls label {
-  cursor: pointer;
+.main-content {
+  min-height: 100vh;
 }
-.number-value {
+.footer {
+  padding: 80px 15px 40px;
   text-align: right;
-}
-sup {
-  font-size: 11px;
 }
 
 @media only screen and (max-width: 992px) {
@@ -109,6 +109,10 @@ export default {
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
+    },
+    logoPath () {
+      const filePath = (config.dev) ? '/' : '/viz-iati-c19-dashboard/'
+      return filePath + 'logo-iati.png'
     }
   }
 }
