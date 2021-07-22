@@ -92,6 +92,7 @@
 </style>
 
 <script>
+import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 export default {
   components: {
@@ -114,6 +115,38 @@ export default {
       const filePath = (config.dev) ? '/' : '/viz-iati-c19-explorer/'
       return filePath + 'logo-iati.png'
     }
+  },
+  watch: {
+    $route: {
+      handler () {
+        // from the vue-mixpanel documentation
+        // mixpanel.track('viz interaction', {
+        //   'page title': config.head.title,
+        //   action: 'switch viz',
+        //   content: config.head.title,
+        //   'current view': this.$route.name,
+        //   'viz type': 'iati covid-19 dashboard'
+        // })
+        // mixpanel.track('page view', {
+        //   'page title': config.head.title,
+        //   'page type': 'datavis'
+        // })
+        console.log('route watched', this.$route, mixpanel, config.head.title)
+      },
+      immediate: true // fires this function immediately when the object has bound to the watcher
+
+    }
+  },
+  created () {
+    console.log('created')
+  },
+  mounted () {
+    console.log('mounted')
+    mixpanel.init(config.MIXPANEL_TOKEN)
+    mixpanel.track('page view', {
+      'page title': config.head.title,
+      'page type': 'datavis'
+    })
   }
 }
 </script>

@@ -315,10 +315,12 @@
 import axios from 'axios'
 import csvtojson from 'csvtojson'
 import numeral from 'numeral'
+import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
 import DownloadDataButton from '~/components/DownloadDataButton'
+
 export default {
   components: {
     DoughnutChart,
@@ -531,6 +533,12 @@ export default {
     }
   },
   mounted () {
+    mixpanel.init(config.MIXPANEL_TOKEN)
+    mixpanel.track('page view', {
+      'page title': config.head.title,
+      'page type': 'datavis'
+    })
+
     this.toggleBodyClass('addClass', 'index')
 
     this.filterParams = {

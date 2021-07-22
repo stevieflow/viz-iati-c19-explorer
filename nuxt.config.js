@@ -32,6 +32,10 @@ export default {
         body: true,
         async: true
       }
+      // {
+      //   src: 'http://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
+      //   body: true
+      // }
     ],
     htmlAttrs: {
       lang: 'en'
@@ -96,6 +100,7 @@ export default {
       }
     }
   },
+  MIXPANEL_TOKEN: process.env.NODE_ENV !== 'production' ? '99035923ee0a67880e6c05ab92b6cbc0' : '5cbf12bc9984628fb2c55a49daf32e74',
   dev: process.env.NODE_ENV !== 'production',
   ...routerBase
 }
