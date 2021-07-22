@@ -201,7 +201,7 @@
                 :doughnut-chart-data="commitmentsDonut"
                 :colors="commitmentColors"
               />
-              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
+              <div class="key-figure-breakdown w-lg-100 mx-lg-4">
                 <h3>
                   Total Outgoing Commitments (USD)
                   <b-badge
@@ -276,6 +276,11 @@
           :timeseries-chart-data="timeseriesData"
           :chart-type="timeseriesSelect"
         />
+
+        <div class="small text-muted mt-4 ml-4">
+          {{ lastUpdatedDate }} | IATI
+        </div>
+        <hr>
       </b-container>
     </template>
   </div>
@@ -551,7 +556,6 @@ export default {
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
-          this.skippedTransactions = this.numberFormatter(metadata['#meta+transactions+skipped+num'])
 
           // process the transaction data
           this.fullData = response.data.data
@@ -704,16 +708,21 @@ export default {
     },
     getRankedList (data) {
       const dimension = this.selectedRankingFilter
+      const unspecifiedItem = {}
       const ranked = Object.entries(data.reduce((list, item, index) => {
-        // if (!item[dimension].includes('Unspecified')) {
         const value = Number(item[this.tagPattern])
         const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
-        list[key] = list[key] + value || value
-        // }
+        if (item[dimension].includes('Unspecified')) {
+          unspecifiedItem[key] = unspecifiedItem[key] + value || value
+        } else {
+          list[key] = list[key] + value || value
+        }
         return list
       }, {})).sort((a, b) =>
         b[1] - a[1]
       )
+      // push unspecified item to bottom of list
+      ranked.push(Object.entries(unspecifiedItem)[0])
       return ranked
     },
     getFilterID () {
@@ -771,52 +780,5 @@ export default {
     font-size: 42px;
     line-height: 49px;
     text-transform: uppercase;
-  }
-  .summary-table {
-    font-size: 14px;
-    thead {
-      display: none;
-    }
-    td {
-      padding: 0 8px 0 0;
-      vertical-align: middle;
-      &:last-child {
-        padding-right: 0;
-        text-align: right;
-      }
-    }
-  }
-  .color-key {
-    height: 12px;
-    width: 12px;
-  }
-  .scroll-list-container {
-    position: relative;
-  }
-  .scroll-list {
-    height: 170px;
-    max-width: 273px;
-    overflow-y: scroll;
-    .list-breakdown {
-      color: #888;
-      padding-left: 10px;
-    }
-  }
-  .scroll-list-overlay {
-    background: rgb(255,255,255);
-    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
-    bottom: 0;
-    height: 30px;
-    pointer-events: none;
-    position: absolute;
-    width: 100%;
-  }
-  .scroll-list-footer {
-    display: flex;
-    font-size: 14px;
-    justify-content: space-between;
-  }
-  .col-form-label {
-    font-weight: bold;
   }
 </style>

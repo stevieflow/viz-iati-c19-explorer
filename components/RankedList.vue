@@ -19,8 +19,51 @@
     </div>
   </div>
 </template>
-<style scoped>
-
+<style lang='scss'>
+  .summary-table {
+    font-size: 14px;
+    thead {
+      display: none;
+    }
+    td {
+      padding: 0 8px 0 0;
+      vertical-align: middle;
+      &:last-child {
+        padding-right: 0;
+        text-align: right;
+      }
+    }
+  }
+  .color-key {
+    height: 12px;
+    width: 12px;
+  }
+  .scroll-list-container {
+    position: relative;
+  }
+  .scroll-list {
+    height: 170px;
+    max-width: 273px;
+    overflow-y: scroll;
+    .list-breakdown {
+      color: #888;
+      padding-left: 10px;
+    }
+  }
+  .scroll-list-overlay {
+    background: rgb(255,255,255);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+    bottom: 0;
+    height: 30px;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+  }
+  .scroll-list-footer {
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
+  }
 </style>
 <script>
 export default {

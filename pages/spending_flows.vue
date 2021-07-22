@@ -130,6 +130,11 @@
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
+
+        <div class="small text-muted mt-5 ml-4">
+          {{ lastUpdatedDate }} | IATI
+        </div>
+        <hr>
       </b-container>
     </template>
   </div>
@@ -174,7 +179,9 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      orgNameIndex: []
+      orgNameIndex: [],
+      lastUpdatedDate: '',
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     }
   },
   head () {
@@ -248,6 +255,13 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
+          // process the metadata
+          const metadata = response.data.metadata
+          console.log(metadata)
+          const dateRun = new Date(metadata['#date+run'])
+          const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
+          this.lastUpdatedDate = date
+
           this.fullData = response.data.data
           this.updateFilteredData()
         })
