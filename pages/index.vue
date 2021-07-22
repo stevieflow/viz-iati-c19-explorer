@@ -181,7 +181,7 @@
 
       <b-container>
         <h2 class="header">
-          Commitments and Spending Ranking
+          Outgoing Commitments and Spending Ranking
         </h2>
 
         <b-row>
@@ -203,7 +203,7 @@
               />
               <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
                 <h3>
-                  Total Commitments (USD)
+                  Total Outgoing Commitments (USD)
                   <b-badge
                     v-b-tooltip.hover
                     class="info-icon p-0"
@@ -288,7 +288,7 @@
         </b-row>
 
         <h2 class="header">
-          Commitments and Spending Over Time
+          Outgoing Commitments and Spending Over Time
         </h2>
 
         <b-row>
