@@ -243,7 +243,7 @@
                     <li>Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json" target="_blank">flows.json</a></li>
                   </ul>
                 </li>
-                <li><a href="https://github.com/OCHA-DAP/viz-iati-c19-dashboard target="_blank"">Data visualization front end</a></li>
+                <li><a href="https://github.com/OCHA-DAP/viz-iati-c19-dashboard" target="_blank">Data visualization front end</a></li>
               </ul>
             </p>
           </section>
