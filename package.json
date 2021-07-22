@@ -2,7 +2,7 @@
   "name": "covid19-visualisation",
   "version": "1.0.0",
   "description": "A simple visualisation of COVID-19 response data.",
-  "author": "Mark Brough",
+  "author": "Centre for Humanitarian Data",
   "private": true,
   "scripts": {
     "dev": "nuxt",
