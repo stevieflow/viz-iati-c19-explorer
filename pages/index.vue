@@ -536,7 +536,7 @@ export default {
   methods: {
     async loadData () {
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
-      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
+      const filePath = (config.dev) ? '' : '/viz-iati-c19-dashboard/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {

@@ -111,7 +111,7 @@ export default {
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
     },
     logoPath () {
-      const filePath = (config.dev) ? '/' : '/viz-iati-c19-explorer/'
+      const filePath = (config.dev) ? '/' : '/viz-iati-c19-dashboard/'
       return filePath + 'logo-iati.png'
     }
   }
