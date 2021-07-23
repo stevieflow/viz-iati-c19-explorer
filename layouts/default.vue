@@ -118,7 +118,7 @@ export default {
   },
   mounted () {
     console.log(this.$store.state.isProd)
-    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
+    const MIXPANEL_TOKEN = this.$store.state.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
     mixpanel.init(MIXPANEL_TOKEN)
     this.$mixpanelTrackView()
   },
