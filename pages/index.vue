@@ -708,12 +708,12 @@ export default {
     },
     getRankedList (data) {
       const dimension = this.selectedRankingFilter
-      const unspecifiedItem = {}
+      const unspecifiedObject = {}
       const ranked = Object.entries(data.reduce((list, item, index) => {
         const value = Number(item[this.tagPattern])
         const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
         if (item[dimension].includes('Unspecified')) {
-          unspecifiedItem[key] = unspecifiedItem[key] + value || value
+          unspecifiedObject[key] = unspecifiedObject[key] + value || value
         } else {
           list[key] = list[key] + value || value
         }
@@ -722,11 +722,13 @@ export default {
         b[1] - a[1]
       )
 
-      // replace text for recipient countries
-      const temp = Object.entries(unspecifiedItem)[0]
-      if (temp[0] === '(Unspecified country)') { temp[0] = 'No country/region specified' }
       // push unspecified item to bottom of list
-      ranked.push(temp)
+      const unspecified = Object.entries(unspecifiedObject)[0]
+      if (unspecified !== undefined) {
+        // replace text for recipient countries
+        if (unspecified[0] === '(Unspecified country)') { unspecified[0] = 'No country/region specified' }
+        ranked.push(unspecified)
+      }
       return ranked
     },
     getFilterID () {
