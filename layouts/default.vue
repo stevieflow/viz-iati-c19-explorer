@@ -97,9 +97,6 @@ import config from '../nuxt.config'
 export default {
   components: {
   },
-  asyncData ({ app, $hello }) {
-    $hello('asyncData')
-  },
   data () {
     return {
       title: config.head.title
@@ -119,11 +116,10 @@ export default {
       return filePath + 'logo-iati.png'
     }
   },
-  beforeCreate () {
+  mounted () {
+    console.log(this.$store.state.isProd)
     const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
     mixpanel.init(MIXPANEL_TOKEN)
-  },
-  mounted () {
     this.$mixpanelTrackView()
   },
   methods: {
