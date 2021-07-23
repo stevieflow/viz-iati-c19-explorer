@@ -55,6 +55,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/mixpanel.js'
   ],
   /*
   ** Nuxt.js modules
@@ -96,6 +97,9 @@ export default {
         moment: 'moment'
       }
     }
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
   MIXPANEL_TOKEN: process.env.NODE_ENV !== 'production' ? '99035923ee0a67880e6c05ab92b6cbc0' : '5cbf12bc9984628fb2c55a49daf32e74',
   dev: process.env.NODE_ENV !== 'production',

@@ -216,7 +216,8 @@ export default {
   },
   mounted () {
     // init mixpanel
-    mixpanel.init(config.MIXPANEL_TOKEN)
+    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
+    mixpanel.init(MIXPANEL_TOKEN)
 
     this.filterParams = {
       humanitarian: 'off',

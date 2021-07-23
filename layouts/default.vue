@@ -9,15 +9,15 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item :to="{name: 'index'}" exact-active-class="active" class="nav-index" no-prefetch>
+            <b-nav-item :to="{name: 'index'}" exact-active-class="active" class="nav-index" no-prefetch @click="onClick('Commitments and Spending')">
               Commitments and Spending
             </b-nav-item>
-            <b-nav-item :to="{name: 'spending_flows'}" active-class="active" class="nav-flows" no-prefetch>
+            <b-nav-item :to="{name: 'spending_flows'}" active-class="active" class="nav-flows" no-prefetch @click="onClick('Spending Flows')">
               Spending Flows
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
-            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch>
+            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch @click="onClick('About this Dashboard')">
               About this Dashboard
             </b-nav-item>
           </b-navbar-nav>
@@ -97,6 +97,9 @@ import config from '../nuxt.config'
 export default {
   components: {
   },
+  asyncData ({ app, $hello }) {
+    $hello('asyncData')
+  },
   data () {
     return {
       title: config.head.title
@@ -116,30 +119,27 @@ export default {
       return filePath + 'logo-iati.png'
     }
   },
-  watch: {
-    $route: {
-      handler () {
-        // send mixpanel events when new tab is selected
-        mixpanel.track('viz interaction', {
-          'page title': config.head.title,
-          action: 'switch viz',
-          content: config.head.title,
-          'current view': this.$route.name,
-          'viz type': 'iati covid-19 dashboard'
-        })
-        console.log('viz interaction', this.$route)
-      }
-    }
-  },
   beforeCreate () {
-    mixpanel.init(config.MIXPANEL_TOKEN)
+    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
+    mixpanel.init(MIXPANEL_TOKEN)
   },
   mounted () {
-    console.log('page view recorded')
+    this.$mixpanelTrack('index')
     mixpanel.track('page view', {
       'page title': config.head.title,
       'page type': 'datavis'
     })
+  },
+  methods: {
+    onClick (page) {
+      mixpanel.track('viz interaction', {
+        'page title': config.head.title,
+        action: 'switch viz',
+        content: config.head.title,
+        'current view': page,
+        'viz type': 'iati covid-19 dashboard'
+      })
+    }
   }
 }
 </script>

@@ -40,11 +40,15 @@ export default {
   computed: {
     filePath () {
       return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/' + this.type + '.csv'
+    },
+    isProd () {
+      return this.$store.state.isProd
     }
   },
   mounted () {
     // init mixpanel
-    mixpanel.init(config.MIXPANEL_TOKEN)
+    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
+    mixpanel.init(MIXPANEL_TOKEN)
   },
   methods: {
     mixpanelTrack (url, type) {
@@ -53,7 +57,6 @@ export default {
         'link type': type,
         'page title': config.head.title
       })
-      console.log(url, type)
     },
     downloadAllData () {
       this.mixpanelTrack(this.filePath, 'download all data')
