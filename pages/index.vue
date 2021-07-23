@@ -201,7 +201,7 @@
                 :doughnut-chart-data="commitmentsDonut"
                 :colors="commitmentColors"
               />
-              <div class="key-figure-breakdown w-lg-100 ml-lg-4 mr-lg-5">
+              <div class="key-figure-breakdown w-lg-100 mx-lg-4">
                 <h3>
                   Total Outgoing Commitments (USD)
                   <b-badge
@@ -214,29 +214,14 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  {{ totalCommitments }}
+                  {{ currencyFormatter(totalCommitments) }}
                 </div>
 
-                <div class="scroll-list-container">
-                  <div class="scroll-list mt-3">
-                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="commitmentsTable">
-                      <template #cell(color)="data">
-                        <div class="color-key" :style="'background-color: ' + commitmentColors[data.index]" />
-                      </template>
-                      <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
-                      </template>
-                      <template #cell(value)="data">
-                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
-                      </template>
-                    </b-table>
-                  </div>
-                  <div class="scroll-list-overlay" />
-                </div>
-                <div class="scroll-list-footer mt-2">
-                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
-                  <span>(USD)</span>
-                </div>
+                <RankedList
+                  :items="commitmentsTable"
+                  :colors="commitmentColors"
+                  :last-updated-date="lastUpdatedDate"
+                />
               </div>
             </div>
           </b-col>
@@ -259,29 +244,14 @@
                   </b-badge>
                 </h3>
                 <div class="key-figure-num">
-                  {{ totalSpending }}
+                  {{ currencyFormatter(totalSpending) }}
                 </div>
 
-                <div class="scroll-list-container">
-                  <div class="scroll-list mt-3">
-                    <b-table borderless small class="summary-table mr-5 mb-0" :fields="tableFields" :items="spendingTable">
-                      <template #cell(color)="data">
-                        <div class="color-key" :style="'background-color: ' + spendingColors[data.index]" />
-                      </template>
-                      <template #cell(item)="data">
-                        <abbr :title="data.item.item" :class="data.index>5 ? 'list-breakdown text-muted' : ''">{{ data.item.item | truncate(20, '...') }}</abbr>
-                      </template>
-                      <template #cell(value)="data">
-                        <span :class="data.index>5 ? 'text-muted' : ''">{{ data.item.value }}</span>
-                      </template>
-                    </b-table>
-                  </div>
-                  <div class="scroll-list-overlay" />
-                </div>
-                <div class="scroll-list-footer mt-2">
-                  <span class="small text-muted">{{ lastUpdatedDate }} | IATI</span>
-                  <span>(USD)</span>
-                </div>
+                <RankedList
+                  :items="spendingTable"
+                  :colors="spendingColors"
+                  :last-updated-date="lastUpdatedDate"
+                />
               </div>
             </div>
           </b-col>
@@ -306,6 +276,11 @@
           :timeseries-chart-data="timeseriesData"
           :chart-type="timeseriesSelect"
         />
+
+        <div class="small text-muted mt-4 ml-4">
+          {{ lastUpdatedDate }} | IATI
+        </div>
+        <hr>
       </b-container>
     </template>
   </div>
@@ -319,20 +294,13 @@ import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
 import DownloadDataButton from '~/components/DownloadDataButton'
+import RankedList from '~/components/RankedList'
 export default {
   components: {
     DoughnutChart,
     TimeseriesChart,
-    DownloadDataButton
-  },
-  filters: {
-    truncate (text, length, suffix) {
-      if (text.length > length) {
-        return text.substring(0, length) + suffix
-      } else {
-        return text
-      }
-    }
+    DownloadDataButton,
+    RankedList
   },
   data () {
     return {
@@ -397,11 +365,6 @@ export default {
       humanitarianToggleOptions: [
         { label: 'No', value: 'off' },
         { label: 'Yes', value: 'on' }
-      ],
-      tableFields: [
-        { key: 'color', label: 'Color' },
-        'item',
-        'value'
       ],
       commitmentColors: ['#007CE1', '#3393E2', '#65ABE3', '#98C3E4', '#CADAE5', '#EEE'],
       spendingColors: ['#C6382E', '#DC4E44', '#F2645A', '#F0948F', '#EDC4C3', '#EEE'],
@@ -477,12 +440,10 @@ export default {
       return activities.length
     },
     totalCommitments () {
-      const sum = this.getTotal(this.commitments)
-      return numeral(sum).format('$0.0a')
+      return this.getTotal(this.commitments)
     },
     totalSpending () {
-      const sum = this.getTotal(this.spending)
-      return numeral(sum).format('$0.0a')
+      return this.getTotal(this.spending)
     },
     tagPattern () {
       return (this.selectedFilterDimension === '#org+id' && this.selectedFilter !== '*') ? '#value+total' : '#value+net'
@@ -494,10 +455,10 @@ export default {
       return this.populateList(this.spendingRanked)
     },
     commitmentsDonut () {
-      return this.populateDonut(this.commitments, this.commitmentsRanked)
+      return this.populateDonut(this.totalCommitments, this.commitmentsRanked)
     },
     spendingDonut () {
-      return this.populateDonut(this.spending, this.spendingRanked)
+      return this.populateDonut(this.totalSpending, this.spendingRanked)
     },
     timeseriesData () {
       const ref = this
@@ -595,7 +556,6 @@ export default {
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
-          this.skippedTransactions = this.numberFormatter(metadata['#meta+transactions+skipped+num'])
 
           // process the transaction data
           this.fullData = response.data.data
@@ -638,6 +598,9 @@ export default {
       return value
         ? numeral(value).format('0,0')
         : ''
+    },
+    currencyFormatter (value) {
+      return numeral(value).format('$0.0a')
     },
     onFilterOptionSelect (selected) {
       this.selectedFilterDimension = selected
@@ -708,9 +671,13 @@ export default {
         b.value - a.value
       )
     },
-    populateDonut (data, rankedData) {
-      const ranked = (rankedData.length > 6) ? rankedData.slice(0, 6) : rankedData
-      const total = this.getTotal(data)
+    populateDonut (total, rankedData) {
+      const ranked = (rankedData.length > 5) ? rankedData.slice(0, 5) : rankedData
+      // calculate sum of top 5 and append 'Other' value if sum < 100
+      const sum = ranked.reduce((total, amount) => {
+        return total + amount[1]
+      }, 0)
+      if (sum < total) { ranked.push(['Other or unspecified', total - sum]) }
       const ratios = ranked.reduce((list, item) => {
         const ratio = Number(((item[1] / total) * 100).toFixed(1))
         list.push(ratio)
@@ -741,22 +708,27 @@ export default {
     },
     getRankedList (data) {
       const dimension = this.selectedRankingFilter
-      const total = this.getTotal(data)
+      const unspecifiedObject = {}
       const ranked = Object.entries(data.reduce((list, item, index) => {
-        if (!item[dimension].includes('Unspecified')) {
-          const value = Number(item[this.tagPattern])
-          const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
+        const value = Number(item[this.tagPattern])
+        const key = (dimension === '#org+id') ? this.getOrgName(item[dimension]) : item[dimension]
+        if (item[dimension].includes('Unspecified')) {
+          unspecifiedObject[key] = unspecifiedObject[key] + value || value
+        } else {
           list[key] = list[key] + value || value
         }
         return list
       }, {})).sort((a, b) =>
         b[1] - a[1]
       )
-      // calculate sum of top 5 and append 'Other' value if sum < 100
-      const sum = ranked.slice(0, 5).reduce((total, amount) => {
-        return total + amount[1]
-      }, 0)
-      if (sum < total) { ranked.splice(5, 0, ['Other or unspecified', total - sum]) }
+
+      // push unspecified item to bottom of list
+      const unspecified = Object.entries(unspecifiedObject)[0]
+      if (unspecified !== undefined) {
+        // replace text for recipient countries
+        if (unspecified[0] === '(Unspecified country)') { unspecified[0] = 'No country/region specified' }
+        ranked.push(unspecified)
+      }
       return ranked
     },
     getFilterID () {
@@ -814,52 +786,5 @@ export default {
     font-size: 42px;
     line-height: 49px;
     text-transform: uppercase;
-  }
-  .summary-table {
-    font-size: 14px;
-    thead {
-      display: none;
-    }
-    td {
-      padding: 0 8px 0 0;
-      vertical-align: middle;
-      &:last-child {
-        padding-right: 0;
-        text-align: right;
-      }
-    }
-  }
-  .color-key {
-    height: 12px;
-    width: 12px;
-  }
-  .scroll-list-container {
-    position: relative;
-  }
-  .scroll-list {
-    height: 168px;
-    max-width: 273px;
-    overflow-y: scroll;
-    .list-breakdown {
-      color: #888;
-      padding-left: 10px;
-    }
-  }
-  .scroll-list-overlay {
-    background: rgb(255,255,255);
-    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
-    bottom: 0;
-    height: 30px;
-    pointer-events: none;
-    position: absolute;
-    width: 100%;
-  }
-  .scroll-list-footer {
-    display: flex;
-    font-size: 14px;
-    justify-content: space-between;
-  }
-  .col-form-label {
-    font-weight: bold;
   }
 </style>
