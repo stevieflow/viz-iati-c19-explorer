@@ -109,7 +109,7 @@ export default {
     pageTitle () {
       let isProd = true
       if (process.client) {
-        isProd = !!(window.location.host.includes('ocha-dap')) && !!(window.location.host.includes('humdata'))
+        isProd = !!(window.location.host.includes('ocha-dap')) || !!(window.location.host.includes('humdata'))
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
