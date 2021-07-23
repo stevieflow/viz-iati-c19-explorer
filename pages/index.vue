@@ -721,8 +721,12 @@ export default {
       }, {})).sort((a, b) =>
         b[1] - a[1]
       )
+
+      // replace text for recipient countries
+      const temp = Object.entries(unspecifiedItem)[0]
+      if (temp[0] === '(Unspecified country)') { temp[0] = 'No country/region specified' }
       // push unspecified item to bottom of list
-      ranked.push(Object.entries(unspecifiedItem)[0])
+      ranked.push(temp)
       return ranked
     },
     getFilterID () {
