@@ -109,7 +109,7 @@ export default {
     pageTitle () {
       let isProd = true
       if (process.client) {
-        isProd = !!(window.location.host.includes('ocha-dap')) || !!(window.location.host.includes('humdata'))
+        isProd = !!(window.location.host.includes('ocha-dap')) && !!(window.location.host.includes('humdata'))
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
@@ -124,21 +124,11 @@ export default {
     mixpanel.init(MIXPANEL_TOKEN)
   },
   mounted () {
-    this.$mixpanelTrack('index')
-    mixpanel.track('page view', {
-      'page title': config.head.title,
-      'page type': 'datavis'
-    })
+    this.$mixpanelTrackView()
   },
   methods: {
     onClick (page) {
-      mixpanel.track('viz interaction', {
-        'page title': config.head.title,
-        action: 'switch viz',
-        content: config.head.title,
-        'current view': page,
-        'viz type': 'iati covid-19 dashboard'
-      })
+      this.$mixpanelTrackAction('switch viz', config.head.title, page)
     }
   }
 }

@@ -1,15 +1,28 @@
 import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 export default ({ app }, inject) => {
-  // Inject $hello(msg) in Vue, context and store.
-  inject('mixpanelTrack', (view) => {
-    console.log('mixpanelTrack', config.head.title, view, config.env.baseUrl)
-    mixpanel.track('viz interaction test', {
+  inject('mixpanelTrackAction', (action, content, view) => {
+    mixpanel.track('viz interaction', {
       'page title': config.head.title,
-      action: 'switch viz',
-      content: config.head.title,
+      action,
+      content,
       'current view': view,
       'viz type': 'iati covid-19 dashboard'
+    })
+  })
+
+  inject('mixpanelTrackLink', (url, type) => {
+    mixpanel.track('link click', {
+      'destination url': url,
+      'link type': type,
+      'page title': config.head.title
+    })
+  })
+
+  inject('mixpanelTrackView', () => {
+    mixpanel.track('page view', {
+      'page title': config.head.title,
+      'page type': 'datavis'
     })
   })
 }

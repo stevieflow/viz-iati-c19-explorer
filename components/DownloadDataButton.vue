@@ -24,8 +24,6 @@
 
 </style>
 <script>
-import mixpanel from 'mixpanel-browser'
-import config from '../nuxt.config'
 export default {
   name: 'DataDownloadButton',
   components: {},
@@ -45,24 +43,11 @@ export default {
       return this.$store.state.isProd
     }
   },
-  mounted () {
-    // init mixpanel
-    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
-    mixpanel.init(MIXPANEL_TOKEN)
-  },
   methods: {
-    mixpanelTrack (url, type) {
-      mixpanel.track('link click', {
-        'destination url': url,
-        'link type': type,
-        'page title': config.head.title
-      })
-    },
     downloadAllData () {
-      this.mixpanelTrack(this.filePath, 'download all data')
+      this.$mixpanelTrackLink(this.filePath, 'download all data')
     },
     downloadFilteredData (event) {
-      console.log(event)
       const param = (this.filterParams[this.selectedFilterDimension] === '*') ? null : this.filterParams[this.selectedFilterDimension]
       let dimension = this.selectedFilterDimension.split('#')[1]
 
@@ -73,7 +58,7 @@ export default {
       const strict = this.filterParams.strict !== 'off'
       const url = (this.type === 'flows') ? this.proxyLinkFlows(param, dimension, humanitarian, strict) : this.proxyLinkTransactions(param, dimension, humanitarian, strict)
 
-      this.mixpanelTrack(url, 'download filtered data')
+      this.$mixpanelTrackLink(url, 'download filtered data')
       window.open(url)
     },
     // safety check: raise an exception if a token is not in the list of allowed values

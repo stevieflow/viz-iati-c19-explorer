@@ -292,7 +292,6 @@
 import axios from 'axios'
 import csvtojson from 'csvtojson'
 import numeral from 'numeral'
-import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
@@ -496,10 +495,6 @@ export default {
     }
   },
   mounted () {
-    // init mixpanel
-    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
-    mixpanel.init(MIXPANEL_TOKEN)
-
     this.toggleBodyClass('addClass', 'index')
 
     this.filterParams = {
@@ -601,15 +596,6 @@ export default {
       const filterArray = this.rankingFilter[this.getFilterID(dimension)]
       this.selectedRankingFilter = filterArray[0].value
     },
-    mixpanelTrack (filterType, view) {
-      mixpanel.track('viz interaction', {
-        'page title': config.head.title,
-        action: 'change content',
-        content: filterType,
-        'current view': view,
-        'viz type': 'iati covid-19 dashboard'
-      })
-    },
     numberFormatter (value) {
       if (value === 0) { return '0' }
       return value
@@ -627,7 +613,7 @@ export default {
       this.resetParams()
       this.setDefaultFilterLabel(selected)
       this.updateFilteredData()
-      this.mixpanelTrack('Commitments and Spending Breakdown radio filter', selected)
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown radio filter', selected)
     },
     onSelect (value) {
       this.selectedFilter = value
@@ -638,22 +624,22 @@ export default {
         this.setDefaultFilterLabel(this.selectedFilterDimension)
       }
       this.updateFilteredData()
-      this.mixpanelTrack('Commitments and Spending Breakdown select filter', value)
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
-      this.mixpanelTrack('Commitments and Spending Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()
       this.onSelect(event.target.id)
     },
     onSelectRanking (value) {
-      this.mixpanelTrack('Commitments and Spending Ranking select filter', value)
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Ranking select filter', value)
     },
     onSelectTimeline (value) {
-      this.mixpanelTrack('Commitments and Spending Timeline select filter', value)
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Timeline select filter', value)
     },
     setDefaultFilterLabel (dimension) {
       const filterOption = this.filterOptions.filter(option => option.value === dimension)

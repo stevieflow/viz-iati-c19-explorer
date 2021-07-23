@@ -145,7 +145,6 @@
 import axios from 'axios'
 import csvtojson from 'csvtojson'
 import numeral from 'numeral'
-import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 import SankeyChart from '~/components/FinancialSankey.vue'
 import DownloadDataButton from '~/components/DownloadDataButton'
@@ -215,10 +214,6 @@ export default {
     this.createStickyHeader()
   },
   mounted () {
-    // init mixpanel
-    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
-    mixpanel.init(MIXPANEL_TOKEN)
-
     this.filterParams = {
       humanitarian: 'off',
       strict: 'off'
@@ -286,15 +281,6 @@ export default {
     updateRouter () {
       this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
     },
-    mixpanelTrack (filterType, view) {
-      mixpanel.track('viz interaction', {
-        'page title': config.head.title,
-        action: 'change content',
-        content: filterType,
-        'current view': view,
-        'viz type': 'iati covid-19 dashboard'
-      })
-    },
     updateFilteredData () {
       this.filteredData = this.filterData()
       this.updateRouter()
@@ -359,12 +345,12 @@ export default {
         this.selectedFilterLabel = 'all reporting organizations'
       }
       this.updateFilteredData()
-      this.mixpanelTrack('Spending Flows Breakdown select filter', value)
+      this.$mixpanelTrackAction('change content', 'Spending Flows Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
-      this.mixpanelTrack('Spending Flows Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
+      this.$mixpanelTrackAction('change content', 'Spending Flows Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()
