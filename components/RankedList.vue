@@ -91,9 +91,6 @@ export default {
         'value'
       ]
     }
-  },
-  methods: {
-
   }
 }
 </script>

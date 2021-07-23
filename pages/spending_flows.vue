@@ -257,7 +257,6 @@ export default {
         .then((response) => {
           // process the metadata
           const metadata = response.data.metadata
-          console.log(metadata)
           const dateRun = new Date(metadata['#date+run'])
           const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
           this.lastUpdatedDate = date
@@ -346,10 +345,12 @@ export default {
         this.selectedFilterLabel = 'all reporting organizations'
       }
       this.updateFilteredData()
+      this.$mixpanelTrackAction('change content', 'Spending Flows Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
+      this.$mixpanelTrackAction('change content', 'Spending Flows Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()

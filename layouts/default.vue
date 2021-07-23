@@ -9,15 +9,15 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item :to="{name: 'index'}" exact-active-class="active" class="nav-index" no-prefetch>
+            <b-nav-item :to="{name: 'index'}" exact-active-class="active" class="nav-index" no-prefetch @click="onClick('Commitments and Spending')">
               Commitments and Spending
             </b-nav-item>
-            <b-nav-item :to="{name: 'spending_flows'}" active-class="active" class="nav-flows" no-prefetch>
+            <b-nav-item :to="{name: 'spending_flows'}" active-class="active" class="nav-flows" no-prefetch @click="onClick('Spending Flows')">
               Spending Flows
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
-            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch>
+            <b-nav-item :to="{name: 'about'}" active-class="active" class="ml-lg-auto nav-about" no-prefetch @click="onClick('About this Dashboard')">
               About this Dashboard
             </b-nav-item>
           </b-navbar-nav>
@@ -92,9 +92,13 @@
 </style>
 
 <script>
+import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 export default {
   components: {
+  },
+  asyncData ({ app, $hello }) {
+    $hello('asyncData')
   },
   data () {
     return {
@@ -105,7 +109,7 @@ export default {
     pageTitle () {
       let isProd = true
       if (process.client) {
-        isProd = !!(window.location.host.includes('ocha-dap')) || !!(window.location.host.includes('humdata'))
+        isProd = !!(window.location.host.includes('ocha-dap')) && !!(window.location.host.includes('humdata'))
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
@@ -113,6 +117,18 @@ export default {
     logoPath () {
       const filePath = (config.dev) ? '/' : '/viz-iati-c19-dashboard/'
       return filePath + 'logo-iati.png'
+    }
+  },
+  beforeCreate () {
+    const MIXPANEL_TOKEN = this.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
+    mixpanel.init(MIXPANEL_TOKEN)
+  },
+  mounted () {
+    this.$mixpanelTrackView()
+  },
+  methods: {
+    onClick (page) {
+      this.$mixpanelTrackAction('switch viz', config.head.title, page)
     }
   }
 }

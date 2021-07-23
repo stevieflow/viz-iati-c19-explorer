@@ -190,6 +190,7 @@
               v-model="selectedRankingFilter"
               class="form-select px-2 ml-3 mb-3"
               :options="rankingFilter[getFilterID(selectedFilterDimension)]"
+              @input="onSelectRanking"
             />
           </b-col>
         </b-row>
@@ -267,6 +268,7 @@
               v-model="timeseriesSelect"
               class="form-select pl-2 pr-4 ml-3 mt-0 mb-4"
               :options="timeseriesSelectOptions"
+              @input="onSelectTimeline"
             />
           </b-col>
           <b-col />
@@ -295,6 +297,7 @@ import DoughnutChart from '~/components/DoughnutChart'
 import TimeseriesChart from '~/components/TimeseriesChart'
 import DownloadDataButton from '~/components/DownloadDataButton'
 import RankedList from '~/components/RankedList'
+
 export default {
   components: {
     DoughnutChart,
@@ -610,6 +613,7 @@ export default {
       this.resetParams()
       this.setDefaultFilterLabel(selected)
       this.updateFilteredData()
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown radio filter', selected)
     },
     onSelect (value) {
       this.selectedFilter = value
@@ -620,14 +624,22 @@ export default {
         this.setDefaultFilterLabel(this.selectedFilterDimension)
       }
       this.updateFilteredData()
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()
       this.onSelect(event.target.id)
+    },
+    onSelectRanking (value) {
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Ranking select filter', value)
+    },
+    onSelectTimeline (value) {
+      this.$mixpanelTrackAction('change content', 'Commitments and Spending Timeline select filter', value)
     },
     setDefaultFilterLabel (dimension) {
       const filterOption = this.filterOptions.filter(option => option.value === dimension)

@@ -32,6 +32,10 @@ export default {
         body: true,
         async: true
       }
+      // {
+      //   src: 'http://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js',
+      //   body: true
+      // }
     ],
     htmlAttrs: {
       lang: 'en'
@@ -51,6 +55,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/mixpanel.js'
   ],
   /*
   ** Nuxt.js modules
@@ -83,9 +88,6 @@ export default {
       fix: true
     }]
   ],
-  gtm: {
-    id: 'GTM-KHMLMZX'
-  },
   build: {
     /*
     ** You can extend webpack config here
