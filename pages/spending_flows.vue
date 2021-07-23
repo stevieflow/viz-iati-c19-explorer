@@ -130,6 +130,11 @@
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
+
+        <div class="small text-muted mt-5 ml-4">
+          {{ lastUpdatedDate }} | IATI
+        </div>
+        <hr>
       </b-container>
     </template>
   </div>
@@ -140,6 +145,7 @@
 import axios from 'axios'
 import csvtojson from 'csvtojson'
 import numeral from 'numeral'
+import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 import SankeyChart from '~/components/FinancialSankey.vue'
 import DownloadDataButton from '~/components/DownloadDataButton'
@@ -174,7 +180,9 @@ export default {
       fullData: [],
       filteredData: [],
       filterParams: {},
-      orgNameIndex: []
+      orgNameIndex: [],
+      lastUpdatedDate: '',
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     }
   },
   head () {
@@ -207,6 +215,9 @@ export default {
     this.createStickyHeader()
   },
   mounted () {
+    // init mixpanel
+    mixpanel.init(config.MIXPANEL_TOKEN)
+
     this.filterParams = {
       humanitarian: 'off',
       strict: 'off'
@@ -238,7 +249,7 @@ export default {
   methods: {
     async loadData () {
       const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/flows.json'
-      const filePath = (config.dev) ? '' : '/viz-iati-c19-explorer/'
+      const filePath = (config.dev) ? '' : '/viz-iati-c19-dashboard/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {
           return csvtojson().fromString(response.data).then((jsonData) => {
@@ -248,6 +259,12 @@ export default {
 
       await axios.get(dataPath)
         .then((response) => {
+          // process the metadata
+          const metadata = response.data.metadata
+          const dateRun = new Date(metadata['#date+run'])
+          const date = this.months[dateRun.getMonth()] + ' ' + dateRun.getDate() + ', ' + dateRun.getFullYear()
+          this.lastUpdatedDate = date
+
           this.fullData = response.data.data
           this.updateFilteredData()
         })
@@ -267,6 +284,15 @@ export default {
     },
     updateRouter () {
       this.$router.push({ name: 'spending_flows', query: this.urlQuery() })
+    },
+    mixpanelTrack (filterType, view) {
+      mixpanel.track('viz interaction', {
+        'page title': config.head.title,
+        action: 'change content',
+        content: filterType,
+        'current view': view,
+        'viz type': 'iati covid-19 dashboard'
+      })
     },
     updateFilteredData () {
       this.filteredData = this.filterData()
@@ -332,10 +358,12 @@ export default {
         this.selectedFilterLabel = 'all reporting organizations'
       }
       this.updateFilteredData()
+      this.mixpanelTrack('Spending Flows Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
+      this.mixpanelTrack('Spending Flows Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()

@@ -1,10 +1,16 @@
 <template>
   <div>
-    <b-dropdown id="downloadDropdown" text="Download Data" block class="download-button" variant="outline-dark">
-      <b-dropdown-item :href="filePath">
+    <b-dropdown
+      id="downloadDropdown"
+      text="Download Data"
+      block
+      class="download-button"
+      variant="outline-dark"
+      @click="onClick($event)">
+      <b-dropdown-item :href="filePath" @click="downloadAllData()">
         Download all data
       </b-dropdown-item>
-      <b-dropdown-item @click="downloadData()">
+      <b-dropdown-item @click="downloadFilteredData()">
         Download the filtered data
       </b-dropdown-item>
     </b-dropdown>
@@ -18,6 +24,8 @@
 
 </style>
 <script>
+import mixpanel from 'mixpanel-browser'
+import config from '../nuxt.config'
 export default {
   name: 'DataDownloadButton',
   components: {},
@@ -34,8 +42,24 @@ export default {
       return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/' + this.type + '.csv'
     }
   },
+  mounted () {
+    // init mixpanel
+    mixpanel.init(config.MIXPANEL_TOKEN)
+  },
   methods: {
-    downloadData () {
+    mixpanelTrack (url, type) {
+      mixpanel.track('link click', {
+        'destination url': url,
+        'link type': type,
+        'page title': config.head.title
+      })
+      console.log(url, type)
+    },
+    downloadAllData () {
+      this.mixpanelTrack(this.filePath, 'download all data')
+    },
+    downloadFilteredData (event) {
+      console.log(event)
       const param = (this.filterParams[this.selectedFilterDimension] === '*') ? null : this.filterParams[this.selectedFilterDimension]
       let dimension = this.selectedFilterDimension.split('#')[1]
 
@@ -45,6 +69,8 @@ export default {
       const humanitarian = this.filterParams.humanitarian !== 'off'
       const strict = this.filterParams.strict !== 'off'
       const url = (this.type === 'flows') ? this.proxyLinkFlows(param, dimension, humanitarian, strict) : this.proxyLinkTransactions(param, dimension, humanitarian, strict)
+
+      this.mixpanelTrack(url, 'download filtered data')
       window.open(url)
     },
     // safety check: raise an exception if a token is not in the list of allowed values
