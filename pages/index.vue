@@ -533,11 +533,8 @@ export default {
     }
   },
   mounted () {
+    // init mixpanel
     mixpanel.init(config.MIXPANEL_TOKEN)
-    mixpanel.track('page view', {
-      'page title': config.head.title,
-      'page type': 'datavis'
-    })
 
     this.toggleBodyClass('addClass', 'index')
 
@@ -641,6 +638,16 @@ export default {
       const filterArray = this.rankingFilter[this.getFilterID(dimension)]
       this.selectedRankingFilter = filterArray[0].value
     },
+    mixpanelTrack (filterType, view) {
+      mixpanel.track('viz interaction', {
+        'page title': config.head.title,
+        action: 'change content',
+        content: filterType,
+        'current view': view,
+        'viz type': 'iati covid-19 dashboard'
+      })
+      console.log('mixpanelTrack', filterType, view)
+    },
     numberFormatter (value) {
       if (value === 0) { return '0' }
       return value
@@ -655,6 +662,7 @@ export default {
       this.resetParams()
       this.setDefaultFilterLabel(selected)
       this.updateFilteredData()
+      this.mixpanelTrack('Commitments and Spending Breakdown radio filter', selected)
     },
     onSelect (value) {
       this.selectedFilter = value
@@ -665,10 +673,12 @@ export default {
         this.setDefaultFilterLabel(this.selectedFilterDimension)
       }
       this.updateFilteredData()
+      this.mixpanelTrack('Commitments and Spending Breakdown select filter', value)
     },
     onToggle (event) {
       this.filterParams[event.target.parentElement.id] = event.target.value
       this.updateFilteredData()
+      this.mixpanelTrack('Commitments and Spending Breakdown toggle filter', event.target.parentElement.id + ' ' + event.target.value)
     },
     onQuickFilter (event) {
       event.preventDefault()

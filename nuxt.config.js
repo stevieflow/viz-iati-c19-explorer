@@ -87,9 +87,6 @@ export default {
       fix: true
     }]
   ],
-  gtm: {
-    id: 'GTM-KHMLMZX'
-  },
   build: {
     /*
     ** You can extend webpack config here
