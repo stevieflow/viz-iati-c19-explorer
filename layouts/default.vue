@@ -30,8 +30,8 @@
         <b-row>
           <b-col cols="12">
             <div class="logo-container">
-              <a href="https://www.usaid.gov" target="_blank"><img src="~@/assets/logos/usaid.png" alt="USAID" height="50"></a>
-              <a href="https://www.unocha.org" target="_blank"><img src="~@/assets/logos//ocha.png" alt="UN OCHA" height="30"></a>
+              <a href="https://www.usaid.gov" target="_blank"><img src="~@/assets/logos/usaid.png" alt="USAID" height="60"></a>
+              <a href="https://www.unocha.org" target="_blank"><img src="~@/assets/logos//ocha.png" alt="UN OCHA" height="50"></a>
               <a href="https://centre.humdata.org" target="_blank"><img src="~@/assets/logos/centrehumdata.png" alt="Centre for Humanitarian Data" height="45"></a>
               <a href="https://iatistandard.org" target="_blank"><img src="~@/assets/logos/iati.png" alt="Powered by IATI" height="50"></a>
             </div>
