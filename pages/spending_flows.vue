@@ -37,7 +37,7 @@
       <hr class="mt-0 mb-4">
 
       <b-container>
-        <b-row>
+        <b-row ref="filters">
           <b-col cols="12" lg="7">
             <h3>Reporting organization:</h3>
             <v-select

@@ -1,5 +1,6 @@
 <template>
-  <div class="iati-viz my-4">
+  <div class="iati-viz mb-4">
+    <OchaHeader class="mb-4" />
     <b-container>
       <b-navbar-brand :to="'/'">
         <span v-html="pageTitle" />
@@ -28,7 +29,12 @@
       <b-container class="footer">
         <b-row>
           <b-col cols="12">
-            <a href="https://iatistandard.org/" target="_blank"><img :src="logoPath" width="130"></a>
+            <div class="logo-container">
+              <a href="https://www.usaid.gov" target="_blank"><img src="~@/assets/logos/usaid.png" alt="USAID" height="50"></a>
+              <a href="https://www.unocha.org" target="_blank"><img src="~@/assets/logos//ocha.png" alt="UN OCHA" height="30"></a>
+              <a href="https://centre.humdata.org" target="_blank"><img src="~@/assets/logos/centrehumdata.png" alt="Centre for Humanitarian Data" height="45"></a>
+              <a href="https://iatistandard.org" target="_blank"><img src="~@/assets/logos/iati.png" alt="Powered by IATI" height="50"></a>
+            </div>
           </b-col>
         </b-row>
       </b-container>
@@ -67,6 +73,14 @@
 .footer {
   padding: 80px 15px 40px;
   text-align: right;
+  .logo-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    img {
+      width: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 992px) {
@@ -94,8 +108,10 @@
 <script>
 import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
+import OchaHeader from '~/components/OchaHeader'
 export default {
   components: {
+    OchaHeader
   },
   data () {
     return {
@@ -110,14 +126,9 @@ export default {
         this.$store.commit('setProd', isProd)
       }
       return (isProd) ? 'IATI COVID-19 Funding Dashboard' : '*STAGE* IATI COVID-19 Funding Dashboard'
-    },
-    logoPath () {
-      const filePath = (config.dev) ? '/' : '/viz-iati-c19-dashboard/'
-      return filePath + 'logo-iati.png'
     }
   },
   mounted () {
-    console.log(this.$store.state.isProd)
     const MIXPANEL_TOKEN = this.$store.state.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
     mixpanel.init(MIXPANEL_TOKEN)
     this.$mixpanelTrackView()
