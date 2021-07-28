@@ -16,7 +16,7 @@
     </b-dropdown>
 
     <div class="text-center pt-2">
-      <a href="mailto:hdx@un.org?subject=Feedback on IATI COVID-19 Funding Dashboard" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScVyHQpbZcyc5l__q-X1GNrYzKWN2tUWqUUqjzQIPJ2uECbgg/viewform" target="_blank" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
     </div>
   </div>
 </template>
