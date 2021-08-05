@@ -248,6 +248,16 @@
             </p>
           </section>
 
+          <section id="licensing" class="mb-5">
+            <h2>IATI open-data licensing</h2>
+            <h3>Original source data licensing</h3>
+            <p>As described in the <a href="https://iatistandard.org/en/guidance/standard-overview/preparing-your-organisation-data-publication/how-to-license-your-data/" target="_blank">IATI data-licensing guidance</a>, each publishing organization should choose an open-data license when they enroll with the IATI Registry. Using the IATI Dashboard, you can find which license any individual publishing organization is using (scroll down to the list of publishers, then select a publisher to see the license): <a href="http://dashboard.iatistandard.org/files.html" target="_blank">http://dashboard.iatistandard.org/files.html</a></p>
+            <h3>Aggregated data</h3>
+            <p>In our IATI COVID-19 Funding Dashboard, when filtering commitments and spending by sector or location (country/region), or viewing flows, you are looking at aggregated data compiled from multiple IATI publishers. Onward use of this aggregated data is governed by the open data licenses chosen by the IATI publishers whose data is included. The OCHA Centre for Humanitarian Data claims no additional rights over the aggregated data. For more information about the data-aggregation algorithms, see the About this Dashboard tab.</p>
+            <h3>Attribution</h3>
+            <p>For IATI publishing organizations who share data under a mandatory attribution license such as CC-BY, attribution is provided for the use of their data in results aggregated by sector, by location, or as flows, in the pull-down organization lists on each tab.</p>
+          </section>
+
           <section id="tos" class="mb-5">
             <h2>
               Terms of Service / Privacy Notice
