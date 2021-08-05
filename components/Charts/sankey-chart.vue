@@ -1,15 +1,37 @@
 <template>
   <div>
     <div class="badges">
-      <b-badge variant="dark">
-        Provider Org
-      </b-badge>
-      <b-badge v-if="maxNodeDepth>1" variant="dark">
-        Reporting Org
-      </b-badge>
-      <b-badge variant="dark">
-        Receiver Org
-      </b-badge>
+      <div>
+        <b-badge variant="dark">
+          Provider Org
+        </b-badge>
+        <b-badge
+          v-b-tooltip.hover
+          class="info-icon p-0"
+          variant="dark"
+          pill
+          :title="tooltips['sankeyProviderLabel']">
+          ?
+        </b-badge>
+      </div>
+      <div>
+        <b-badge v-if="maxNodeDepth>1" variant="dark">
+          Reporting Org
+        </b-badge>
+      </div>
+      <div>
+        <b-badge variant="dark">
+          Receiver Org
+        </b-badge>
+        <b-badge
+          v-b-tooltip.hover
+          class="info-icon p-0"
+          variant="dark"
+          pill
+          :title="tooltips['sankeyReceiverLabel']">
+          ?
+        </b-badge>
+      </div>
     </div>
     <div id="sankeyChart" ref="sankeyChart">
       <svg :width="width" :height="height">
@@ -148,6 +170,9 @@ export default {
     }
   },
   computed: {
+    tooltips () {
+      return this.$store.state.tooltips
+    },
     nodes () {
       return this.sankey.nodes
     },
