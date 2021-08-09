@@ -40,14 +40,39 @@
         <b-row ref="filters">
           <b-col cols="12" lg="7">
             <b-form-group label="Filter:">
-              <b-form-radio-group
-                id="filterGroup"
-                v-model="initFilterOption"
-                :options="filterOptions"
-                name="filterOptionGroup"
-                stacked
-                @change="onFilterOptionSelect"
-              />
+              <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[0].value" @change="onFilterOptionSelect">
+                {{ filterOptions[0].text }}
+                <b-badge
+                  v-b-tooltip.hover
+                  class="info-icon p-0"
+                  variant="dark"
+                  pill
+                  :title="tooltips['filterPublishingOrg']">
+                  ?
+                </b-badge>
+              </b-form-radio>
+              <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[1].value" @change="onFilterOptionSelect">
+                {{ filterOptions[1].text }}
+                <b-badge
+                  v-b-tooltip.hover
+                  class="info-icon p-0"
+                  variant="dark"
+                  pill
+                  :title="tooltips['filterCountry']">
+                  ?
+                </b-badge>
+              </b-form-radio>
+              <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[2].value" @change="onFilterOptionSelect">
+                {{ filterOptions[2].text }}
+                <b-badge
+                  v-b-tooltip.hover
+                  class="info-icon p-0"
+                  variant="dark"
+                  pill
+                  :title="tooltips['filterSector']">
+                  ?
+                </b-badge>
+              </b-form-radio>
             </b-form-group>
 
             <v-select
@@ -181,7 +206,15 @@
 
       <b-container>
         <h2 class="header">
-          Outgoing Commitments and Spending Ranking
+          Outgoing Commitments and Spending Ranking&nbsp;
+          <b-badge
+            v-b-tooltip.hover
+            class="info-icon p-0"
+            variant="dark"
+            pill
+            :title="tooltips['rankingHeader']">
+            ?
+          </b-badge>
         </h2>
 
         <b-row>
@@ -259,7 +292,15 @@
         </b-row>
 
         <h2 class="header">
-          Outgoing Commitments and Spending Over Time
+          Outgoing Commitments and Spending Over Time&nbsp;
+          <b-badge
+            v-b-tooltip.hover
+            class="info-icon p-0"
+            variant="dark"
+            pill
+            :title="tooltips['timelineHeader']">
+            ?
+          </b-badge>
         </h2>
 
         <b-row>

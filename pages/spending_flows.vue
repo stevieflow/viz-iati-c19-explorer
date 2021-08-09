@@ -39,7 +39,17 @@
       <b-container>
         <b-row ref="filters">
           <b-col cols="12" lg="7">
-            <h3>Reporting organization:</h3>
+            <h3>
+              Reporting organization
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['reportingOrg']">
+                ?
+              </b-badge>
+            </h3>
             <v-select
               :value="selectedFilter"
               class="filter-select filter-select-org mb-3"
@@ -126,7 +136,15 @@
         </b-row>
 
         <h2 class="header mt-3">
-          Spending Flows
+          Spending Flows&nbsp;
+          <b-badge
+            v-b-tooltip.hover
+            class="info-icon p-0"
+            variant="dark"
+            pill
+            :title="tooltips['sankeyHeader']">
+            ?
+          </b-badge>
         </h2>
 
         <SankeyChart :items="filteredData" :params="filterParams" />
