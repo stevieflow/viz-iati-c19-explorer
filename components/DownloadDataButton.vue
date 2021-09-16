@@ -7,22 +7,23 @@
       class="download-button"
       variant="outline-dark"
       @click="onClick($event)">
-      <b-dropdown-item :href="filePath" @click="downloadAllData()">
-        Download all data
+      <b-dropdown-item @click="downloadAllData()">
+        View data on HDX
       </b-dropdown-item>
       <b-dropdown-item @click="downloadFilteredData()">
-        Download the filtered data
+        View filtered data
       </b-dropdown-item>
     </b-dropdown>
 
-    <div class="text-center pt-2">
+    <!--     <div class="text-center pt-2">
       <a href="https://docs.google.com/forms/d/e/1FAIpQLScVyHQpbZcyc5l__q-X1GNrYzKWN2tUWqUUqjzQIPJ2uECbgg/viewform" target="_blank" class="feedback-link">Send us feedback <div class="icon-warning" /></a>
-    </div>
+    </div> -->
   </div>
 </template>
-<style scoped>
 
+<style lang='scss'>
 </style>
+
 <script>
 export default {
   name: 'DataDownloadButton',
@@ -37,7 +38,8 @@ export default {
   },
   computed: {
     filePath () {
-      return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/' + this.type + '.csv'
+      return 'https://data.humdata.org/dataset/iati-covid19-funding'
+      // return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/' + this.type + '.csv'
     },
     isProd () {
       return this.$store.state.isProd
@@ -46,6 +48,7 @@ export default {
   methods: {
     downloadAllData () {
       this.$mixpanelTrackLink(this.filePath, 'download all data')
+      window.open(this.filePath)
     },
     downloadFilteredData (event) {
       const param = (this.filterParams[this.selectedFilterDimension] === '*') ? null : this.filterParams[this.selectedFilterDimension]
