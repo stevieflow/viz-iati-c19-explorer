@@ -68,7 +68,7 @@ h6 {
 }
 
 .header-sticky {    
-  background-color: #FFF;
+  background-color: #EDF6FD;
   position: sticky;
   top: -1px;
   z-index: 2;
@@ -189,7 +189,10 @@ body.index {
   .vs__clear {
     display: none;
   }
-  .download-button {
+  .download-button {  
+    ul {
+      width: 100%;
+    }
     .btn {
       &.btn-outline-dark {
         border-color: #000;
@@ -227,7 +230,7 @@ body.index {
   .dropdown-toggle {
     &:after {
       border: none;
-      content: url('~@/assets/icons/icon-download.svg');
+      content: url('~@/assets/icons/icon-external.svg');
       position: absolute;
       right: 20px;
       transform: translateY(-50%);
@@ -235,7 +238,7 @@ body.index {
     }
     &:hover {
       &:after {
-        content: url('~@/assets/icons/icon-download-white.svg');
+        content: url('~@/assets/icons/icon-external-white.svg');
       }
     }
   }

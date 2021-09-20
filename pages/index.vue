@@ -1,21 +1,5 @@
 <template>
   <div>
-    <b-container>
-      <b-row>
-        <b-col cols="12" lg="9">
-          <p class="overview-description">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore all of the published IATI data that is related to the coronavirus pandemic by examining the commitments and spending made by or to a specific organization, recipient country or region, or sector.
-          </p>
-        </b-col>
-        <b-col>
-          <DownloadDataButton
-            type="transactions"
-            :filter-params="filterParams"
-            :selected-filter-dimension="selectedFilterDimension"
-          />
-        </b-col>
-      </b-row>
-    </b-container>
     <template v-if="isBusy">
       <div class="custom-loader text-center text-secondary my-5">
         <b-spinner class="align-middle" />
@@ -196,6 +180,16 @@
                     {{ btn.label }}
                   </b-button>
                 </b-button-group>
+              </b-col>
+            </b-row>
+            <hr class="my-3">
+            <b-row>
+              <b-col cols="8" class="mt-3">
+                <DownloadDataButton
+                  type="transactions"
+                  :filter-params="filterParams"
+                  :selected-filter-dimension="selectedFilterDimension"
+                />
               </b-col>
             </b-row>
           </b-col>
@@ -546,7 +540,8 @@ export default {
     this.filterParams['#country'] = '*'
     this.filterParams['#sector'] = '*'
 
-    const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
     axios.get(dataPath)
       .then((response) => {
         this.orgNameIndex = response.data.data
@@ -584,7 +579,7 @@ export default {
   },
   methods: {
     async loadData () {
-      const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/transactions.json'
+      const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-dashboard/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {

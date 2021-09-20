@@ -109,6 +109,7 @@
 import mixpanel from 'mixpanel-browser'
 import config from '../nuxt.config'
 import OchaHeader from '~/components/OchaHeader'
+
 export default {
   components: {
     OchaHeader

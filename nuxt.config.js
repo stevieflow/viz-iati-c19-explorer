@@ -55,7 +55,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/mixpanel.js'
+    { src: '~/plugins/mixpanel.js' },
+    { src: '~/plugins/hotjar.js', mode: 'client' }
   ],
   /*
   ** Nuxt.js modules
