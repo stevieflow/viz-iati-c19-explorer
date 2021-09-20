@@ -30,7 +30,8 @@
     "nuxt-vue-select": "^0.1.4",
     "popper.js": "^1.16.1",
     "vue": "^2.6.14",
-    "vue-chartjs": "^3.5.1"
+    "vue-chartjs": "^3.5.1",
+    "vue-hotjar": "^1.4.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",

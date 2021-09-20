@@ -107,8 +107,10 @@
 
 <script>
 import mixpanel from 'mixpanel-browser'
+import Hotjar from 'vue-hotjar'
 import config from '../nuxt.config'
 import OchaHeader from '~/components/OchaHeader'
+
 export default {
   components: {
     OchaHeader
@@ -129,6 +131,11 @@ export default {
     }
   },
   mounted () {
+    Vue.use(Hotjar, {
+      id: '1404965',
+      isProduction: isProd
+    })
+
     const MIXPANEL_TOKEN = this.$store.state.isProd ? process.env.NUXT_ENV_MIXPANEL_TOKEN_PROD : process.env.NUXT_ENV_MIXPANEL_TOKEN_DEV
     mixpanel.init(MIXPANEL_TOKEN)
     this.$mixpanelTrackView()
