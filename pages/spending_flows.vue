@@ -1,21 +1,5 @@
 <template>
   <div>
-    <b-container>
-      <b-row>
-        <b-col cols="12" lg="9">
-          <p class="mb-4">
-            The <a href="https://iatistandard.org/" target="_blank">International Aid Transparency Initiative</a> (IATI) is a global effort to improve the transparency of development and humanitarian resources and their results to address poverty and crises. This page allows you to explore the flow of financing between funding and implementing organizations.
-          </p>
-        </b-col>
-        <b-col>
-          <DownloadDataButton
-            type="flows"
-            :filter-params="filterParams"
-            :selected-filter-dimension="selectedFilterDimension"
-          />
-        </b-col>
-      </b-row>
-    </b-container>
     <template v-if="isBusy">
       <div class="custom-loader text-center text-secondary mt-5">
         <b-spinner class="align-middle" />
@@ -130,6 +114,16 @@
                     {{ btn.label }}
                   </b-button>
                 </b-button-group>
+              </b-col>
+            </b-row>
+            <hr class="my-3">
+            <b-row>
+              <b-col cols="8" class="my-3">
+                <DownloadDataButton
+                  type="flows"
+                  :filter-params="filterParams"
+                  :selected-filter-dimension="selectedFilterDimension"
+                />
               </b-col>
             </b-row>
           </b-col>
