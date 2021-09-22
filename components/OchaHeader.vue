@@ -183,6 +183,12 @@
     }
   }
 }
+
+@media only screen and (max-width: 992px) {
+  .ocha-header {
+    padding: 0 5px;
+  }
+}
 </style>
 <script>
 export default {

@@ -299,6 +299,9 @@ body.index {
 }
 
 @media only screen and (max-width: 992px) {
+  .container {
+    overflow: hidden;
+  }
   .header-sticky {
     h2 {
       padding-bottom: 0;
@@ -331,6 +334,16 @@ body.index {
     }
     .timeseries-legend {
       flex-direction: column;
+    }
+    .filters {
+      .badge.info-icon.badge-pill {
+        margin-left: 10px;
+      }
+    }
+    h2.header {
+      .badge.info-icon.badge-pill {
+        width: 20px;
+      }
     }
   }
 }
