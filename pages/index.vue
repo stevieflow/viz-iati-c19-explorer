@@ -835,4 +835,14 @@ export default {
     line-height: 49px;
     text-transform: uppercase;
   }
+
+  @media only screen and (max-width: 992px) {
+    .iati-viz {
+      h2.header {
+        .badge.info-icon.badge-pill {
+          width: 20px;
+        }
+      }
+    }
+  }
 </style>
