@@ -26,37 +26,37 @@
             <b-form-group label="Filter:">
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[0].value" @change="onFilterOptionSelect">
                 {{ filterOptions[0].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterPublishingOrg']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0 ml-3 ml-md-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterPublishingOrg']">
+                ?
+              </b-badge><br>
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[1].value" @change="onFilterOptionSelect">
                 {{ filterOptions[1].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterCountry']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0 ml-3 ml-md-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterCountry']">
+                ?
+              </b-badge><br>
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[2].value" @change="onFilterOptionSelect">
                 {{ filterOptions[2].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterSector']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0 ml-3 ml-md-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterSector']">
+                ?
+              </b-badge>
             </b-form-group>
 
             <v-select
@@ -184,7 +184,7 @@
             </b-row>
             <hr class="my-3">
             <b-row>
-              <b-col cols="8" class="mt-3">
+              <b-col cols="12" md="8" class="mt-3">
                 <DownloadDataButton
                   type="transactions"
                   :filter-params="filterParams"
@@ -834,5 +834,15 @@ export default {
     font-size: 42px;
     line-height: 49px;
     text-transform: uppercase;
+  }
+
+  @media only screen and (max-width: 992px) {
+    .iati-viz {
+      h2.header {
+        .badge.info-icon.badge-pill {
+          width: 20px;
+        }
+      }
+    }
   }
 </style>
