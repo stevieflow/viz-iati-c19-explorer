@@ -187,6 +187,21 @@
 @media only screen and (max-width: 992px) {
   .ocha-header {
     padding: 0 5px;
+    .ocha-services-menu-container {
+      .ocha-services-menu {
+        flex-flow: column;
+        padding: 0 30px;
+      }
+    }
+    .dropdown-menu {
+      padding-bottom: 30px;
+      .list-title {
+        margin-top: 20px;
+        &.list-title-empty {
+          display: none;
+        }
+      }
+    }
   }
 }
 </style>

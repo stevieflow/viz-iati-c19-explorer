@@ -29,7 +29,7 @@
               </b-form-radio>
               <b-badge
                 v-b-tooltip.hover
-                class="info-icon p-0"
+                class="info-icon p-0 ml-3 ml-md-0"
                 variant="dark"
                 pill
                 :title="tooltips['filterPublishingOrg']">
@@ -40,7 +40,7 @@
               </b-form-radio>
               <b-badge
                 v-b-tooltip.hover
-                class="info-icon p-0"
+                class="info-icon p-0 ml-3 ml-md-0"
                 variant="dark"
                 pill
                 :title="tooltips['filterCountry']">
@@ -51,7 +51,7 @@
               </b-form-radio>
               <b-badge
                 v-b-tooltip.hover
-                class="info-icon p-0"
+                class="info-icon p-0 ml-3 ml-md-0"
                 variant="dark"
                 pill
                 :title="tooltips['filterSector']">
@@ -184,7 +184,7 @@
             </b-row>
             <hr class="my-3">
             <b-row>
-              <b-col cols="8" class="mt-3">
+              <b-col cols="12" md="8" class="mt-3">
                 <DownloadDataButton
                   type="transactions"
                   :filter-params="filterParams"

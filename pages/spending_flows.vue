@@ -118,7 +118,7 @@
             </b-row>
             <hr class="my-3">
             <b-row>
-              <b-col cols="8" class="my-3">
+              <b-col cols="12" md="8" class="my-3">
                 <DownloadDataButton
                   type="flows"
                   :filter-params="filterParams"
@@ -417,5 +417,15 @@ export default {
   abbr[title], abbr[data-original-title] {
     text-decoration: none;
     cursor: auto;
+  }
+
+  @media only screen and (max-width: 992px) {
+    .iati-viz {
+      h2.header {
+        .badge.info-icon.badge-pill {
+          width: 14px;
+        }
+      }
+    }
   }
 </style>

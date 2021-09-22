@@ -335,10 +335,8 @@ body.index {
     .timeseries-legend {
       flex-direction: column;
     }
-    .form-group {
-      .badge.info-icon.badge-pill {
-        margin-left: 10px;
-      }
+    .vs__selected {
+      line-height: 1.1;
     }
   }
 }
