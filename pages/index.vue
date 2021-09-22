@@ -26,37 +26,37 @@
             <b-form-group label="Filter:">
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[0].value" @change="onFilterOptionSelect">
                 {{ filterOptions[0].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterPublishingOrg']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterPublishingOrg']">
+                ?
+              </b-badge><br>
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[1].value" @change="onFilterOptionSelect">
                 {{ filterOptions[1].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterCountry']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterCountry']">
+                ?
+              </b-badge><br>
               <b-form-radio v-model="initFilterOption" name="filterOptionGroup" :value="filterOptions[2].value" @change="onFilterOptionSelect">
                 {{ filterOptions[2].text }}
-                <b-badge
-                  v-b-tooltip.hover
-                  class="info-icon p-0"
-                  variant="dark"
-                  pill
-                  :title="tooltips['filterSector']">
-                  ?
-                </b-badge>
               </b-form-radio>
+              <b-badge
+                v-b-tooltip.hover
+                class="info-icon p-0"
+                variant="dark"
+                pill
+                :title="tooltips['filterSector']">
+                ?
+              </b-badge>
             </b-form-group>
 
             <v-select

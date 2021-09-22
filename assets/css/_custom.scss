@@ -154,6 +154,11 @@ body.index {
       width: 14px;
     }
   }
+  .custom-control {
+    &.custom-radio {
+      display: inline-block;
+    }
+  }
   .form-select {
     border: 1px solid #CCC;
     color: #000;
