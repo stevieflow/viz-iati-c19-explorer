@@ -105,6 +105,16 @@
     right: 0;
     top: -66px;
   }
+  .footer {
+    padding-top: 0;
+    .logo-container {
+      flex-wrap: wrap;
+      > a {
+        margin-top: 30px;
+        width: 50%;
+      }
+    }
+  }
 }
 </style>
 
