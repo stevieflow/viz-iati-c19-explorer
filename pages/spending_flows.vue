@@ -232,8 +232,8 @@ export default {
     }
     this.filterParams['#org+id+reporting'] = this.selectedFilter
 
-    // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
-    const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    // const dataPath = (this.isProd) ? 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/reporting_orgs.json' : 'https://mcarans.github.io/hdx-scraper-iati-viz/reporting_orgs.json'
+    const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/reporting_orgs.json'
     axios.get(dataPath)
       .then((response) => {
         this.orgNameIndex = response.data.data
@@ -257,7 +257,7 @@ export default {
   },
   methods: {
     async loadData () {
-      const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json'
+      const dataPath = 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/flows.json'
       const filePath = (config.dev) ? '' : '/viz-iati-c19-dashboard/'
       await axios.get(filePath + 'tooltips.csv')
         .then((response) => {

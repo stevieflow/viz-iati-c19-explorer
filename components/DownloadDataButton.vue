@@ -39,7 +39,7 @@ export default {
   computed: {
     filePath () {
       return 'https://data.humdata.org/dataset/iati-covid19-funding'
-      // return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/' + this.type + '.csv'
+      // return 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/' + this.type + '.csv'
     },
     isProd () {
       return this.$store.state.isProd
@@ -86,7 +86,7 @@ export default {
     proxyLinkTransactions (selectionValue, selectionType, isHumanitarian, isStrict) {
       // the GET parameters that we'll pass to the HXL Proxy
       const params = {
-        url: 'https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv'
+        url: 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/transactions.csv'
       }
 
       // filter rows by the primary selector (a single org, sector, or country)
@@ -146,7 +146,7 @@ export default {
     proxyLinkFlows (reportingOrgId, isHumanitarian, isStrict) {
       // the GET parameters that we'll pass to the HXL Proxy
       const params = {
-        url: 'https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv'
+        url: 'https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/flows.csv'
       }
 
       // filter rows by the reporting org id (if supplied)

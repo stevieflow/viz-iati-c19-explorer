@@ -239,8 +239,8 @@
                 <li>
                   Prepared data (automatically updated every 24 hours)
                   <ul>
-                    <li>Activities and transactions — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.csv">transactions.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/transactions.json">transactions.json</a></li>
-                    <li>Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/flows.json" target="_blank">flows.json</a></li>
+                    <li>Activities and transactions — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/transactions.csv">transactions.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/transactions.json">transactions.json</a></li>
+                    <li>Financial flows — <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/flows.csv" target="_blank">flows.csv</a> | <a href="https://ocha-dap.github.io/hdx-scraper-iati-viz/covid/flows.json" target="_blank">flows.json</a></li>
                   </ul>
                 </li>
                 <li><a href="https://github.com/OCHA-DAP/viz-iati-c19-dashboard" target="_blank">Data visualization front end</a></li>
