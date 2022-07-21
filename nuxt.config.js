@@ -28,7 +28,7 @@ export default {
     ],
     script: [
       {
-        src: 'https://apiv2.popupsmart.com/api/Bundle/368361',
+        src: 'https://apiv2.popupsmart.com/api/Bundle/371825',
         body: true,
         async: true
       }
